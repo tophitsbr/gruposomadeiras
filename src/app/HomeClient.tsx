@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { AboutSection } from "./components/AboutSection";
 import ScrollReveal from "./components/ScrollReveal";
+import { ApiService } from "./services/apiService";
 import { 
   ShoppingBag, 
   Search, 
@@ -88,7 +89,7 @@ const DEFAULT_SETTINGS = {
   youtubeUrl: "https://youtube.com/somadeiras",
   mapsEmbedUrl: "https://maps.google.com/maps?q=So%20Madeiras,%20Est%C3%A2ncia%20-%20SE&t=&z=14&ie=UTF8&iwloc=&output=embed",
   mapsSearchUrl: "https://www.google.com/maps/search/S%C3%B3+Madeiras+Est%C3%A2ncia+SE",
-  showroomImage: "/images/so_madeiras_fachada.png",
+  showroomImage: "/images/so_madeiras_fachada.webp",
   whatsappPhone: "79996298990",
   fbPixelId: "",
   gtmId: "",
@@ -260,18 +261,18 @@ const INITIAL_PRODUCTS = [
   { id: 5, name: "Banco de Jardim em Madeira Maciça", category: "moveis", brand: "Só Madeiras", price: 599.00, stock: 8, rating: 4.6, desc: "Tratamento náutico contra sol e chuva, ideal para 3 lugares.", img: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=400&q=80" },
   { id: 6, name: "Fechadura Colonial Premium Pado", category: "ferragens", brand: "Tramontina", price: 159.90, stock: 19, rating: 4.7, desc: "Acabamento bronze latonado oxidado de alta resistência.", img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80" },
   { id: 7, name: "Tinta Acrílica Suvinil Fosca 18L", category: "tintas", brand: "Suvinil", price: 389.00, stock: 30, rating: 4.8, desc: "Excelente cobertura, lavável e sem cheiro em até 3 horas.", img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=400&q=80" },
-  { id: 8, name: "Telha Ecológica Onduline 200x95cm", category: "telhas", brand: "Onduline", price: 79.90, stock: 150, rating: 4.5, desc: "Telha termoacústica leve de alta durabilidade, feita de fibras vegetais impermeabilizadas.", img: "/images/tiles/telha_onduline.png", coverage: 1.5, weight: 6.4, tileType: "onduline" },
+  { id: 8, name: "Telha Ecológica Onduline 200x95cm", category: "telhas", brand: "Onduline", price: 79.90, stock: 150, rating: 4.5, desc: "Telha termoacústica leve de alta durabilidade, feita de fibras vegetais impermeabilizadas.", img: "/images/tiles/telha_onduline.webp", coverage: 1.5, weight: 6.4, tileType: "onduline" },
   { id: 9, name: "Aparador de Grama Tramontina 1000W", category: "jardinagem", brand: "Tramontina", price: 249.00, stock: 12, rating: 4.7, desc: "Fio de nylon automático, empunhadura ergonômica regulável.", img: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?auto=format&fit=crop&w=400&q=80" },
   { id: 10, name: "Cimento CP-II Votoran 50kg", category: "pesada", brand: "Votorantim", price: 34.90, stock: 500, rating: 4.9, desc: "Cimento composto com pozolana, excelente trabalhabilidade e secagem rápida.", img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=400&q=80" },
   { id: 11, name: "Prancha de Ipê Aparelhada 4x20cm 4m", category: "madeiras", brand: "Só Madeiras", price: 320.00, stock: 45, rating: 5.0, desc: "Prancha de altíssima dureza e durabilidade natural. Perfeita para decks de luxo.", img: "https://images.unsplash.com/photo-1520038410233-7141be7e6f97?auto=format&fit=crop&w=400&q=80" },
   { id: 12, name: "Mesa de Jantar Rustica 8 Cadeiras", category: "moveis", brand: "Só Madeiras", price: 2490.00, stock: 3, rating: 4.9, desc: "Fabricada em madeira de demolição autêntica peroba rosa com acabamento em cera.", img: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=400&q=80" },
-  { id: 13, name: "Porta Pivotante Angelim Maciça 2.10x1.00m", category: "madeiras", brand: "Só Madeiras", price: 1890.00, stock: 5, rating: 5.0, desc: "Acompanha pino pivotante de inox e fechadura rolete de alta segurança.", img: "/images/doors/porta_pivotante_angelim.png", woodType: "angelim", grooves: false, handle: "pivot" },
-  { id: 14, name: "Porta Maciça Frisada Tauari 2.10x0.80m", category: "madeiras", brand: "Só Madeiras", price: 789.90, stock: 12, rating: 4.8, desc: "Madeira nobre de reflorestamento com secagem técnica em estufa.", img: "/images/doors/porta_frisada_tauari.png", woodType: "tauari", grooves: true, handle: "standard" },
-  { id: 15, name: "Porta de Madeira Colmeia 70x210 cm HDF - Madelar", category: "madeiras", brand: "Madelar", price: 199.00, stock: 35, rating: 4.7, desc: "Capa em HDF de alta densidade com enchimento acústico leve em colmeia Madelar.", img: "/images/doors/porta_colmeia_madelar.png", woodType: "eucalipto", grooves: false, handle: "standard" },
-  { id: 16, name: "Kit Porta Pronta Completo com Batente e Fechadura", category: "madeiras", brand: "Só Madeiras", price: 649.00, stock: 8, rating: 4.9, desc: "Acompanha batente (portal), alizar (guarnição), dobradiças de inox e fechadura instaladas.", img: "/images/doors/kit_porta_pronta.png", woodType: "tauari", grooves: true, handle: "kit", frame: true },
-  { id: 17, name: "Telha Cerâmica Portuguesa Natural", category: "telhas", brand: "Só Madeiras", price: 2.99, stock: 4500, rating: 4.8, desc: "Telha cerâmica vermelha tradicional portuguesa, excelente isolamento e encaixe perfeito.", img: "/images/tiles/telha_portuguesa.png", coverage: 17.0, weight: 2.8, tileType: "ceramic" },
-  { id: 18, name: "Telha de Concreto Plana Grafite", category: "telhas", brand: "Tegula", price: 8.50, stock: 1800, rating: 4.9, desc: "Telha de concreto de alta resistência, design moderno plano na cor cinza grafite.", img: "/images/tiles/telha_concreto.png", coverage: 10.4, weight: 4.8, tileType: "concrete" },
-  { id: 19, name: "Telha Esmaltada Americana Premium", category: "telhas", brand: "Só Madeiras", price: 4.20, stock: 2500, rating: 4.7, desc: "Telha esmaltada dupla-face americana, altíssimo brilho, impermeável a fungos.", img: "/images/tiles/telha_esmaltada.png", coverage: 12.0, weight: 3.1, tileType: "glazed" }
+  { id: 13, name: "Porta Pivotante Angelim Maciça 2.10x1.00m", category: "madeiras", brand: "Só Madeiras", price: 1890.00, stock: 5, rating: 5.0, desc: "Acompanha pino pivotante de inox e fechadura rolete de alta segurança.", img: "/images/doors/porta_pivotante_angelim.webp", woodType: "angelim", grooves: false, handle: "pivot" },
+  { id: 14, name: "Porta Maciça Frisada Tauari 2.10x0.80m", category: "madeiras", brand: "Só Madeiras", price: 789.90, stock: 12, rating: 4.8, desc: "Madeira nobre de reflorestamento com secagem técnica em estufa.", img: "/images/doors/porta_frisada_tauari.webp", woodType: "tauari", grooves: true, handle: "standard" },
+  { id: 15, name: "Porta de Madeira Colmeia 70x210 cm HDF - Madelar", category: "madeiras", brand: "Madelar", price: 199.00, stock: 35, rating: 4.7, desc: "Capa em HDF de alta densidade com enchimento acústico leve em colmeia Madelar.", img: "/images/doors/porta_colmeia_madelar.webp", woodType: "eucalipto", grooves: false, handle: "standard" },
+  { id: 16, name: "Kit Porta Pronta Completo com Batente e Fechadura", category: "madeiras", brand: "Só Madeiras", price: 649.00, stock: 8, rating: 4.9, desc: "Acompanha batente (portal), alizar (guarnição), dobradiças de inox e fechadura instaladas.", img: "/images/doors/kit_porta_pronta.webp", woodType: "tauari", grooves: true, handle: "kit", frame: true },
+  { id: 17, name: "Telha Cerâmica Portuguesa Natural", category: "telhas", brand: "Só Madeiras", price: 2.99, stock: 4500, rating: 4.8, desc: "Telha cerâmica vermelha tradicional portuguesa, excelente isolamento e encaixe perfeito.", img: "/images/tiles/telha_portuguesa.webp", coverage: 17.0, weight: 2.8, tileType: "ceramic" },
+  { id: 18, name: "Telha de Concreto Plana Grafite", category: "telhas", brand: "Tegula", price: 8.50, stock: 1800, rating: 4.9, desc: "Telha de concreto de alta resistência, design moderno plano na cor cinza grafite.", img: "/images/tiles/telha_concreto.webp", coverage: 10.4, weight: 4.8, tileType: "concrete" },
+  { id: 19, name: "Telha Esmaltada Americana Premium", category: "telhas", brand: "Só Madeiras", price: 4.20, stock: 2500, rating: 4.7, desc: "Telha esmaltada dupla-face americana, altíssimo brilho, impermeável a fungos.", img: "/images/tiles/telha_esmaltada.webp", coverage: 12.0, weight: 3.1, tileType: "glazed" }
 ];
 
 
@@ -1393,6 +1394,22 @@ export default function SoMadeirasFullStack() {
     const updatedLeads = [newLead, ...leads];
     updateLeads(updatedLeads);
 
+    // Sync with NestJS / PostgreSQL Backend API
+    ApiService.sendBudgetOrder({
+      clientName: leadFormData.name,
+      clientPhone: leadFormData.phone,
+      clientCity: leadFormData.city,
+      items: budgetCart.map(i => ({
+        productId: i.product.id,
+        productName: i.product.name,
+        quantity: i.quantity,
+        unitPrice: i.product.price,
+      })),
+      totalAmount: parseFloat(cartTotalAfterCoupon.toFixed(2)),
+      notes: newLead.notes,
+    });
+    ApiService.registerLead(leadFormData.phone, leadFormData.name);
+
     // 1. Facebook Pixel Event
     if (typeof window !== "undefined" && (window as any).fbq) {
       try {
@@ -2026,7 +2043,7 @@ export default function SoMadeirasFullStack() {
               {/* Brand Logo */}
               <div className="flex items-center justify-between w-full md:w-auto">
                 <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedCategoryFilter("all")}>
-                  <img src="/images/logo.png" alt="Só Madeiras" className="h-12 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform" />
+                  <img src="/images/logo.webp" alt="Só Madeiras" className="h-12 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform" />
                   <div>
                     <h1 className="font-display font-black text-xl tracking-tight text-white flex items-center gap-1">
                       SÓ <span className="text-primary font-extrabold">MADEIRAS</span>
@@ -2065,8 +2082,8 @@ export default function SoMadeirasFullStack() {
                 </div>
               </div>
 
-              {/* Smart Search */}
-              <div className="w-full md:flex-1 max-w-xl relative">
+              {/* Smart Search with Instant Autocomplete */}
+              <div className="w-full md:flex-1 max-w-xl relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                   <Search className="h-4 w-4" />
                 </div>
@@ -2075,7 +2092,7 @@ export default function SoMadeirasFullStack() {
                   placeholder="Buscar madeiras, telhas, cimento, ferramentas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/10 text-white placeholder-gray-300 pl-10 pr-4 py-2 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white focus:text-brown-dark transition"
+                  className="w-full bg-white/10 text-white placeholder-gray-300 pl-10 pr-4 py-2 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white focus:text-brown-dark transition text-xs md:text-sm"
                 />
                 {searchQuery && (
                   <button 
@@ -2084,6 +2101,59 @@ export default function SoMadeirasFullStack() {
                   >
                     <X className="h-4 w-4" />
                   </button>
+                )}
+
+                {/* Instant Autocomplete Results Dropdown */}
+                {searchQuery.trim().length > 1 && (
+                  <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden z-[999] animate-fade-in text-brown-dark dark:text-white">
+                    <div className="p-2 bg-slate-50 dark:bg-neutral-950 border-b border-gray-150 dark:border-neutral-800 flex justify-between items-center text-[11px] font-bold text-gray-500">
+                      <span>Resultado da busca ({products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase())).length})</span>
+                      <button onClick={() => setSearchQuery("")} className="text-red-500 hover:underline">Fechar</button>
+                    </div>
+                    <div className="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-neutral-800">
+                      {products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 5).map(p => (
+                        <div key={p.id} className="p-2.5 hover:bg-slate-50 dark:hover:bg-neutral-850 flex items-center justify-between gap-3 transition">
+                          <Link 
+                            href={`/produtos/${p.id}`}
+                            onClick={() => setSearchQuery("")}
+                            className="flex items-center gap-3 flex-1 min-w-0"
+                          >
+                            <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden shrink-0">
+                              {p.img && (p.img.startsWith("http") || p.img.startsWith("/")) ? (
+                                <img src={p.img} alt={p.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-lg">{p.img || "🪵"}</span>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1 text-left">
+                              <h5 className="font-bold text-xs truncate text-brown-dark dark:text-white">{p.name}</h5>
+                              <span className="text-[10px] text-gray-400 uppercase font-semibold block">{p.brand} • {p.category}</span>
+                            </div>
+                          </Link>
+                          <div className="text-right shrink-0 flex items-center gap-2">
+                            <span className="font-black text-xs text-emerald-600 dark:text-emerald-400 block">
+                              R$ {(p.pricePix || p.price * 0.9).toFixed(2)}
+                            </span>
+                            <button
+                              onClick={() => {
+                                addToCart(p);
+                                setSearchQuery("");
+                              }}
+                              className="bg-primary text-brown-dark font-extrabold text-[10px] px-2.5 py-1 rounded-lg hover:bg-primary-hover transition shadow-xs active:scale-95"
+                              title="Adicionar ao Orçamento"
+                            >
+                              + Adicionar
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                        <div className="p-6 text-center text-xs text-gray-400">
+                          Nenhum produto encontrado para "{searchQuery}".
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -2540,7 +2610,7 @@ export default function SoMadeirasFullStack() {
                     
                     <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
                       <img 
-                        src="/images/pergolado_ambient.png" 
+                        src="/images/pergolado_ambient.webp" 
                         alt="Pergolado de Eucalipto Roliço" 
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />
@@ -2580,7 +2650,7 @@ export default function SoMadeirasFullStack() {
                     
                     <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
                       <img 
-                        src="/images/curral_ambient.jpg" 
+                        src="/images/curral_ambient.webp" 
                         alt="Curral Rústico" 
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />

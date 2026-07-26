@@ -1,0 +1,24 @@
+{
+  "name": "Só Madeiras - Material de Construção e Madeiras",
+  "short_name": "Só Madeiras",
+  "description": "Loja premium de materiais de construção e madeiras em Estância e Sergipe. Faça seu orçamento rápido com entrega garantida.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3E2723",
+  "theme_color": "#F4B400",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
