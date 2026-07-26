@@ -573,6 +573,7 @@ export default function SoMadeirasFullStack() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [leadFormData, setLeadFormData] = useState({ name: "", phone: "", city: "", state: "SP" });
+  const [isWhatsappWidgetOpen, setIsWhatsappWidgetOpen] = useState(false);
 
   // Minha Conta / Client Dashboard States
   const [isMinhaContaOpen, setIsMinhaContaOpen] = useState(false);
@@ -966,6 +967,49 @@ export default function SoMadeirasFullStack() {
       .filter(p => !budgetCart.some(i => i.product.id === p.id))
       .slice(0, 3);
   }, [budgetCart, products]);
+
+  const ON_DUTY_SELLERS = useMemo(() => [
+    {
+      id: "joao",
+      name: "João Silva",
+      role: "Especialista em Eucalipto, Mourões e Postes",
+      phone: settings?.whatsappNumber || "5579996298990",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop",
+      online: true,
+      badge: "Eucalipto & Campo",
+      whatsappMessage: "Olá! Gostaria de falar com o vendedor João.",
+    },
+    {
+      id: "maria",
+      name: "Maria Santos",
+      role: "Especialista em Portas Nobres e Forro PVC",
+      phone: settings?.whatsappNumber || "5579996298990",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop",
+      online: true,
+      badge: "Acabamentos & Portas",
+      whatsappMessage: "Olá! Gostaria de falar com a vendedora Maria.",
+    },
+    {
+      id: "carlos",
+      name: "Carlos Oliveira",
+      role: "Engenharia de Telhados, Pergolados e Currais",
+      phone: settings?.whatsappNumber || "5579996298990",
+      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
+      online: true,
+      badge: "Calculadoras & Projetos",
+      whatsappMessage: "Olá! Gostaria de falar com o especialista Carlos.",
+    },
+    {
+      id: "atendimento",
+      name: "Atendimento Geral",
+      role: "Balcão de Vendas - Estância/SE",
+      phone: settings?.whatsappNumber || "5579996298990",
+      avatar: "/images/logo.webp",
+      online: true,
+      badge: "Balcão de Vendas",
+      whatsappMessage: "Olá! Gostaria de fazer um orçamento com o atendimento da Só Madeiras.",
+    },
+  ], [settings]);
 
   // Load and Save localStorage DB
   useEffect(() => {
@@ -4207,31 +4251,99 @@ export default function SoMadeirasFullStack() {
           {/* ==========================================
               FLOATING WHATSAPP CHAT WIDGET
               ========================================== */}
-          <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 no-print group">
-            {/* Quick-tips balloon */}
-            <div className="hidden group-hover:flex bg-white dark:bg-dark-surface text-brown-dark dark:text-white border border-gray-200 dark:border-dark-border p-2.5 rounded-xl shadow-2xl w-56 text-xs flex-col gap-1 items-start mb-1 transition-all">
-              <span className="font-black text-[9px] text-emerald-600 flex items-center gap-0.5">🟢 CONSULTOR ONLINE</span>
-              <p className="text-gray-500 leading-snug">Dúvidas sobre cálculo de caibros ou vigas? Converse agora no WhatsApp!</p>
-              <a 
-                href="https://wa.me/5511999999999" 
-                target="_blank"
-                onClick={() => trackClick("btn-whatsapp-bubble")}
-                className="bg-emerald-600 text-white font-bold px-2 py-1 rounded text-[10px] mt-1 shadow"
-              >
-                Iniciar Suporte Rápido
-              </a>
-            </div>
-            
-            {/* Main floating button */}
+          {/* FLOATING WHATSAPP SELLER SELECTION WIDGET */}
+          <div className="fixed bottom-6 right-4 sm:right-6 z-50 flex flex-col items-end gap-3 no-print">
+            {/* Expanded Sellers Card Popup */}
+            {isWhatsappWidgetOpen && (
+              <div className="w-[330px] sm:w-[360px] bg-white dark:bg-neutral-900 border border-emerald-500/30 rounded-3xl shadow-2xl overflow-hidden animate-fade-in text-brown-dark dark:text-white select-none">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-[#3E2723] via-[#4E342E] to-[#1b4332] p-4 text-white relative">
+                  <button
+                    onClick={() => setIsWhatsappWidgetOpen(false)}
+                    className="absolute top-3 right-3 text-white/70 hover:text-white bg-black/20 hover:bg-black/40 p-1 rounded-full transition"
+                    title="Fechar"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0">
+                      <Phone className="h-5 w-5 text-emerald-400 animate-bounce" />
+                    </div>
+                    <div>
+                      <h4 className="font-display font-black text-sm uppercase tracking-tight flex items-center gap-1.5">
+                        <span>Vendedores de Plantão</span>
+                        <span className="bg-emerald-500 text-white text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase">
+                          Online
+                        </span>
+                      </h4>
+                      <p className="text-[11px] text-stone-300 font-light leading-tight">
+                        Escolha um especialista para falar no WhatsApp:
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seller List */}
+                <div className="p-3 space-y-2.5 max-h-[340px] overflow-y-auto bg-slate-50/50 dark:bg-neutral-950/50">
+                  {ON_DUTY_SELLERS.map((seller) => (
+                    <div
+                      key={seller.id}
+                      onClick={() => {
+                        trackClick(`btn-whatsapp-seller-${seller.id}`);
+                        const msg = encodeURIComponent(seller.whatsappMessage);
+                        window.open(`https://wa.me/${seller.phone}?text=${msg}`, "_blank");
+                        setIsWhatsappWidgetOpen(false);
+                      }}
+                      className="p-3 rounded-2xl bg-white dark:bg-neutral-900 border border-gray-150 dark:border-neutral-800 hover:border-emerald-500 dark:hover:border-emerald-500/60 shadow-xs hover:shadow-md transition cursor-pointer flex items-center justify-between gap-3 group active:scale-98"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative shrink-0">
+                          <img
+                            src={seller.avatar}
+                            alt={seller.name}
+                            className="w-11 h-11 rounded-full object-cover border-2 border-emerald-500/40 group-hover:scale-105 transition"
+                          />
+                          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-neutral-900" />
+                        </div>
+                        <div className="min-w-0 text-left">
+                          <div className="flex items-center gap-1.5">
+                            <h5 className="font-bold text-xs truncate text-brown-dark dark:text-white group-hover:text-emerald-600 transition-colors">
+                              {seller.name}
+                            </h5>
+                          </div>
+                          <span className="text-[9px] bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase inline-block my-0.5">
+                            {seller.badge}
+                          </span>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate font-light">
+                            {seller.role}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-600 group-hover:bg-emerald-500 text-white p-2 rounded-xl shrink-0 transition shadow-xs">
+                        <Phone className="h-4 w-4" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer status */}
+                <div className="p-2.5 bg-gray-50 dark:bg-neutral-950 border-t border-gray-100 dark:border-neutral-800 text-center text-[10px] text-gray-400 font-medium">
+                  ⚡ Tempo médio de resposta: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">menos de 2 minutos</strong>
+                </div>
+              </div>
+            )}
+
+            {/* Main Floating Trigger Button */}
             <button
-              onClick={() => {
-                trackClick("btn-whatsapp-floating");
-                window.open("https://wa.me/5511999999999?text=Ol%C3%A1%2C+tenho+duvidas+sobre+madeiras+para+telhado.", "_blank");
-              }}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-full shadow-2xl transition active:scale-90 flex items-center justify-center border-2 border-white animate-pulse"
-              title="Fale no WhatsApp"
+              onClick={() => setIsWhatsappWidgetOpen(!isWhatsappWidgetOpen)}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-full shadow-2xl transition active:scale-90 flex items-center justify-center border-2 border-white relative group"
+              title="Vendedores de Plantão no WhatsApp"
             >
               <Phone className="h-7 w-7" />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-md animate-bounce">
+                3
+              </span>
             </button>
           </div>
 
