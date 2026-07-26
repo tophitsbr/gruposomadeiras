@@ -2465,6 +2465,39 @@ export default function SoMadeirasFullStack() {
             </div>
           </section>
 
+          {/* SHOPEE-STYLE MOBILE OPTIMIZED CATEGORY MENU */}
+          <section className="bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border py-4 px-3 no-print">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 gap-2 sm:gap-3 text-center">
+                {[
+                  { label: "Mourões", icon: "🪵", link: "/mourao-de-eucalipto-tratado", color: "bg-amber-500/10 text-amber-600" },
+                  { label: "Postes", icon: "🪵", link: "/postes-de-eucalipto-tratado", color: "bg-amber-600/10 text-amber-700" },
+                  { label: "Eucalipto", icon: "🌲", link: "/eucalipto-tratado-estancia-se", color: "bg-emerald-500/10 text-emerald-600" },
+                  { label: "Portas", icon: "🚪", link: "/portas-de-madeira", color: "bg-orange-500/10 text-orange-600" },
+                  { label: "Telhas", icon: "🏠", link: "/?cat=telhas", color: "bg-red-500/10 text-red-600" },
+                  { label: "Forro PVC", icon: "📐", link: "/forro-pvc", color: "bg-blue-500/10 text-blue-600" },
+                  { label: "Pergolados", icon: "🌿", link: "/pergolados", color: "bg-teal-500/10 text-teal-600" },
+                  { label: "Currais 3D", icon: "🌾", link: "/galpoes-currais", color: "bg-lime-500/10 text-lime-700" },
+                  { label: "Telhados", icon: "📐", link: "/calculadora-telhado", color: "bg-purple-500/10 text-purple-600" },
+                  { label: "Lookbook", icon: "✨", link: "/lookbook", color: "bg-pink-500/10 text-pink-600" },
+                ].map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.link}
+                    className="flex flex-col items-center gap-1.5 p-1 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-bg transition active:scale-95 group cursor-pointer"
+                  >
+                    <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl ${item.color} flex items-center justify-center text-xl sm:text-2xl shadow-xs group-hover:scale-110 transition-transform`}>
+                      {item.icon}
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-bold text-gray-700 dark:text-gray-200 line-clamp-1 group-hover:text-primary transition-colors">
+                      {item.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* 4. Brand Carousels */}
           <section className="bg-gray-100 dark:bg-dark-bg border-b border-gray-200 dark:border-dark-border py-4 px-4 overflow-hidden relative transition-colors">
             <div className="max-w-7xl mx-auto flex items-center gap-4">
@@ -2484,25 +2517,32 @@ export default function SoMadeirasFullStack() {
           </section>
 
           {/* ==========================================
-              TRIO DE SIMULADORES 3D PREMIUM (SIDE-BY-SIDE)
+              QUADRA DE SIMULADORES 3D PREMIUM (2 POR LINHA EM MOBILE)
               ========================================== */}
           <ScrollReveal direction="up" delay={100}>
             <section className="w-full max-w-7xl mx-auto px-4 py-4 no-print overflow-hidden">
-              <div className="flex w-full overflow-x-auto md:grid md:grid-cols-3 gap-4 md:gap-6 pb-4 md:pb-0 scrollbar-hide snap-x snap-mandatory">
+              <div className="text-center mb-4 space-y-1">
+                <span className="bg-[#F4B400] text-[#3E2723] font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider">
+                  Ferramentas & Simuladores 3D
+                </span>
+                <h3 className="font-display font-black text-lg sm:text-2xl text-brown-dark dark:text-white uppercase tracking-tight">
+                  Calculadoras Interativas
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 
                 {/* CARD 1: PERGOLADOS 3D */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#3E2723] via-[#4E342E] to-[#5D4037] border-2 border-[#F4B400]/45 p-6 shadow-xl flex flex-col justify-between gap-5 group hover:border-[#F4B400] transition duration-300 min-w-[280px] md:min-w-0 max-w-[280px] md:max-w-none flex-shrink-0 md:flex-shrink snap-align-start">
-                  <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-[#F4B400]/5 blur-2xl pointer-events-none group-hover:bg-[#F4B400]/10 transition duration-500" />
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#3E2723] via-[#4E342E] to-[#5D4037] border border-[#F4B400]/45 p-3.5 sm:p-5 shadow-xl flex flex-col justify-between gap-3 group hover:border-[#F4B400] transition duration-300">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
                         Simulador 3D
                       </span>
-                      <span className="text-[10px] text-stone-300 font-bold uppercase tracking-wider">🪵 Pergolados</span>
+                      <span className="text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase truncate">🪵 Pergolados</span>
                     </div>
                     
-                    <div className="relative w-full h-32 rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
+                    <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
                       <img 
                         src="/images/pergolado_ambient.png" 
                         alt="Pergolado de Eucalipto Roliço" 
@@ -2510,46 +2550,39 @@ export default function SoMadeirasFullStack() {
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <h3 className="font-display font-black text-base text-white uppercase tracking-tight leading-tight">
-                        Pergolados Rústicos 3D
+                    <div className="space-y-0.5">
+                      <h3 className="font-display font-black text-xs sm:text-base text-white uppercase tracking-tight leading-tight">
+                        Pergolados 3D
                       </h3>
-                      <p className="text-stone-300 text-[11px] leading-relaxed font-light">
-                        Simule o diâmetro do eucalipto tratado e receba automaticamente a listagem de materiais normatizada no WhatsApp.
+                      <p className="text-stone-300 text-[10px] sm:text-[11px] leading-snug font-light line-clamp-2">
+                        Simule diâmetros e receba a lista de materiais no WhatsApp.
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-2">
+                  <div className="pt-1">
                     <Link 
                       href="/pergolados"
                       onClick={() => trackClick("btn-pergolados-banner")}
-                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 border-none active:scale-97 uppercase tracking-wider"
+                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-[10px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1 border-none active:scale-97 uppercase tracking-wider"
                     >
-                      <span>Projetar Pergolado</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <span>Projetar 3D</span>
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Link>
-                    <div className="flex items-center justify-center gap-3 text-[9px] text-stone-350 font-mono">
-                      <span>✨ 3D Orbit</span>
-                      <span>•</span>
-                      <span>🪵 Tratamento UC-4</span>
-                    </div>
                   </div>
                 </div>
 
                 {/* CARD 2: CALCULADORA AGRO 3D */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2E3B1C] via-[#3C4A26] to-[#4A5930] border-2 border-[#F4B400]/45 p-6 shadow-xl flex flex-col justify-between gap-5 group hover:border-[#F4B400] transition duration-300 min-w-[280px] md:min-w-0 max-w-[280px] md:max-w-none flex-shrink-0 md:flex-shrink snap-align-start">
-                  <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-[#F4B400]/5 blur-2xl pointer-events-none group-hover:bg-[#F4B400]/10 transition duration-500" />
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        Lançamento Agro
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#2E3B1C] via-[#3C4A26] to-[#4A5930] border border-[#F4B400]/45 p-3.5 sm:p-5 shadow-xl flex flex-col justify-between gap-3 group hover:border-[#F4B400] transition duration-300">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Agro 3D
                       </span>
-                      <span className="text-[10px] text-stone-355 font-bold uppercase tracking-wider">🌾 Galpões & Currais</span>
+                      <span className="text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase truncate">🌾 Currais</span>
                     </div>
                     
-                    <div className="relative w-full h-32 rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
+                    <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl overflow-hidden border border-[#F4B400]/20 shadow-inner bg-stone-850">
                       <img 
                         src="/images/curral_ambient.jpg" 
                         alt="Curral Rústico" 
@@ -2557,73 +2590,97 @@ export default function SoMadeirasFullStack() {
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <h3 className="font-display font-black text-base text-white uppercase tracking-tight leading-tight">
-                        Galpões & Currais 3D
+                    <div className="space-y-0.5">
+                      <h3 className="font-display font-black text-xs sm:text-base text-white uppercase tracking-tight leading-tight">
+                        Galpões & Currais
                       </h3>
-                      <p className="text-stone-300 text-[11px] leading-relaxed font-light">
-                        Simule o tipo de cobertura ou capacidade de cabeças de gado com mourões e réguas normatizadas pela ABNT.
+                      <p className="text-stone-300 text-[10px] sm:text-[11px] leading-snug font-light line-clamp-2">
+                        Dimensionamento ABNT de mourões e réguas para gado.
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-2">
+                  <div className="pt-1">
                     <Link 
                       href="/galpoes-currais"
                       onClick={() => trackClick("btn-agro-banner")}
-                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 border-none active:scale-97 uppercase tracking-wider"
+                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-[10px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1 border-none active:scale-97 uppercase tracking-wider"
                     >
                       <span>Projetar Agro</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Link>
-                    <div className="flex items-center justify-center gap-3 text-[9px] text-stone-350 font-mono">
-                      <span>✨ 3D Real</span>
-                      <span>•</span>
-                      <span>🐂 Normas ABNT</span>
-                    </div>
                   </div>
                 </div>
 
                 {/* CARD 3: CALCULADORA FORRO PVC */}
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1B2F3D] via-[#244256] to-[#2D536B] border-2 border-[#F4B400]/45 p-6 shadow-xl flex flex-col justify-between gap-5 group hover:border-[#F4B400] transition duration-300 min-w-[280px] md:min-w-0 max-w-[280px] md:max-w-none flex-shrink-0 md:flex-shrink snap-align-start">
-                  <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-[#F4B400]/5 blur-2xl pointer-events-none group-hover:bg-[#F4B400]/10 transition duration-500" />
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        Cálculo Multi-Cômodo
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#1B2F3D] via-[#244256] to-[#2D536B] border border-[#F4B400]/45 p-3.5 sm:p-5 shadow-xl flex flex-col justify-between gap-3 group hover:border-[#F4B400] transition duration-300">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Cálculo PVC
                       </span>
-                      <span className="text-[10px] text-stone-300 font-bold uppercase tracking-wider">📐 Forro PVC</span>
+                      <span className="text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase truncate">📐 Forro</span>
                     </div>
                     
-                    <div className="relative w-full h-32 rounded-2xl bg-gradient-to-br from-[#101E27] to-[#1E3747] flex items-center justify-center border border-[#F4B400]/25 shadow-lg group-hover:from-[#0B151B] group-hover:to-[#172D3A] transition duration-300">
-                      <Layers className="h-14 w-14 text-slate-100 drop-shadow-[0_0_8px_rgba(244,180,0,0.35)] animate-pulse" />
+                    <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#101E27] to-[#1E3747] flex items-center justify-center border border-[#F4B400]/25 shadow-lg">
+                      <Layers className="h-10 w-10 sm:h-14 sm:w-14 text-slate-100 drop-shadow-[0_0_8px_rgba(244,180,0,0.35)] animate-pulse" />
                     </div>
 
-                    <div className="space-y-1">
-                      <h3 className="font-display font-black text-base text-white uppercase tracking-tight leading-tight">
-                        Forro PVC & Subestrutura
+                    <div className="space-y-0.5">
+                      <h3 className="font-display font-black text-xs sm:text-base text-white uppercase tracking-tight leading-tight">
+                        Forro PVC & Ripa
                       </h3>
-                      <p className="text-stone-300 text-[11px] leading-relaxed font-light">
-                        Estime placas de 20cm, ripão de 5x3, ripa de 5x1, parafusos e molduras de acabamento por cômodo com orçamento completo.
+                      <p className="text-stone-300 text-[10px] sm:text-[11px] leading-snug font-light line-clamp-2">
+                        Estime placas, ripões, ripas e parafusos por cômodo.
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-2">
+                  <div className="pt-1">
                     <Link 
                       href="/forro-pvc"
                       onClick={() => trackClick("btn-pvc-banner")}
-                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 border-none active:scale-97 uppercase tracking-wider"
+                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-[10px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1 border-none active:scale-97 uppercase tracking-wider"
                     >
-                      <span>Calcular Forro</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <span>Calcular PVC</span>
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Link>
-                    <div className="flex items-center justify-center gap-3 text-[9px] text-stone-350 font-mono">
-                      <span>✨ Ripão & Ripas</span>
-                      <span>•</span>
-                      <span>🏠 Multi-Cômodos</span>
+                  </div>
+                </div>
+
+                {/* CARD 4: CALCULADORA DE TELHADOS */}
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#4A1525] via-[#5C1B2E] to-[#73233A] border border-[#F4B400]/45 p-3.5 sm:p-5 shadow-xl flex flex-col justify-between gap-3 group hover:border-[#F4B400] transition duration-300">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="bg-[#F4B400] text-[#3E2723] font-black text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Norma ABNT
+                      </span>
+                      <span className="text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase truncate">🏠 Coberturas</span>
                     </div>
+                    
+                    <div className="relative w-full h-20 sm:h-28 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#2D0A14] to-[#40111F] flex items-center justify-center border border-[#F4B400]/25 shadow-lg">
+                      <FileText className="h-10 w-10 sm:h-14 sm:w-14 text-amber-300 drop-shadow-[0_0_8px_rgba(244,180,0,0.35)] animate-pulse" />
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <h3 className="font-display font-black text-xs sm:text-base text-white uppercase tracking-tight leading-tight">
+                        Cálculo Telhado
+                      </h3>
+                      <p className="text-stone-300 text-[10px] sm:text-[11px] leading-snug font-light line-clamp-2">
+                        Dimensionamento de terças, caibros e inclinação.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <Link 
+                      href="/calculadora-telhado"
+                      onClick={() => trackClick("btn-telhado-banner")}
+                      className="w-full bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-[10px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1 border-none active:scale-97 uppercase tracking-wider"
+                    >
+                      <span>Calcular Telhado</span>
+                      <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    </Link>
                   </div>
                 </div>
 
