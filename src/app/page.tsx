@@ -45,7 +45,7 @@ export default function HomePage() {
         "@type": "LocalBusiness",
         "@id": "https://somadeiras.com.br/#localbusiness",
         "name": "Só Madeiras - Material de Construção e Madeiras",
-        "image": "https://images.unsplash.com/photo-1546482503-93453322660b?q=80&w=600&auto=format&fit=crop",
+        "image": "https://somadeiras.com.br/images/logo.png",
         "telephone": "+55-79-99629-8990",
         "url": "https://somadeiras.com.br/",
         "priceRange": "$$",
@@ -85,7 +85,7 @@ export default function HomePage() {
         "@id": "https://somadeiras.com.br/#organization",
         "name": "Só Madeiras LTDA",
         "url": "https://somadeiras.com.br/",
-        "logo": "https://images.unsplash.com/photo-1546482503-93453322660b?q=80&w=200&auto=format&fit=crop",
+        "logo": "https://somadeiras.com.br/images/logo.png",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+55-79-99629-8990",

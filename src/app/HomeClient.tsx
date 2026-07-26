@@ -2029,13 +2029,13 @@ export default function SoMadeirasFullStack() {
               
               {/* Brand Logo */}
               <div className="flex items-center justify-between w-full md:w-auto">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => setSelectedCategoryFilter("all")}>
-                  <div className="bg-primary text-brown-dark w-10 h-10 rounded-full flex items-center justify-center font-black text-lg border-2 border-white shadow shadow-primary animate-pulse">🪵</div>
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedCategoryFilter("all")}>
+                  <img src="/images/logo.png" alt="Só Madeiras" className="h-12 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform" />
                   <div>
                     <h1 className="font-display font-black text-xl tracking-tight text-white flex items-center gap-1">
                       SÓ <span className="text-primary font-extrabold">MADEIRAS</span>
                     </h1>
-                    <p className="text-[10px] tracking-widest text-primary font-bold -mt-1">MATERIAL DE CONSTRUÇÃO</p>
+                    <p className="text-[10px] tracking-widest text-primary font-bold -mt-1 uppercase">Madeiras em Geral & Material de Construção</p>
                   </div>
                 </div>
                 {/* Mobile Cart / Menu triggers */}
@@ -3674,8 +3674,8 @@ export default function SoMadeirasFullStack() {
           <footer className="bg-neutral-900 border-t border-neutral-800 text-neutral-400 py-12 px-4 text-xs md:text-sm">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="bg-primary text-brown-dark w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">🪵</div>
+                <div className="flex items-center gap-3">
+                  <img src="/images/logo.png" alt="Só Madeiras" className="h-10 w-auto object-contain drop-shadow-sm" />
                   <h4 className="font-display font-black text-white text-base">SÓ MADEIRAS</h4>
                 </div>
                 <p className="text-neutral-500 leading-relaxed text-xs">
