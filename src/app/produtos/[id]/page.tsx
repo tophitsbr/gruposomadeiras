@@ -63,7 +63,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   if (!foundProduct) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-800">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-800 dark:text-slate-100">
         <div className="text-center space-y-4">
           <h2 className="text-xl font-bold">Produto não encontrado</h2>
           <Link href="/" className="bg-[#3E2723] text-white px-6 py-2.5 rounded-full font-bold">

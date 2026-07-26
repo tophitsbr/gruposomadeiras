@@ -904,7 +904,7 @@ export default function SorteioClient() {
                         navigator.clipboard.writeText(registeredCupom.code);
                         alert("Código do cupom copiado!");
                       }}
-                      className="flex-1 bg-white hover:bg-slate-50 text-[#3E2723] border border-slate-200 dark:border-neutral-800 font-bold text-[10px] py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer uppercase shadow-2xs"
+                      className="flex-1 bg-white hover:bg-slate-50 text-[#3E2723] border border-slate-200 dark:border-neutral-800 font-bold text-[10px] py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer uppercase shadow-2xs dark:text-amber-400"
                     >
                       <Copy className="h-3.5 w-3.5" /> Copiar Código
                     </button>

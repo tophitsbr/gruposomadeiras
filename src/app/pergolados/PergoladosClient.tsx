@@ -907,7 +907,7 @@ export default function PergoladosPage() {
                           type="checkbox" 
                           checked={hasRoof} 
                           onChange={(e) => setHasRoof(e.target.checked)}
-                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer"
+                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer dark:text-white"
                         />
                         <span className="text-stone-200 group-hover:text-white transition">☑ Cobertura (Policarbonato Alveolar)</span>
                       </label>
@@ -917,7 +917,7 @@ export default function PergoladosPage() {
                           type="checkbox" 
                           checked={hasLighting} 
                           onChange={(e) => setHasLighting(e.target.checked)}
-                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer"
+                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer dark:text-white"
                         />
                         <span className="text-stone-200 group-hover:text-white transition">☑ Iluminação em Spots LED Embutidos</span>
                       </label>
@@ -927,7 +927,7 @@ export default function PergoladosPage() {
                           type="checkbox" 
                           checked={hasSideEnclosure} 
                           onChange={(e) => setHasSideEnclosure(e.target.checked)}
-                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer"
+                          className="w-4 h-4 rounded text-brown-dark bg-stone-100 accent-[#F4B400] cursor-pointer dark:text-white"
                         />
                         <span className="text-stone-200 group-hover:text-white transition">☑ Fechamento Lateral Ripado Rústico</span>
                       </label>
@@ -1415,11 +1415,11 @@ export default function PergoladosPage() {
                 </div>
 
                 {/* 3.3 RIGHT HAND COLUMN: REALTIME BILL OF MATERIALS (SEM PREÇOS!) */}
-                <div className="lg:col-span-3 bg-white text-brown-dark p-6 rounded-3xl space-y-5 flex flex-col justify-between shadow-2xl">
+                <div className="lg:col-span-3 bg-white text-brown-dark p-6 rounded-3xl space-y-5 flex flex-col justify-between shadow-2xl dark:text-white">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center border-b border-stone-200 pb-3">
-                      <h4 className="font-display font-black text-xs tracking-wider text-brown-dark uppercase">Resumo de Materiais</h4>
-                      <span className="bg-yellow-400 text-brown-dark font-black text-[10px] px-2.5 py-0.5 rounded shadow-sm">
+                      <h4 className="font-display font-black text-xs tracking-wider text-brown-dark uppercase dark:text-white">Resumo de Materiais</h4>
+                      <span className="bg-yellow-400 text-brown-dark font-black text-[10px] px-2.5 py-0.5 rounded shadow-sm dark:text-white">
                         {calculations.area} m² Total
                       </span>
                     </div>
@@ -1428,27 +1428,27 @@ export default function PergoladosPage() {
                     <div className="space-y-2.5 text-xs text-stone-700">
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium text-left">Pilares Roliços ({materialBitolas.pilar} - Comp. {height.toFixed(1)}m):</span>
-                        <span className="font-black text-brown-dark">{calculations.pilarCount} un</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.pilarCount} un</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium text-left">Vigas de Sustentação ({materialBitolas.viga} - Comp. {length.toFixed(1)}m):</span>
-                        <span className="font-black text-brown-dark">{calculations.beamCount} un</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.beamCount} un</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium text-left">Travessas Superiores ({materialBitolas.rafter} - Comp. {width.toFixed(1)}m):</span>
-                        <span className="font-black text-brown-dark">{calculations.rafterCount} un</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.rafterCount} un</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium">Sapatas Metálicas de Solo:</span>
-                        <span className="font-black text-brown-dark">{calculations.sapataCount} un</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.sapataCount} un</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium">Parafusos/Ferragens NBR:</span>
-                        <span className="font-black text-brown-dark">{calculations.screwCount} un</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.screwCount} un</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium">Galões Stain Protetor:</span>
-                        <span className="font-black text-brown-dark">{calculations.stainGallons} gal</span>
+                        <span className="font-black text-brown-dark dark:text-white">{calculations.stainGallons} gal</span>
                       </div>
                       <div className="flex justify-between border-b border-stone-100 pb-1.5">
                         <span className="font-medium">Conformidade NBR 16143:</span>
@@ -1462,9 +1462,9 @@ export default function PergoladosPage() {
                         <span>Volume Estimado:</span>
                         <span>{calculations.woodVolume} m³</span>
                       </div>
-                      <div className="border-t border-stone-200/50 pt-1.5 flex flex-col gap-0.5 text-xs text-brown-dark">
+                      <div className="border-t border-stone-200/50 pt-1.5 flex flex-col gap-0.5 text-xs text-brown-dark dark:text-white">
                         <span className="font-bold text-stone-500">VALOR E FRETE DO KIT:</span>
-                        <span className="text-[#3E2723] font-black text-[11px] uppercase tracking-wide flex items-center gap-1">
+                        <span className="text-[#3E2723] font-black text-[11px] uppercase tracking-wide flex items-center gap-1 dark:text-amber-400">
                           <Lock className="h-3.5 w-3.5 text-[#F4B400]" /> Sob Consulta no WhatsApp
                         </span>
                       </div>
@@ -1724,7 +1724,7 @@ export default function PergoladosPage() {
                       <span className="text-brown-dark dark:text-white">{pergoladosAdminStats.visitors} un</span>
                     </div>
                     <div className="h-5 bg-stone-100 dark:bg-stone-800 rounded overflow-hidden relative">
-                      <div className="h-full bg-stone-400/35 w-full flex items-center pl-3 text-[10px] font-black text-brown-dark">
+                      <div className="h-full bg-stone-400/35 w-full flex items-center pl-3 text-[10px] font-black text-brown-dark dark:text-white">
                         Visitantes de Landing Page
                       </div>
                     </div>
@@ -1736,7 +1736,7 @@ export default function PergoladosPage() {
                       <span className="text-brown-dark dark:text-white">{Math.round(pergoladosAdminStats.visitors * 0.72)} un</span>
                     </div>
                     <div className="h-5 bg-stone-100 dark:bg-stone-800 rounded overflow-hidden relative">
-                      <div className="h-full bg-[#5D4037]/45 w-[72%] flex items-center pl-3 text-[10px] font-black text-brown-dark">
+                      <div className="h-full bg-[#5D4037]/45 w-[72%] flex items-center pl-3 text-[10px] font-black text-brown-dark dark:text-white">
                         Interesse no Catálogo
                       </div>
                     </div>
@@ -1748,7 +1748,7 @@ export default function PergoladosPage() {
                       <span className="text-[#3E2723] dark:text-white">{pergoladosAdminStats.calculationsCount} un</span>
                     </div>
                     <div className="h-5 bg-stone-100 dark:bg-stone-800 rounded overflow-hidden relative">
-                      <div className="h-full bg-yellow-400/40 w-[54%] flex items-center pl-3 text-[10px] font-black text-brown-dark">
+                      <div className="h-full bg-yellow-400/40 w-[54%] flex items-center pl-3 text-[10px] font-black text-brown-dark dark:text-white">
                         Interatividade Ativa (Ajuste de Diâmetro roliço)
                       </div>
                     </div>
@@ -1760,7 +1760,7 @@ export default function PergoladosPage() {
                       <span className="text-[#3E2723] dark:text-white">{pergoladosAdminStats.waClicksCount} un</span>
                     </div>
                     <div className="h-5 bg-stone-100 dark:bg-stone-800 rounded overflow-hidden relative">
-                      <div className="h-full bg-emerald-500/45 w-[12%] flex items-center pl-3 text-[10px] font-black text-[#3E2723]">
+                      <div className="h-full bg-emerald-500/45 w-[12%] flex items-center pl-3 text-[10px] font-black text-[#3E2723] dark:text-amber-400">
                         Geração de Lead quente para Orçamento oficial
                       </div>
                     </div>

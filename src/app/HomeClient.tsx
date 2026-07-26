@@ -2024,7 +2024,7 @@ export default function SoMadeirasFullStack() {
               {notifications.length}
             </span>
             <span className="text-gray-300 hover:text-white transition text-xs">🔔</span>
-            <div className="hidden group-hover:block absolute right-0 mt-2 bg-white text-brown-dark w-72 rounded-lg shadow-xl border border-gray-200 p-2 z-[999] text-xs">
+            <div className="hidden group-hover:block absolute right-0 mt-2 bg-white text-brown-dark w-72 rounded-lg shadow-xl border border-gray-200 p-2 z-[999] text-xs dark:text-white">
               <h5 className="font-bold border-b border-gray-100 pb-1.5 mb-1.5 text-brown-medium">Notificações do Sistema</h5>
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {notifications.map(n => (
@@ -2156,7 +2156,7 @@ export default function SoMadeirasFullStack() {
                   placeholder="Buscar madeiras, telhas, cimento, ferramentas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/10 text-white placeholder-gray-300 pl-10 pr-4 py-2 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white focus:text-brown-dark transition text-xs md:text-sm"
+                  className="w-full bg-white/10 text-white placeholder-gray-300 pl-10 pr-4 py-2 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white focus:text-brown-dark transition text-xs md:text-sm dark:text-white"
                 />
                 {searchQuery && (
                   <button 
@@ -4949,7 +4949,7 @@ export default function SoMadeirasFullStack() {
                               🔴 Carrinho Abandonado
                             </span>
                           ) : (
-                            <span className="bg-amber-100 text-brown-dark font-black text-[9px] px-2 py-0.5 rounded uppercase">Carrinho Salvo</span>
+                            <span className="bg-amber-100 text-brown-dark font-black text-[9px] px-2 py-0.5 rounded uppercase dark:text-white">Carrinho Salvo</span>
                           )}
                         </div>
                         <p className="text-xs text-gray-550 dark:text-gray-400">
@@ -5257,7 +5257,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             </button>
                             <button
                               onClick={() => handleDuplicateProduct(p)}
-                              className="bg-amber-100 hover:bg-amber-250 text-brown-dark px-2.5 py-1 rounded shadow-xs font-semibold"
+                              className="bg-amber-100 hover:bg-amber-250 text-brown-dark px-2.5 py-1 rounded shadow-xs font-semibold dark:text-white"
                             >
                               Duplicar
                             </button>
@@ -5482,7 +5482,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           <button
                             type="button"
                             onClick={() => setBulkProcessedProducts([])}
-                            className="text-brown-medium hover:text-[#3E2723] dark:hover:text-[#F4B400] font-black text-[10px] uppercase cursor-pointer bg-transparent border-none"
+                            className="text-brown-medium hover:text-[#3E2723] dark:hover:text-[#F4B400] font-black text-[10px] uppercase cursor-pointer bg-transparent border-none dark:text-amber-400"
                           >
                             ← Reiniciar Lista
                           </button>
@@ -8689,7 +8689,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-[999] animate-fade-in print:bg-white print:absolute print:inset-0">
           
           {/* Printable Layout Wrapper */}
-          <div className="bg-white text-brown-dark max-w-3xl w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between max-h-[90vh] border border-gray-200 print:border-none print:shadow-none print:max-h-full print:rounded-none">
+          <div className="bg-white text-brown-dark max-w-3xl w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between max-h-[90vh] border border-gray-200 print:border-none print:shadow-none print:max-h-full print:rounded-none dark:text-white">
             
             {/* Top action header for seller */}
             <div className="bg-brown-dark text-white p-4 flex justify-between items-center no-print">
@@ -8731,14 +8731,14 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                 <div className="flex items-center gap-2">
                   <div className="bg-amber-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg border border-black shadow">🪵</div>
                   <div>
-                    <h2 className="font-display font-black text-xl text-brown-dark tracking-tight uppercase leading-none">SÓ MADEIRAS</h2>
+                    <h2 className="font-display font-black text-xl text-brown-dark tracking-tight uppercase leading-none dark:text-white">SÓ MADEIRAS</h2>
                     <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest block mt-0.5">Comércio de Materiais de Construção LTDA</span>
                     <span className="text-[9px] text-gray-400 block mt-0.5">Av. das Palmeiras, 1500 - Campinas/SP | CNPJ: 00.000.000/0001-00</span>
                   </div>
                 </div>
                 <div className="text-right space-y-1">
                   <span className="bg-neutral-800 text-white font-black text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Documento Oficial</span>
-                  <h3 className="font-black text-lg text-brown-dark">ORÇAMENTO #{selectedSellerLead.id.toString().slice(-7).toUpperCase()}</h3>
+                  <h3 className="font-black text-lg text-brown-dark dark:text-white">ORÇAMENTO #{selectedSellerLead.id.toString().slice(-7).toUpperCase()}</h3>
                   <p className="text-[10px] text-gray-500">Emissão: {selectedSellerLead.date} às {selectedSellerLead.time}</p>
                 </div>
               </div>
@@ -8747,13 +8747,13 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
               <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl text-xs border border-gray-200">
                 <div>
                   <span className="text-[9px] text-gray-400 font-black uppercase tracking-wider block">Dados do Comprador</span>
-                  <p className="font-bold text-brown-dark text-sm mt-0.5">{selectedSellerLead.name}</p>
+                  <p className="font-bold text-brown-dark text-sm mt-0.5 dark:text-white">{selectedSellerLead.name}</p>
                   <p className="text-gray-500 mt-0.5">Cidade: {selectedSellerLead.location}</p>
                   <p className="text-gray-500">Telefone: {selectedSellerLead.phone}</p>
                 </div>
                 <div className="text-right">
                   <span className="text-[9px] text-gray-400 font-black uppercase tracking-wider block">Emitido por Vendedor</span>
-                  <p className="font-bold text-brown-dark text-sm mt-0.5">
+                  <p className="font-bold text-brown-dark text-sm mt-0.5 dark:text-white">
                     {sellers.find(s => s.id === selectedSellerLead.sellerId)?.name || activeSeller.name}
                   </p>
                   <p className="text-gray-500 mt-0.5">Status CRM: <strong>{selectedSellerLead.status}</strong></p>
@@ -8790,7 +8790,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         </td>
                         <td className="py-3 text-center font-black">{qty} un</td>
                         <td className="py-3 text-right">R$ {unitPrice.toFixed(2)}</td>
-                        <td className="py-3 text-right font-bold text-brown-dark">R$ {itemTotal.toFixed(2)}</td>
+                        <td className="py-3 text-right font-bold text-brown-dark dark:text-white">R$ {itemTotal.toFixed(2)}</td>
                       </tr>
                     );
                   })}
@@ -8824,7 +8824,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <span>Desconto Pix Comercial (10%):</span>
                     <span>- R$ {(selectedSellerLead.total * 0.1).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-base font-black text-brown-dark border-t border-neutral-350 pt-2">
+                  <div className="flex justify-between text-base font-black text-brown-dark border-t border-neutral-350 pt-2 dark:text-white">
                     <span>TOTAL A PAGAR (PIX):</span>
                     <span className="text-lg">R$ {selectedSellerLead.total.toFixed(2)}</span>
                   </div>
@@ -9413,7 +9413,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                                 </div>
                                 <button 
                                   onClick={() => setSelectedTrackingLeadId(null)}
-                                  className="text-[9px] text-brown-medium hover:text-brown-dark font-bold bg-white dark:bg-neutral-900 border border-gray-250 dark:border-neutral-800 px-2 py-1 rounded transition"
+                                  className="text-[9px] text-brown-medium hover:text-brown-dark font-bold bg-white dark:bg-neutral-900 border border-gray-250 dark:border-neutral-800 px-2 py-1 rounded transition dark:text-white"
                                 >
                                   Fechar Painel
                                 </button>

@@ -161,3 +161,10 @@ export const mockProfessionals: Professional[] = [
 export const getProfessionalById = (id: string): Professional | undefined => {
   return mockProfessionals.find(p => p.id === id);
 };
+
+export const getAvailableCities = (): string[] => sergipeCities;
+
+export const getProfessionalsByCity = (city: string): Professional[] => {
+  const result = mockProfessionals.filter(p => p.city.toLowerCase() === city.toLowerCase());
+  return result.length > 0 ? result : mockProfessionals;
+};

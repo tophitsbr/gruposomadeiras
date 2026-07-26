@@ -17,7 +17,7 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
   const whatsappUrl = `https://wa.me/${professional.phone}?text=Olá%20${encodeURIComponent(professional.name)},%20encontrei%20seu%20perfil%20no%20site%20da%20Soma%20Madeiras.`;
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-20">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 pb-20 transition-colors">
       
       {/* Header Profile */}
       <div className="bg-neutral-900 text-white pt-8 pb-32 px-6 relative">
@@ -39,12 +39,12 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
 
       <div className="max-w-6xl mx-auto px-6 sm:px-12 -mt-24 relative z-10">
         
-        <div className="bg-white rounded-3xl shadow-xl p-8 sm:p-12 border border-neutral-100 mb-12 flex flex-col md:flex-row gap-8 items-start">
+        <div className="bg-white dark:bg-neutral-900 rounded-3xl shadow-xl p-8 sm:p-12 border border-neutral-100 dark:border-neutral-800 mb-12 flex flex-col md:flex-row gap-8 items-start text-neutral-900 dark:text-white">
           <div className="shrink-0 relative">
             <img 
               src={professional.profileImage} 
               alt={professional.name} 
-              className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover shadow-lg border-4 border-white"
+              className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover shadow-lg border-4 border-white dark:border-neutral-800"
             />
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-amber-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md whitespace-nowrap">
               {professional.category}
@@ -52,14 +52,14 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
           </div>
           
           <div className="flex-grow pt-2 sm:pt-4">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 mb-3">{professional.name}</h1>
-            <p className="text-lg text-neutral-600 mb-6 leading-relaxed max-w-2xl">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-white mb-3">{professional.name}</h1>
+            <p className="text-lg text-neutral-600 dark:text-stone-300 mb-6 leading-relaxed max-w-2xl">
               {professional.bio}
             </p>
             
             <div className="flex flex-wrap gap-2 mb-8">
               {professional.skills.map(skill => (
-                <span key={skill} className="flex items-center gap-1.5 bg-neutral-100 text-neutral-700 px-3 py-1.5 rounded-lg text-sm font-medium">
+                <span key={skill} className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-stone-200 px-3 py-1.5 rounded-lg text-sm font-medium">
                   <CheckCircle2 className="w-4 h-4 text-amber-500" />
                   {skill}
                 </span>
@@ -76,7 +76,7 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
                 <MessageCircle className="w-5 h-5" />
                 Falar no WhatsApp
               </a>
-              <button className="flex items-center gap-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 px-6 py-3 rounded-xl font-bold transition-colors">
+              <button className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-800 dark:text-white px-6 py-3 rounded-xl font-bold transition-colors cursor-pointer">
                 <Phone className="w-5 h-5" />
                 Ligar
               </button>
@@ -89,7 +89,7 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
           {/* Main Content (Portfolio) */}
           <div className="lg:col-span-2 space-y-12">
             <section>
-              <h2 className="text-2xl font-bold text-neutral-900 mb-6">Trabalhos Realizados</h2>
+              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">Trabalhos Realizados</h2>
               {professional.projects.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {professional.projects.map(project => (
@@ -106,7 +106,7 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
                   ))}
                 </div>
               ) : (
-                <p className="text-neutral-500 bg-white p-8 rounded-2xl border border-neutral-200 text-center">Nenhum projeto adicionado ainda.</p>
+                <p className="text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-center">Nenhum projeto adicionado ainda.</p>
               )}
             </section>
 
@@ -119,33 +119,33 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
 
           {/* Sidebar */}
           <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 sticky top-24">
-              <h3 className="text-xl font-bold text-neutral-900 mb-6">Informações</h3>
+            <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 sm:p-8 sticky top-24 text-neutral-900 dark:text-white">
+              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-6">Informações</h3>
               
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">
-                  <div className="bg-amber-50 p-2.5 rounded-xl text-amber-600">
+                  <div className="bg-amber-50 dark:bg-amber-950/50 p-2.5 rounded-xl text-amber-600 dark:text-amber-400">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-sm font-bold text-neutral-900">Região de Atendimento</span>
-                    <span className="block text-sm text-neutral-600 mt-0.5">Grande São Paulo e Interior</span>
+                    <span className="block text-sm font-bold text-neutral-900 dark:text-white">Região de Atendimento</span>
+                    <span className="block text-sm text-neutral-600 dark:text-stone-300 mt-0.5">Estância e Região Sul de Sergipe</span>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="bg-amber-50 p-2.5 rounded-xl text-amber-600">
+                  <div className="bg-amber-50 dark:bg-amber-950/50 p-2.5 rounded-xl text-amber-600 dark:text-amber-400">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-sm font-bold text-neutral-900">Verificação</span>
-                    <span className="block text-sm text-emerald-600 font-medium mt-0.5">Identidade Verificada</span>
+                    <span className="block text-sm font-bold text-neutral-900 dark:text-white">Verificação</span>
+                    <span className="block text-sm text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Parceiro Verificado Só Madeiras</span>
                   </div>
                 </li>
               </ul>
               
-              <div className="mt-8 pt-8 border-t border-neutral-100">
-                <p className="text-xs text-neutral-400 text-center">
-                  A Soma Madeiras não se responsabiliza pelos serviços prestados. Esta é uma vitrine para conectar clientes e profissionais.
+              <div className="mt-8 pt-8 border-t border-neutral-100 dark:border-neutral-800">
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center">
+                  A Só Madeiras disponibiliza este canal como vitrine para conectar clientes a profissionais qualificados da região.
                 </p>
               </div>
             </div>

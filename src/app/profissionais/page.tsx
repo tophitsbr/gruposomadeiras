@@ -1,24 +1,27 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { ArrowLeft, MapPin } from 'lucide-react';
 import ProfessionalCard from '../components/ProfessionalCard';
-import { mockProfessionals, categories, Category, sergipeCities } from './data';
+import { getProfessionalsByCity, getAvailableCities, categories } from './data';
 
 export default function ProfissionaisPage() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'Todos'>('Todos');
-  const [userCity, setUserCity] = useState<string>('');
-  const [isCityModalOpen, setIsCityModalOpen] = useState<boolean>(false);
+  const [userCity, setUserCity] = useState<string | null>(null);
   const [tempCity, setTempCity] = useState<string>('');
-  const [isMounted, setIsMounted] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
+  const [isCityModalOpen, setIsCityModalOpen] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  const sergipeCities = getAvailableCities();
 
   useEffect(() => {
     setIsMounted(true);
     const savedCity = localStorage.getItem('somadeiras_user_city');
-    if (savedCity && sergipeCities.includes(savedCity)) {
+    if (savedCity) {
       setUserCity(savedCity);
+      setTempCity(savedCity);
     } else {
       setIsCityModalOpen(true);
     }
@@ -33,16 +36,17 @@ export default function ProfissionaisPage() {
     }
   };
 
-  const filteredProfessionals = mockProfessionals.filter(p => {
-    const matchesCategory = selectedCategory === 'Todos' || p.category === selectedCategory;
-    const matchesCity = p.city === userCity;
-    return matchesCategory && matchesCity;
+  const professionals = userCity ? getProfessionalsByCity(userCity) : [];
+
+  const filteredProfessionals = professionals.filter((prof) => {
+    if (selectedCategory === 'Todos') return true;
+    return prof.category === selectedCategory;
   });
 
   if (!isMounted) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-20">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 pb-20 transition-colors">
       <Head>
         <title>Profissionais Parceiros | Soma Madeiras</title>
         <meta name="description" content="Encontre os melhores profissionais da construção e reforma." />
@@ -51,14 +55,14 @@ export default function ProfissionaisPage() {
       {/* City Selection Modal */}
       {isCityModalOpen && (
         <div className="fixed inset-0 z-[100] bg-neutral-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full animate-fade-in relative">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full animate-fade-in relative border border-neutral-100 dark:border-neutral-800 text-neutral-900 dark:text-white">
             <div className="absolute top-0 left-0 w-full h-2 bg-amber-500 rounded-t-2xl"></div>
             <div className="flex flex-col items-center text-center mb-6">
-              <div className="bg-amber-100 p-3 rounded-full text-amber-600 mb-4">
+              <div className="bg-amber-100 dark:bg-amber-950/50 p-3 rounded-full text-amber-600 dark:text-amber-400 mb-4">
                 <MapPin className="w-8 h-8" />
               </div>
-              <h2 className="text-2xl font-bold text-neutral-900 mb-2">De qual cidade você é?</h2>
-              <p className="text-neutral-500 text-sm">
+              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">De qual cidade você é?</h2>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm">
                 Selecione sua cidade para encontrarmos os melhores profissionais na sua região.
               </p>
             </div>
@@ -67,7 +71,7 @@ export default function ProfissionaisPage() {
               <select 
                 value={tempCity}
                 onChange={(e) => setTempCity(e.target.value)}
-                className="w-full px-4 py-3 border border-neutral-300 rounded-xl mb-6 bg-neutral-50 text-neutral-800 font-medium focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                className="w-full px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-xl mb-6 bg-neutral-50 dark:bg-neutral-800 text-neutral-800 dark:text-white font-medium focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all cursor-pointer"
                 required
               >
                 <option value="" disabled>Selecione uma cidade...</option>
@@ -79,7 +83,7 @@ export default function ProfissionaisPage() {
               <button 
                 type="submit"
                 disabled={!tempCity}
-                className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors"
+                className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors cursor-pointer"
               >
                 Buscar Profissionais
               </button>
@@ -102,7 +106,7 @@ export default function ProfissionaisPage() {
           {!isCityModalOpen && userCity && (
             <button 
               onClick={() => setIsCityModalOpen(true)}
-              className="inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm font-bold"
+              className="inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm font-bold cursor-pointer"
             >
               <MapPin className="w-4 h-4" />
               Exibindo: {userCity} (Alterar)
@@ -126,13 +130,13 @@ export default function ProfissionaisPage() {
       <section className="max-w-7xl mx-auto px-6 sm:px-12 -mt-8 relative z-20">
         
         {/* Categories Filter */}
-        <div className="bg-white rounded-2xl shadow-md p-4 mb-12 border border-neutral-100 flex flex-wrap gap-2 justify-center">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md p-4 mb-12 border border-neutral-100 dark:border-neutral-800 flex flex-wrap gap-2 justify-center">
           <button
             onClick={() => setSelectedCategory('Todos')}
-            className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${
+            className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
               selectedCategory === 'Todos' 
-                ? 'bg-neutral-900 text-white shadow-md' 
-                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                ? 'bg-amber-500 text-white shadow-md' 
+                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
             }`}
           >
             Todos
@@ -141,10 +145,10 @@ export default function ProfissionaisPage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 ${
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat 
                   ? 'bg-amber-500 text-white shadow-md' 
-                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
               }`}
             >
               {cat}
@@ -155,7 +159,7 @@ export default function ProfissionaisPage() {
         {/* Grid de Profissionais */}
         {!userCity ? (
           <div className="text-center py-20">
-            <h3 className="text-2xl font-bold text-neutral-800 mb-2">Por favor, selecione sua cidade</h3>
+            <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">Por favor, selecione sua cidade</h3>
           </div>
         ) : filteredProfessionals.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -164,15 +168,15 @@ export default function ProfissionaisPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-neutral-100 max-w-2xl mx-auto">
-            <MapPin className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-neutral-800 mb-3">Nenhum profissional em {userCity}</h3>
-            <p className="text-neutral-500 mb-8 max-w-md mx-auto">
+          <div className="text-center py-20 bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-100 dark:border-neutral-800 max-w-2xl mx-auto">
+            <MapPin className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-3">Nenhum profissional em {userCity}</h3>
+            <p className="text-neutral-500 dark:text-neutral-400 mb-8 max-w-md mx-auto">
               Ainda não temos parceiros cadastrados nesta categoria em sua cidade. Mas estamos expandindo nossa rede!
             </p>
             <button 
               onClick={() => setIsCityModalOpen(true)}
-              className="bg-neutral-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-neutral-800 transition-colors"
+              className="bg-neutral-900 dark:bg-amber-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-neutral-800 dark:hover:bg-amber-600 transition-colors cursor-pointer"
             >
               Buscar em outra cidade
             </button>

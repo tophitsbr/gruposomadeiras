@@ -502,7 +502,7 @@ export default function CalculadoraTelhadoClient() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 border-b border-gray-100 pb-2.5">
               <Settings className="h-4 w-4 text-[#F4B400]" />
-              <h3 className="font-black text-sm uppercase text-[#3E2723]">Configurações do Telhado</h3>
+              <h3 className="font-black text-sm uppercase text-[#3E2723] dark:text-amber-400">Configurações do Telhado</h3>
             </div>
             <label className="text-[10px] font-extrabold uppercase text-gray-500 block">Formato da Cobertura:</label>
             <select value={roofShape} onChange={(e: any) => setRoofShape(e.target.value)}
@@ -858,7 +858,7 @@ export default function CalculadoraTelhadoClient() {
               {/* Dimensioning table */}
               <div className="bg-white border border-gray-200 rounded-3xl shadow-sm p-5 md:p-6">
                 <div className="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
-                  <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723]">Verificação Estrutural das Peças (NBR 7190)</h4>
+                  <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723] dark:text-amber-400">Verificação Estrutural das Peças (NBR 7190)</h4>
                   <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded text-[9px] font-black uppercase flex items-center gap-1">
                     <CheckCircle className="h-3 w-3" /> ELU + ELS Verificados
                   </span>
@@ -886,11 +886,11 @@ export default function CalculadoraTelhadoClient() {
                         ...(hasPosts && calc.post.qty > 0 ? [{ name: "Pontaletes", d: calc.post }] : []),
                       ].map((row) => (
                         <tr key={row.name} className="hover:bg-slate-50 transition">
-                          <td className="py-2.5 font-bold text-slate-800">{row.name}</td>
+                          <td className="py-2.5 font-bold text-slate-800 dark:text-slate-100">{row.name}</td>
                           <td className="py-2.5">{row.d.span.toFixed(2)} m</td>
                           <td className="py-2.5">{Math.round(row.d.force)} kgf/m</td>
                           <td className="py-2.5 text-slate-400">{row.d.wxReq?.toFixed(1) ?? "—"} cm³</td>
-                          <td className="py-2.5 font-black text-[#3E2723]">{row.d.sec.label}</td>
+                          <td className="py-2.5 font-black text-[#3E2723] dark:text-amber-400">{row.d.sec.label}</td>
                           <td className="py-2.5 text-emerald-500 font-bold">✓ OK</td>
                         </tr>
                       ))}
@@ -910,12 +910,12 @@ export default function CalculadoraTelhadoClient() {
                 <div className="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
                   <div className="flex items-center gap-2 border-b border-gray-100 pb-3 mb-4">
                     <Package className="h-4 w-4 text-[#F4B400]" />
-                    <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723]">Quantidade de Telhas</h4>
+                    <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723] dark:text-amber-400">Quantidade de Telhas</h4>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="md:col-span-2 space-y-2">
                       <p className="text-[10px] font-bold text-slate-600">Telha Selecionada:</p>
-                      <p className="font-black text-sm text-[#3E2723]">{calc.tileSpec.label}</p>
+                      <p className="font-black text-sm text-[#3E2723] dark:text-amber-400">{calc.tileSpec.label}</p>
                       <p className="text-[9px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 leading-relaxed mt-2">
                         ℹ️ {calc.tileSpec.overlapNote}
                       </p>
@@ -936,7 +936,7 @@ export default function CalculadoraTelhadoClient() {
               <div className="bg-white border border-gray-200 rounded-3xl p-5 md:p-6 shadow-sm">
                 <div className="flex items-center gap-2 border-b border-gray-100 pb-3 mb-4">
                   <TreePine className="h-4 w-4 text-[#F4B400]" />
-                  <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723]">Lista de Peças de Eucalipto</h4>
+                  <h4 className="font-black text-xs uppercase tracking-wider text-[#3E2723] dark:text-amber-400">Lista de Peças de Eucalipto</h4>
                   <span className="ml-auto bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded text-[9px] font-black uppercase">Bitolas Comerciais</span>
                 </div>
 
@@ -948,7 +948,7 @@ export default function CalculadoraTelhadoClient() {
                         <th className="py-2.5 pr-2">Bitola</th>
                         <th className="py-2.5 pr-2 text-center">Qtd</th>
                         <th className="py-2.5 pr-2">Comp. Bruto</th>
-                        <th className="py-2.5 pr-2 text-[#3E2723] font-black">Eucalipto ✓</th>
+                        <th className="py-2.5 pr-2 text-[#3E2723] font-black dark:text-amber-400">Eucalipto ✓</th>
                         <th className="py-2.5 text-right">Volume</th>
                       </tr>
                     </thead>
@@ -963,12 +963,12 @@ export default function CalculadoraTelhadoClient() {
                         ...(hasPosts && calc.post.qty > 0 ? [{ name: "Pontaletes", sec: calc.post.sec, qty: calc.post.qty, len: calc.post.len, eucLen: calc.post.eucLen, vol: calc.postVol, note: `Alt: ${postHeight}m | Esp: ${postSpacing}m` }] : []),
                       ].map((row) => (
                         <tr key={row.name} className="hover:bg-slate-50 transition">
-                          <td className="py-3 font-bold text-slate-800">
+                          <td className="py-3 font-bold text-slate-800 dark:text-slate-100">
                             <div>{row.name}</div>
                             {row.note && <div className="text-[8px] text-slate-400 font-normal mt-0.5">{row.note}</div>}
                           </td>
                           <td className="py-3 text-slate-600">{row.sec.label}</td>
-                          <td className="py-3 text-center font-black text-[#3E2723] text-sm">{row.qty}</td>
+                          <td className="py-3 text-center font-black text-[#3E2723] text-sm dark:text-amber-400">{row.qty}</td>
                           <td className="py-3">
                             <div className="font-bold text-slate-700">{row.len.toFixed(2)} m</div>
                             <div className="text-[8px] text-slate-400">comp. individual</div>
@@ -993,7 +993,7 @@ export default function CalculadoraTelhadoClient() {
                   <div className="flex justify-between text-[10px] text-slate-400 font-semibold">
                     <span>Fator de perda para cortes e esquadros:</span><span>+ 15%</span>
                   </div>
-                  <div className="border-t border-stone-300 pt-3 flex justify-between font-black text-[#3E2723] text-sm">
+                  <div className="border-t border-stone-300 pt-3 flex justify-between font-black text-[#3E2723] text-sm dark:text-amber-400">
                     <span>VOLUME FINAL RECOMENDADO PARA COMPRA:</span>
                     <span className="text-[#F4B400]">{calc.finalVol} m³</span>
                   </div>
@@ -1020,7 +1020,7 @@ export default function CalculadoraTelhadoClient() {
 
               <div className="flex justify-between items-center border-b border-gray-200 pb-4">
                 <div>
-                  <h4 className="font-black text-sm uppercase text-[#3E2723] flex items-center gap-1.5">
+                  <h4 className="font-black text-sm uppercase text-[#3E2723] flex items-center gap-1.5 dark:text-amber-400">
                     <FileText className="h-4.5 w-4.5 text-[#F4B400]" /> Memorial Descritivo de Dimensionamento
                   </h4>
                   <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">ABNT NBR 7190:1997 / NBR 6120:2019 / NBR 6123</p>
@@ -1034,7 +1034,7 @@ export default function CalculadoraTelhadoClient() {
               <div className="space-y-5 text-[10px] text-stone-600 leading-relaxed font-medium">
 
                 <section className="space-y-2">
-                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">1. Parâmetros de Entrada e Geometria</h5>
+                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">1. Parâmetros de Entrada e Geometria</h5>
                   <div className="grid grid-cols-2 gap-y-2 gap-x-8">
                     {[
                       ["Formato da Cobertura", { "1_agua":"1 Água","2_aguas":"2 Águas","3_aguas":"3 Águas","4_aguas":"4 Águas","L_shape":"L","U_shape":"U" }[roofShape]],
@@ -1045,20 +1045,20 @@ export default function CalculadoraTelhadoClient() {
                       ["Área Projetada Horizontal", `${calc.projArea} m²`],
                       ["Área Real Inclinada (cobertura)", `${calc.slopedArea} m²`],
                     ].map(([k, v]) => (
-                      <p key={k}>• {k}: <strong className="text-slate-800">{v}</strong></p>
+                      <p key={k}>• {k}: <strong className="text-slate-800 dark:text-slate-100">{v}</strong></p>
                     ))}
                   </div>
                 </section>
 
                 <section className="space-y-2">
-                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">2. Cargas e Combinações (NBR 6120 / NBR 6123)</h5>
+                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">2. Cargas e Combinações (NBR 6120 / NBR 6123)</h5>
                   <div className="space-y-1">
                     {[
                       ["Carga Permanente — Telhas", `${calc.tileWeight} kgf/m² (${calc.tileSpec.label})`],
                       ["Carga Permanente — Peso Próprio Estimado", "15 kgf/m²"],
                       ["Sobrecarga de Utilização (Manutenção)", "25 kgf/m²"],
                       ["Pressão / Sucção de Vento (Simplificado)", "35 kgf/m²"],
-                    ].map(([k, v]) => <p key={k}>• {k}: <strong className="text-slate-800">{v}</strong></p>)}
+                    ].map(([k, v]) => <p key={k}>• {k}: <strong className="text-slate-800 dark:text-slate-100">{v}</strong></p>)}
                     <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 font-mono text-[9px] text-stone-600 mt-2">
                       ELU: Fd = 1,4·G + 1,4·Q + 1,4·0,6·W = <strong>{calc.totalLoad} kgf/m²</strong>
                     </div>
@@ -1066,7 +1066,7 @@ export default function CalculadoraTelhadoClient() {
                 </section>
 
                 <section className="space-y-2">
-                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">3. Propriedades da Madeira (NBR 7190)</h5>
+                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">3. Propriedades da Madeira (NBR 7190)</h5>
                   <div className="space-y-1">
                     {[
                       ["Classe do Material", woodClass === "C30" ? "Eucalipto / Coníferas — C30" : "Folhosas / Madeira de Lei — C40"],
@@ -1074,12 +1074,12 @@ export default function CalculadoraTelhadoClient() {
                       ["Fator de Modificação (kmod)", "0,70 (Longa duração, Classe umidade 3)"],
                       ["Resistência de Projeto à Flexão (f_wd)", `${Math.round((woodClass === "C30" ? 300 : 400) * 0.70 / 1.4)} kgf/cm²`],
                       ["Módulo de Elasticidade (E)", `${woodClass === "C30" ? "95.000" : "125.000"} kgf/cm²`],
-                    ].map(([k, v]) => <p key={k}>• {k}: <strong className="text-slate-800">{v}</strong></p>)}
+                    ].map(([k, v]) => <p key={k}>• {k}: <strong className="text-slate-800 dark:text-slate-100">{v}</strong></p>)}
                   </div>
                 </section>
 
                 <section className="space-y-2">
-                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">4. Resultado das Verificações ELS — Flecha Admissível L/200</h5>
+                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">4. Resultado das Verificações ELS — Flecha Admissível L/200</h5>
                   <div className="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl space-y-1.5 text-emerald-800">
                     <p>✓ <strong>Caibros:</strong> Flecha máx. admissível = {(calc.caibro.span * 100 / 200).toFixed(1)} cm — Bitola adotada: {calc.caibro.sec.label}</p>
                     <p>✓ <strong>Terças:</strong> Flecha máx. admissível = {(calc.purlin.span * 100 / 200).toFixed(1)} cm — Bitola adotada: {calc.purlin.sec.label}</p>
@@ -1089,7 +1089,7 @@ export default function CalculadoraTelhadoClient() {
                 </section>
 
                 <section className="space-y-2">
-                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">5. Resumo Quantitativo de Peças e Comprimentos de Eucalipto</h5>
+                  <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">5. Resumo Quantitativo de Peças e Comprimentos de Eucalipto</h5>
                   <div className="overflow-x-auto">
                     <table className="w-full text-[9px] border-collapse">
                       <thead>
@@ -1112,7 +1112,7 @@ export default function CalculadoraTelhadoClient() {
                           ...(hasPosts && calc.post.qty > 0 ? [{ name: "Pontaletes", sec: calc.post.sec.label, qty: calc.post.qty, len: calc.post.len, eucLen: calc.post.eucLen, vol: calc.postVol }] : []),
                         ].map((r) => (
                           <tr key={r.name} className="hover:bg-stone-50">
-                            <td className="p-2 font-bold text-slate-800">{r.name}</td>
+                            <td className="p-2 font-bold text-slate-800 dark:text-slate-100">{r.name}</td>
                             <td className="p-2">{r.sec}</td>
                             <td className="p-2 text-center font-black">{r.qty} un</td>
                             <td className="p-2">{r.len.toFixed(2)} m</td>
@@ -1131,13 +1131,13 @@ export default function CalculadoraTelhadoClient() {
 
                 {(calc.sheetsNeeded > 0 || calc.ceramicUnitsNeeded > 0) && (
                   <section className="space-y-2">
-                    <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px]">6. Quantitativo de Telhas</h5>
+                    <h5 className="font-black text-[#3E2723] border-b border-stone-200 pb-1 uppercase tracking-wide text-[11px] dark:text-amber-400">6. Quantitativo de Telhas</h5>
                     <div className="space-y-1">
-                      <p>• Telha selecionada: <strong className="text-slate-800">{calc.tileSpec.label}</strong></p>
-                      <p>• Área de cobertura inclinada: <strong className="text-slate-800">{calc.slopedArea} m²</strong></p>
-                      {calc.sheetsNeeded > 0 && <p>• Área útil por chapa: <strong className="text-slate-800">{calc.tileSpec.netArea} m²</strong></p>}
-                      <p>• Fator de perda aplicado: <strong className="text-slate-800">10%</strong></p>
-                      <p>• <strong className="text-[#3E2723] text-[11px]">Quantidade a comprar: {calc.sheetsNeeded > 0 ? `${calc.sheetsNeeded} chapas` : `${calc.ceramicUnitsNeeded} unidades`}</strong></p>
+                      <p>• Telha selecionada: <strong className="text-slate-800 dark:text-slate-100">{calc.tileSpec.label}</strong></p>
+                      <p>• Área de cobertura inclinada: <strong className="text-slate-800 dark:text-slate-100">{calc.slopedArea} m²</strong></p>
+                      {calc.sheetsNeeded > 0 && <p>• Área útil por chapa: <strong className="text-slate-800 dark:text-slate-100">{calc.tileSpec.netArea} m²</strong></p>}
+                      <p>• Fator de perda aplicado: <strong className="text-slate-800 dark:text-slate-100">10%</strong></p>
+                      <p>• <strong className="text-[#3E2723] text-[11px] dark:text-amber-400">Quantidade a comprar: {calc.sheetsNeeded > 0 ? `${calc.sheetsNeeded} chapas` : `${calc.ceramicUnitsNeeded} unidades`}</strong></p>
                     </div>
                   </section>
                 )}
@@ -1189,11 +1189,11 @@ export default function CalculadoraTelhadoClient() {
       {/* ── LEAD MODAL ── */}
       {leadModalOpen && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 px-4">
-          <div className="bg-white text-[#3E2723] max-w-md w-full p-6 rounded-3xl border border-stone-200 shadow-2xl relative space-y-5">
+          <div className="bg-white text-[#3E2723] max-w-md w-full p-6 rounded-3xl border border-stone-200 shadow-2xl relative space-y-5 dark:text-amber-400">
             <button onClick={() => setLeadModalOpen(false)} className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 bg-transparent border-none cursor-pointer text-xl">✕</button>
             <div className="text-center space-y-1">
               <div className="bg-[#F4B400]/20 text-[#F4B400] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl">📐</div>
-              <h4 className="font-black text-lg text-[#3E2723] uppercase pt-2">Receber Orçamento</h4>
+              <h4 className="font-black text-lg text-[#3E2723] uppercase pt-2 dark:text-amber-400">Receber Orçamento</h4>
               <p className="text-[11px] text-stone-500 max-w-xs mx-auto">Enviaremos a lista de peças calculada ao nosso setor comercial via WhatsApp.</p>
             </div>
             <form onSubmit={handleLeadSubmit} className="space-y-3 text-xs font-semibold">

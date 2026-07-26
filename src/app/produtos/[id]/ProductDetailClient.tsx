@@ -353,7 +353,7 @@ export default function ProductDetailClient({ initialProduct, specsData }: Produ
             
             <Link 
               href="/"
-              className="bg-gradient-to-r from-[#F4B400] to-amber-500 text-[#3E2723] font-black text-xs px-3.5 py-2 rounded-xl flex items-center gap-2 hover:shadow-lg transition active:scale-95"
+              className="bg-gradient-to-r from-[#F4B400] to-amber-500 text-[#3E2723] font-black text-xs px-3.5 py-2 rounded-xl flex items-center gap-2 hover:shadow-lg transition active:scale-95 dark:text-amber-400"
             >
               <ShoppingBag className="h-4 w-4" />
               <span className="hidden sm:inline-block">Meu Orçamento</span>
