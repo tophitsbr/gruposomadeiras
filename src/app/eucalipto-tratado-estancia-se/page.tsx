@@ -402,7 +402,7 @@ export default function EucaliptoTratadoEstanciaPage() {
                     <h3 className="font-bold text-sm md:text-base text-brown-dark dark:text-white group-hover:text-primary transition line-clamp-1">
                       {prod.title}
                     </h3>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 leading-normal line-clamp-3 font-light">
+                    <p className="text-xs text-stone-800 dark:text-stone-100 font-medium leading-normal line-clamp-3 font-light">
                       {prod.desc}
                     </p>
                   </div>
@@ -578,14 +578,14 @@ export default function EucaliptoTratadoEstanciaPage() {
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Faturamento Facilitado</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Opções de faturamento em boleto corporativo, Pix com 10% de desconto e cartão de crédito.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Opções de faturamento em boleto corporativo, Pix com 10% de desconto e cartão de crédito.</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Entrega Agendada Sergipe</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Frota própria e transportadoras qualificadas para descarregar sua madeira com segurança no seu pátio ou fazenda.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Frota própria e transportadoras qualificadas para descarregar sua madeira com segurança no seu pátio ou fazenda.</p>
                 </div>
               </div>
             </div>

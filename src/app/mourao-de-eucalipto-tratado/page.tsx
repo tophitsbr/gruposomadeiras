@@ -305,28 +305,28 @@ export default function MouraoEucaliptoTratadoPage() {
                 <div className="p-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-primary flex-shrink-0">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Alinhamento Perfeito</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Toras selecionadas retas e descascadas mecanicamente para um visual limpo e bonito.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Toras selecionadas retas e descascadas mecanicamente para um visual limpo e bonito.</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start">
                 <div className="p-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-primary flex-shrink-0">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Livre de Cupim e Brocas</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">O produto químico penetra na zona do alburno da madeira roliça de forma irreversível.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">O produto químico penetra na zona do alburno da madeira roliça de forma irreversível.</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start">
                 <div className="p-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-primary flex-shrink-0">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Resistência sob Tração</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Suporta o estiramento de arames lisos de alta tensão com catracas sem ceder.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Suporta o estiramento de arames lisos de alta tensão com catracas sem ceder.</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start">
                 <div className="p-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-primary flex-shrink-0">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Opção de Furos e Encaixes</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Ideal para encaixe de réguas ou passagem de fios de arame sem quebrar.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Ideal para encaixe de réguas ou passagem de fios de arame sem quebrar.</p>
                 </div>
               </div>
             </div>
@@ -538,14 +538,14 @@ export default function MouraoEucaliptoTratadoPage() {
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Resistência a Incêndios Rurais</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Embora a madeira queime, o eucalipto denso com imunizante de autoclave retarda as chamas de forma superior comparado à madeira in natura seca.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Embora a madeira queime, o eucalipto denso com imunizante de autoclave retarda as chamas de forma superior comparado à madeira in natura seca.</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Força Contra Impacto Animal</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Ideal para pecuária pesada e confinamentos de búfalos ou touros, mantendo o pasto seguro e inviolável.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Ideal para pecuária pesada e confinamentos de búfalos ou touros, mantendo o pasto seguro e inviolável.</p>
                 </div>
               </div>
             </div>

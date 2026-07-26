@@ -555,14 +555,14 @@ export default function PostesEucaliptoTratadoPage() {
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Homologado e Seguro</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Postes em estrita conformidade com as normas ABNT e concessionárias para segurança total na passagem de linhas de energia viva.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Postes em estrita conformidade com as normas ABNT e concessionárias para segurança total na passagem de linhas de energia viva.</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Fundações e Drenagem</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Suporta o soterramento permanente no solo sem perder a rigidez mecânica por décadas.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Suporta o soterramento permanente no solo sem perder a rigidez mecânica por décadas.</p>
                 </div>
               </div>
             </div>

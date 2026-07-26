@@ -635,7 +635,7 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
                     >
                       {prod.title}
                     </h3>
-                    <p className="text-[11px] text-stone-500 dark:text-stone-400 font-light leading-normal line-clamp-3">
+                    <p className="text-[11px] text-stone-800 dark:text-stone-100 font-medium font-light leading-normal line-clamp-3">
                       {prod.desc}
                     </p>
                   </div>
@@ -689,31 +689,31 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
       </main>
 
       {/* TECHNICAL INFO STRIP */}
-      <section className="bg-slate-50 dark:bg-neutral-900/50 py-12 px-6 border-t border-stone-250 dark:border-dark-border mt-12">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs font-light text-stone-500 dark:text-stone-400 leading-relaxed">
-          <div className="space-y-2">
-            <h5 className="font-display font-black text-stone-850 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Ruler className="h-4 w-4 text-primary" /> Bitolas e Medidas Padrão
+      <section className="bg-gradient-to-r from-[#2D1B18] via-[#3E2723] to-[#2D1B18] text-white py-12 px-6 border-t border-[#F4B400]/30 mt-12 shadow-inner">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-2.5 bg-black/25 p-5 rounded-2xl border border-white/10">
+            <h5 className="font-display font-black text-[#F4B400] uppercase tracking-wider text-xs flex items-center gap-1.5">
+              <Ruler className="h-4 w-4 text-[#F4B400]" /> Bitolas e Medidas Padrão
             </h5>
-            <p>
+            <p className="text-stone-200 text-xs font-normal leading-relaxed">
               As folhas de portas possuem espessura de 35mm para linhas leves internas e 40mm a 45mm para modelos maciços externos. Fabricamos larguras comerciais padrão (60, 70, 80 e 90cm) e sob encomenda até 1,20m de largura por 2,80m de altura com reforço estrutural.
             </p>
           </div>
           
-          <div className="space-y-2">
-            <h5 className="font-display font-black text-stone-850 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Wrench className="h-4 w-4 text-primary" /> O que é o Batente Regulável?
+          <div className="space-y-2.5 bg-black/25 p-5 rounded-2xl border border-white/10">
+            <h5 className="font-display font-black text-[#F4B400] uppercase tracking-wider text-xs flex items-center gap-1.5">
+              <Wrench className="h-4 w-4 text-[#F4B400]" /> O que é o Batente Regulável?
             </h5>
-            <p>
+            <p className="text-stone-200 text-xs font-normal leading-relaxed">
               O caixão regulável conta com alizares (guarnições) equipados com abas de encaixe macho-fêmea deslizantes. Isso permite estender e cobrir imperfeições de alvenarias fora de prumo ou paredes grossas (de 10cm a 15cm) sem necessidade de cortes manuais.
             </p>
           </div>
 
-          <div className="space-y-2">
-            <h5 className="font-display font-black text-stone-850 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Layers className="h-4 w-4 text-primary" /> Certificação NBR 15930
+          <div className="space-y-2.5 bg-black/25 p-5 rounded-2xl border border-white/10">
+            <h5 className="font-display font-black text-[#F4B400] uppercase tracking-wider text-xs flex items-center gap-1.5">
+              <Layers className="h-4 w-4 text-[#F4B400]" /> Certificação NBR 15930
             </h5>
-            <p>
+            <p className="text-stone-200 text-xs font-normal leading-relaxed">
               Nossas folhas seguem estritamente a norma de qualidade de desempenho de portas de madeira no Brasil. Classificadas como PIM (Porta Interna de Madeira) e PEM (Porta Externa de Madeira) com isolamentos mecânico e acústico certificados.
             </p>
           </div>
@@ -782,7 +782,7 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
                   <h3 className="font-display font-black text-xl md:text-2xl text-brown-dark dark:text-white uppercase leading-snug">
                     {selectedProduct.title}
                   </h3>
-                  <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light mt-2">
+                  <p className="text-xs text-stone-800 dark:text-stone-100 font-medium leading-relaxed font-light mt-2">
                     {selectedProduct.longDesc}
                   </p>
                 </div>

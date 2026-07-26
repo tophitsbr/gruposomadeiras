@@ -2062,10 +2062,10 @@ export default function SoMadeirasFullStack() {
               <h2 className="font-display font-black text-2xl text-brown-dark dark:text-white uppercase tracking-tight">Acesso Bloqueado</h2>
               <p className="text-[10px] text-red-600 dark:text-red-400 font-mono tracking-widest uppercase font-black">Firewall Interno — Security Shield</p>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            <p className="text-xs text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
               O seu endereço de IP ou o comportamento da sua navegação violaram as políticas de proteção da plataforma Só Madeiras.
             </p>
-            <div className="bg-slate-50 dark:bg-neutral-950 p-4 rounded-xl border border-gray-150 dark:border-dark-border text-left font-mono text-[10px] space-y-1.5 text-gray-500 dark:text-gray-400">
+            <div className="bg-slate-50 dark:bg-neutral-950 p-4 rounded-xl border border-gray-150 dark:border-dark-border text-left font-mono text-[10px] space-y-1.5 text-gray-900 dark:text-gray-100 font-medium">
               <div className="flex justify-between">
                 <span>Endereço de IP:</span>
                 <span className="font-bold text-brown-dark dark:text-white">{Security.SecurityRepository.getClientIp().ip}</span>
@@ -2549,7 +2549,7 @@ export default function SoMadeirasFullStack() {
                 <div className="bg-primary/20 text-brown-dark dark:text-primary p-2.5 rounded-full">🚚</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm">Entrega Rápida</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Frota própria ágil</p>
+                  <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium">Frota própria ágil</p>
                 </div>
               </div>
               <div 
@@ -2559,7 +2559,7 @@ export default function SoMadeirasFullStack() {
                 <div className="bg-primary/20 text-brown-dark dark:text-primary p-2.5 rounded-full">🛡️</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm">Compra Segura</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Faturamento no envio</p>
+                  <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium">Faturamento no envio</p>
                 </div>
               </div>
               <div 
@@ -2569,7 +2569,7 @@ export default function SoMadeirasFullStack() {
                 <div className="bg-primary/20 text-brown-dark dark:text-primary p-2.5 rounded-full">💬</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm">Especialistas</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Consultores de obras</p>
+                  <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium">Consultores de obras</p>
                 </div>
               </div>
               <div 
@@ -2579,7 +2579,7 @@ export default function SoMadeirasFullStack() {
                 <div className="bg-primary/20 text-brown-dark dark:text-primary p-2.5 rounded-full">📝</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm">Orçamento Grátis</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Sem compromisso</p>
+                  <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium">Sem compromisso</p>
                 </div>
               </div>
               <div 
@@ -2589,7 +2589,7 @@ export default function SoMadeirasFullStack() {
                 <div className="bg-primary/20 text-brown-dark dark:text-primary p-2.5 rounded-full">💳</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm">Facilitado</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Até 10x sem juros</p>
+                  <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium">Até 10x sem juros</p>
                 </div>
               </div>
             </div>
@@ -3303,7 +3303,7 @@ export default function SoMadeirasFullStack() {
                   <h3 className="font-display font-black text-xl md:text-2xl text-brown-dark dark:text-white tracking-tight flex items-center gap-2">
                     🏠 TELHAS PREMIUM & CALCULADORA INTEGRADA
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-xs font-light max-w-3xl leading-relaxed">
+                  <p className="text-gray-900 dark:text-gray-100 font-medium text-xs font-light max-w-3xl leading-relaxed">
                     Selecione um modelo de telha ao lado para abrir e atualizar a calculadora instantaneamente com a inclinação, peso total e a quantidade ideal para cobrir a sua obra!
                   </p>
                 </div>
@@ -3619,7 +3619,7 @@ export default function SoMadeirasFullStack() {
 
                       {/* Title and details */}
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center justify-between text-[10px] text-gray-900 dark:text-gray-100 font-medium">
                           <span className="uppercase font-bold text-amber-600 dark:text-primary">{p.brand}</span>
                           <div className="flex items-center gap-0.5 text-yellow-400">
                             <Star className="h-3 w-3 fill-current" />
@@ -3772,7 +3772,7 @@ export default function SoMadeirasFullStack() {
                                   <Star key={i} className={`h-3 w-3 ${i < Math.floor(p.rating) ? "fill-primary text-primary" : "text-gray-300"}`} />
                                 ))}
                               </div>
-                              <span className="font-bold text-[10px] text-gray-500 dark:text-gray-400">({p.rating.toFixed(1)})</span>
+                              <span className="font-bold text-[10px] text-gray-900 dark:text-gray-100 font-medium">({p.rating.toFixed(1)})</span>
                             </div>
                             {p.soldCount > 0 && (
                               <span className="text-[10px] text-emerald-600 dark:text-emerald-450 font-black animate-pulse flex items-center gap-0.5">
@@ -3783,7 +3783,7 @@ export default function SoMadeirasFullStack() {
                           <h4 className="font-bold text-sm text-brown-dark dark:text-white group-hover:text-primary transition line-clamp-2">
                             {p.name}
                           </h4>
-                          <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2">{p.desc}</p>
+                          <p className="text-[11px] text-gray-900 dark:text-gray-100 font-medium line-clamp-2">{p.desc}</p>
                         </div>
 
                         <div className="mt-4 border-t border-gray-100 dark:border-dark-border pt-3 space-y-2">
@@ -4117,7 +4117,7 @@ export default function SoMadeirasFullStack() {
                           const pixDiscount = Math.max(0, subtotalAfterCoupon - finalTotalPix);
                           return (
                             <>
-                              <div className="flex justify-between text-gray-500 dark:text-gray-400">
+                              <div className="flex justify-between text-gray-900 dark:text-gray-100 font-medium">
                                 <span>Subtotal Orçamento</span>
                                 <span>R$ {subtotal.toFixed(2)}</span>
                               </div>
@@ -4188,7 +4188,7 @@ export default function SoMadeirasFullStack() {
 
                 <form onSubmit={handleCheckoutSubmit} className="p-6 space-y-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">Nome Completo</label>
+                    <label className="text-xs font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider block">Nome Completo</label>
                     <input
                       type="text"
                       required
@@ -4200,7 +4200,7 @@ export default function SoMadeirasFullStack() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">Telefone / WhatsApp</label>
+                    <label className="text-xs font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider block">Telefone / WhatsApp</label>
                     <input
                       type="tel"
                       required
@@ -4213,7 +4213,7 @@ export default function SoMadeirasFullStack() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">Cidade</label>
+                      <label className="text-xs font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider block">Cidade</label>
                       <input
                         type="text"
                         required
@@ -4224,7 +4224,7 @@ export default function SoMadeirasFullStack() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">Estado</label>
+                      <label className="text-xs font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider block">Estado</label>
                       <select
                         value={leadFormData.state}
                         onChange={(e) => setLeadFormData({ ...leadFormData, state: e.target.value })}
@@ -4334,7 +4334,7 @@ export default function SoMadeirasFullStack() {
                           <span className="text-[9px] bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase inline-block my-0.5">
                             {seller.badge}
                           </span>
-                          <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate font-light">
+                          <p className="text-[10px] text-gray-900 dark:text-gray-100 font-medium truncate font-light">
                             {seller.role}
                           </p>
                         </div>
@@ -5024,7 +5024,7 @@ export default function SoMadeirasFullStack() {
                 {/* Form layout */}
                 <form id="crud-product-form" key={crudEditProduct ? crudEditProduct.id : "new"} onSubmit={handleSaveProduct} className="bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border p-5 rounded-xl grid grid-cols-1 md:grid-cols-4 gap-4 text-xs transition-colors">
                   <div className="col-span-1 md:col-span-2 space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Nome do Produto</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Nome do Produto</label>
                     <input
                       type="text"
                       name="name"
@@ -5041,7 +5041,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Categoria</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Categoria</label>
                     <select
                       name="category"
                       defaultValue={crudEditProduct?.category || "madeiras"}
@@ -5051,7 +5051,7 @@ export default function SoMadeirasFullStack() {
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Marca</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Marca</label>
                     <input
                       type="text"
                       name="brand"
@@ -5062,7 +5062,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Preço Tabela (R$)</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Preço Tabela (R$)</label>
                     <input
                       type="number"
                       step="0.01"
@@ -5074,7 +5074,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Preço Pix (À Vista)</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Preço Pix (À Vista)</label>
                     <input
                       type="number"
                       step="0.01"
@@ -5085,7 +5085,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Estoque (Qtd)</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Estoque (Qtd)</label>
                     <input
                       type="number"
                       name="stock"
@@ -5096,7 +5096,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Vendidos (Prova Social)</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Vendidos (Prova Social)</label>
                     <input
                       type="number"
                       name="soldCount"
@@ -5107,7 +5107,7 @@ export default function SoMadeirasFullStack() {
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between items-center">
-                      <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Ícone Emoji / Imagem</label>
+                      <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Ícone Emoji / Imagem</label>
                       <button
                         type="button"
                         onClick={handleSearchGoogleImages}
@@ -5125,7 +5125,7 @@ export default function SoMadeirasFullStack() {
                     />
                   </div>
                   <div className="col-span-1 md:col-span-3 space-y-1">
-                    <label className="font-bold text-gray-500 dark:text-gray-400 uppercase">Descrição Técnica (SEO & Vendas)</label>
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Descrição Técnica (SEO & Vendas)</label>
                     <textarea
                       name="desc"
                       required
@@ -5658,7 +5658,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-150 dark:border-dark-border pb-4 gap-4">
                   <div>
                     <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase flex items-center gap-1.5"><Flame className="h-5 w-5 text-orange-500" /> GERENCIADOR DE OFERTAS RELÂMPAGO</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Configure quais produtos aparecem no carrossel de ofertas flash, seus descontos e contagem manual de vendas.</p>
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">Configure quais produtos aparecem no carrossel de ofertas flash, seus descontos e contagem manual de vendas.</p>
                   </div>
                   
                   {/* Form to add products to flash sales */}
@@ -5883,7 +5883,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase flex items-center gap-1.5">
                       <Settings className="h-5 w-5 text-yellow-500" /> CONFIGURAÇÕES GERAIS DO SITE
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">
                       Gerencie as informações institucionais, avisos flutuantes, telefones de contato, redes sociais e textos de SEO.
                     </p>
                   </div>
@@ -6149,7 +6149,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
                       <span className="text-primary text-xl">✨</span> CRIADOR VISUAL DE BANNERS (CARROSSEL PRINCIPAL)
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Crie e customize slides do carrossel principal com opções avançadas de alinhamento, botões, animações e tipografias.</p>
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">Crie e customize slides do carrossel principal com opções avançadas de alinhamento, botões, animações e tipografias.</p>
                   </div>
                   <div className="flex gap-2 self-stretch md:self-auto justify-end">
                     <button
@@ -6774,7 +6774,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h3 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
                       <Layout className="h-5 w-5 text-cyan-400" /> Banners entre Seções
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                    <p className="text-gray-900 dark:text-gray-100 font-medium text-xs mt-1">
                       Insira banners clicáveis entre as seções do site. Escolha o layout de grade e adicione as imagens. Se nenhuma imagem for adicionada, o espaço não aparece no site.
                     </p>
                   </div>
@@ -7117,7 +7117,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h3 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
                       <Menu className="h-5 w-5 text-emerald-500" /> Gerenciador do Menu Principal
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">Personalize a barra de navegação superior, configure links e crie submenus interativos sem emojis e em letras maiúsculas.</p>
+                    <p className="text-gray-900 dark:text-gray-100 font-medium text-xs mt-1">Personalize a barra de navegação superior, configure links e crie submenus interativos sem emojis e em letras maiúsculas.</p>
                   </div>
                   <button
                     onClick={() => {
@@ -7375,7 +7375,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
                       <span className="text-primary text-xl">✨</span> CRIADOR VISUAL DE POPUPS (ESTILO ELEMENTOR PRO)
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Desenhe campanhas promocionais de alto impacto com banners, textos, botões customizáveis, fundos e animações dinâmicas.</p>
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">Desenhe campanhas promocionais de alto impacto com banners, textos, botões customizáveis, fundos e animações dinâmicas.</p>
                   </div>
                   <div className="flex gap-2 self-stretch md:self-auto justify-end">
                     <button
@@ -7446,7 +7446,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               className="sr-only peer" 
                             />
                             <div className="w-9 h-5 bg-gray-300 dark:bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                            <span className="ml-2 text-[10px] font-black text-gray-500 dark:text-gray-400">
+                            <span className="ml-2 text-[10px] font-black text-gray-900 dark:text-gray-100 font-medium">
                               {popupCampaign.isActive ? "ATIVO" : "INATIVO"}
                             </span>
                           </label>
@@ -7454,7 +7454,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Página de Exibição</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Página de Exibição</label>
                             <select
                               value={popupCampaign.targetPage}
                               onChange={(e) => setPopupCampaign({ ...popupCampaign, targetPage: e.target.value as any })}
@@ -7467,7 +7467,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             </select>
                           </div>
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Gatilho de Disparo</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Gatilho de Disparo</label>
                             <select
                               value={popupCampaign.triggerType}
                               onChange={(e) => setPopupCampaign({ ...popupCampaign, triggerType: e.target.value as any })}
@@ -7482,7 +7482,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                         {popupCampaign.triggerType !== "exit-intent" && (
                           <div className="space-y-1 text-xs">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">
                               {popupCampaign.triggerType === "delay" ? "Tempo de Espera (Segundos)" : "Profundidade de Rolagem (%)"}
                             </label>
                             <input 
@@ -7501,7 +7501,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         <label className="font-black text-xs text-brown-dark dark:text-white uppercase tracking-wider block pb-1 border-b border-gray-150 dark:border-dark-border">Conteúdo & Textos</label>
                         
                         <div className="space-y-1 text-xs">
-                          <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">URL da Imagem do Flyer</label>
+                          <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">URL da Imagem do Flyer</label>
                           <input 
                             type="text"
                             value={popupCampaign.flyerImage}
@@ -7515,7 +7515,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         </div>
 
                         <div className="space-y-1 text-xs">
-                          <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Título Principal</label>
+                          <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Título Principal</label>
                           <input 
                             type="text"
                             value={popupCampaign.title}
@@ -7528,7 +7528,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         </div>
 
                         <div className="space-y-1 text-xs">
-                          <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Descrição / Subtítulo</label>
+                          <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Descrição / Subtítulo</label>
                           <textarea 
                             value={popupCampaign.description}
                             onChange={(e) => {
@@ -7547,7 +7547,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Texto do Botão</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Texto do Botão</label>
                             <input 
                               type="text"
                               value={popupCampaign.buttonText}
@@ -7559,7 +7559,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             />
                           </div>
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Borda Arredondada</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Borda Arredondada</label>
                             <select
                               value={popupCampaign.roundedBorder}
                               onChange={(e) => {
@@ -7578,7 +7578,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         </div>
 
                         <div className="space-y-1 text-xs">
-                          <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Link de Destino / Redirecionamento</label>
+                          <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Link de Destino / Redirecionamento</label>
                           <input 
                             type="text"
                             value={popupCampaign.buttonLink}
@@ -7592,7 +7592,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Cor do Botão</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Cor do Botão</label>
                             <div className="flex gap-2 items-center">
                               <input 
                                 type="color"
@@ -7615,7 +7615,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Cor do Texto do Botão</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Cor do Texto do Botão</label>
                             <div className="flex gap-2 items-center">
                               <input 
                                 type="color"
@@ -7646,7 +7646,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Tipo de Fundo</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Tipo de Fundo</label>
                             <select
                               value={popupCampaign.bgType}
                               onChange={(e) => {
@@ -7661,7 +7661,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             </select>
                           </div>
                           <div className="space-y-1">
-                            <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Animação de Entrada</label>
+                            <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Animação de Entrada</label>
                             <select
                               value={popupCampaign.animation}
                               onChange={(e) => {
@@ -7681,7 +7681,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         {popupCampaign.bgType !== "glass" && (
                           <div className="grid grid-cols-2 gap-3 text-xs">
                             <div className="space-y-1">
-                              <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Cor do Fundo 1</label>
+                              <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Cor do Fundo 1</label>
                               <div className="flex gap-2 items-center">
                                 <input 
                                   type="color"
@@ -7705,7 +7705,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             </div>
                             {popupCampaign.bgType === "gradient" && (
                               <div className="space-y-1">
-                                <label className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-[9px]">Cor do Fundo 2</label>
+                                <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase tracking-wider text-[9px]">Cor do Fundo 2</label>
                                 <div className="flex gap-2 items-center">
                                   <input 
                                     type="color"
@@ -7929,7 +7929,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     <h4 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
                       <span className="text-primary text-2xl">👤</span> CADASTRO E CONTROLE DE VENDEDORES
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">
                       Adicione ou remova membros da equipe de vendas. A distribuição de orçamentos (leads) é feita ciclicamente (Round-Robin) de maneira justa e igualitária.
                     </p>
                   </div>

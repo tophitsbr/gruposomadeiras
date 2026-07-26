@@ -431,14 +431,14 @@ export default function JanelasMadeiraPage() {
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Opções Sob Medida</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Fabricamos janelasVenezianas de 4 ou 6 folhas e maxiares de acordo com o tamanho da sua planta civil.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Fabricamos janelasVenezianas de 4 ou 6 folhas e maxiares de acordo com o tamanho da sua planta civil.</p>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-amber-700 dark:text-primary flex items-center justify-center flex-shrink-0 font-bold text-xs">✓</div>
                 <div>
                   <h4 className="font-bold text-xs md:text-sm text-brown-dark dark:text-white">Pronto Faturamento Sergipe</h4>
-                  <p className="text-[10px] md:text-xs text-stone-500 dark:text-stone-400">Entrega imediata p/ lotes padrão em estoque com faturamento direto CNPJ ou produtor rural.</p>
+                  <p className="text-[10px] md:text-xs text-stone-800 dark:text-stone-100 font-medium">Entrega imediata p/ lotes padrão em estoque com faturamento direto CNPJ ou produtor rural.</p>
                 </div>
               </div>
             </div>

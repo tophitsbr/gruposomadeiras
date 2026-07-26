@@ -718,7 +718,7 @@ export default function PergoladosPage() {
                 ESCOLHA SEU MODELO DE DESTAQUE
               </h3>
               <div className="h-1.5 bg-[#F4B400] w-24 mx-auto rounded-full" />
-              <p className="text-stone-500 dark:text-stone-400 text-xs md:text-sm max-w-xl mx-auto">
+              <p className="text-stone-800 dark:text-stone-100 font-medium text-xs md:text-sm max-w-xl mx-auto">
                 Modelos roliços calculados com base no índice de esbeltez da **NBR 7190** para segurança contra flambagem e autoclavação em conformidade com a **NBR 16143**.
               </p>
             </div>
@@ -760,11 +760,11 @@ export default function PergoladosPage() {
                         </span>
                       </div>
 
-                      <p className="text-[11px] md:text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light line-clamp-3">
+                      <p className="text-[11px] md:text-xs text-stone-800 dark:text-stone-100 font-medium leading-relaxed font-light line-clamp-3">
                         {model.description}
                       </p>
 
-                      <ul className="space-y-1 pt-1.5 border-t border-stone-100 dark:border-stone-800 text-[10px] text-stone-600 dark:text-stone-300">
+                      <ul className="space-y-1 pt-1.5 border-t border-stone-100 dark:border-stone-800 text-[10px] text-stone-900 dark:text-stone-100 font-medium">
                         {model.features.map((feat, i) => (
                           <li key={i} className="flex items-center gap-1.5 leading-normal">
                             <span className="text-[#F4B400] font-black text-xs leading-none">✓</span>
@@ -1542,7 +1542,7 @@ export default function PergoladosPage() {
                 <div className="text-center space-y-1">
                   <div className="bg-[#F4B400]/20 text-[#F4B400] w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl shadow shadow-[#F4B400]/10">🪵</div>
                   <h4 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase pt-2">Liberar Orçamento Completo</h4>
-                  <p className="text-[11px] text-stone-500 dark:text-stone-400 leading-normal max-w-xs mx-auto">
+                  <p className="text-[11px] text-stone-800 dark:text-stone-100 font-medium leading-normal max-w-xs mx-auto">
                     Conforme as regras do site, para liberar a cotação e enviar as medidas ao setor técnico, preencha os dados abaixo para ser direcionado ao WhatsApp.
                   </p>
                 </div>
@@ -1878,11 +1878,11 @@ export default function PergoladosPage() {
                         <tr key={lead.id} className="border-b border-stone-100 dark:border-stone-800/50 hover:bg-stone-50 dark:hover:bg-stone-800/30 transition">
                           <td className="py-3 px-3 font-mono text-stone-500">{lead.date} - {lead.time}</td>
                           <td className="py-3 px-3 font-bold text-brown-dark dark:text-white">{lead.name}</td>
-                          <td className="py-3 px-3 text-stone-600 dark:text-stone-300">
+                          <td className="py-3 px-3 text-stone-900 dark:text-stone-100 font-medium">
                             <p>{lead.phone}</p>
                             <span className="text-[10px] text-stone-400">{lead.location}</span>
                           </td>
-                          <td className="py-3 px-3 text-stone-600 dark:text-stone-300">
+                          <td className="py-3 px-3 text-stone-900 dark:text-stone-100 font-medium">
                             <p className="font-bold text-stone-800 dark:text-stone-200">{lead.products[0]}</p>
                             <span className="text-[10px] text-stone-400 block truncate max-w-sm">{lead.notes}</span>
                           </td>

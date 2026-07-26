@@ -1538,7 +1538,7 @@ export default function CalculadoraAgro() {
 
               {/* Name */}
               <div className="space-y-1">
-                <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider block">Nome do Produtor / Empresa</label>
+                <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider block">Nome do Produtor / Empresa</label>
                 <input
                   type="text"
                   required
@@ -1551,7 +1551,7 @@ export default function CalculadoraAgro() {
 
               {/* Phone */}
               <div className="space-y-1">
-                <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider block">WhatsApp Comercial</label>
+                <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider block">WhatsApp Comercial</label>
                 <input
                   type="tel"
                   required
@@ -1565,7 +1565,7 @@ export default function CalculadoraAgro() {
               {/* City and State */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2 space-y-1">
-                  <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider block">Cidade</label>
+                  <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider block">Cidade</label>
                   <input
                     type="text"
                     required
@@ -1576,7 +1576,7 @@ export default function CalculadoraAgro() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider block">Estado</label>
+                  <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider block">Estado</label>
                   <select
                     value={leadState}
                     onChange={(e) => setLeadState(e.target.value)}

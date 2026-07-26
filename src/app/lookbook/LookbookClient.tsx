@@ -498,7 +498,7 @@ export default function LookbookClient() {
                   <h3 className="font-display font-black text-base md:text-lg text-brown-dark dark:text-white uppercase leading-snug">
                     {project.title}
                   </h3>
-                  <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed font-light">
+                  <p className="text-xs text-stone-800 dark:text-stone-100 font-medium leading-relaxed font-light">
                     {project.description}
                   </p>
                 </div>

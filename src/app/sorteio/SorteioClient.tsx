@@ -785,7 +785,7 @@ export default function SorteioClient() {
               <form onSubmit={handleRegisterParticipant} className="space-y-4.5 text-xs">
                 {/* Name */}
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider flex items-center gap-1">
+                  <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider flex items-center gap-1">
                     <User className="h-3.5 w-3.5 text-slate-400" /> Nome Completo:
                   </label>
                   <input
@@ -800,7 +800,7 @@ export default function SorteioClient() {
 
                 {/* WhatsApp */}
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider flex items-center gap-1">
+                  <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider flex items-center gap-1">
                     <Phone className="h-3.5 w-3.5 text-slate-400" /> WhatsApp / Contato:
                   </label>
                   <input
@@ -816,7 +816,7 @@ export default function SorteioClient() {
                 {/* Order Number & Order Value */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider flex items-center gap-1">
+                    <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider flex items-center gap-1">
                       <Hash className="h-3.5 w-3.5 text-slate-400" /> Nº do Pedido:
                     </label>
                     <input
@@ -830,7 +830,7 @@ export default function SorteioClient() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] tracking-wider flex items-center gap-1">
+                    <label className="font-bold text-slate-900 dark:text-slate-100 font-medium uppercase text-[9px] tracking-wider flex items-center gap-1">
                       <DollarSign className="h-3.5 w-3.5 text-slate-400" /> Valor do Pedido (R$):
                     </label>
                     <input

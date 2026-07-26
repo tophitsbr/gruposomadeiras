@@ -46,10 +46,10 @@ export function AboutSection() {
           {/* Info Card (Column 1) */}
           <div className="lg:col-span-5 bg-white dark:bg-zinc-900 rounded-[2rem] p-8 border border-stone-150 dark:border-neutral-800 shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300">
             <div className="space-y-6">
-              <p className="text-stone-600 dark:text-stone-300 leading-relaxed text-sm">
+              <p className="text-stone-900 dark:text-stone-100 font-medium leading-relaxed text-sm">
                 Fundada com o compromisso de entregar o que há de melhor em madeiras de lei e materiais de construção, a <strong className="text-stone-850 dark:text-white font-semibold">Só Madeiras</strong> é referência na região de Estância/SE. 
               </p>
-              <p className="text-stone-600 dark:text-stone-300 leading-relaxed text-sm">
+              <p className="text-stone-900 dark:text-stone-100 font-medium leading-relaxed text-sm">
                 {activeSettings.aboutText}
               </p>
             </div>
@@ -59,7 +59,7 @@ export function AboutSection() {
                 <span className="text-xl">📍</span>
                 <div>
                   <p className="font-bold text-xs uppercase tracking-wider text-stone-850 dark:text-white">Pátio e Showroom</p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{activeSettings.address}</p>
+                  <p className="text-xs text-stone-800 dark:text-stone-100 font-medium mt-0.5">{activeSettings.address}</p>
                 </div>
               </div>
 
@@ -77,7 +77,7 @@ export function AboutSection() {
                 <span className="text-xl">⏰</span>
                 <div>
                   <p className="font-bold text-xs uppercase tracking-wider text-stone-850 dark:text-white">Horário de Funcionamento</p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{activeSettings.workHours}</p>
+                  <p className="text-xs text-stone-800 dark:text-stone-100 font-medium mt-0.5">{activeSettings.workHours}</p>
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@ export function AboutSection() {
             </div>
             <div className="p-6">
               <h4 className="font-display font-black text-base text-stone-850 dark:text-white uppercase">Infraestrutura Premium</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 leading-relaxed">
+              <p className="text-xs text-stone-800 dark:text-stone-100 font-medium mt-2 leading-relaxed">
                 Madeiras de alta densidade estocadas sob condições ideais de ventilação e secagem, garantindo estabilidade mecânica em suas obras. Visite nosso showroom físico e confira de perto a qualidade das peças.
               </p>
             </div>
@@ -108,7 +108,7 @@ export function AboutSection() {
           <div className="lg:col-span-3 bg-white dark:bg-zinc-900 rounded-[2rem] overflow-hidden border border-stone-150 dark:border-neutral-800 shadow-xs p-4 flex flex-col justify-between hover:shadow-md transition-all duration-300">
             <div className="mb-4">
               <h4 className="font-display font-black text-sm text-stone-850 dark:text-white uppercase">Localização no Mapa</h4>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1">Localizados na rodovia de contorno BR-101 para fácil acesso e logística rápida.</p>
+              <p className="text-[11px] text-stone-800 dark:text-stone-100 font-medium mt-1">Localizados na rodovia de contorno BR-101 para fácil acesso e logística rápida.</p>
             </div>
             <div className="flex-1 w-full min-h-[200px] rounded-2xl overflow-hidden border border-stone-100 dark:border-neutral-800">
               <iframe

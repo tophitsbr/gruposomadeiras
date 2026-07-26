@@ -36,7 +36,7 @@ export default function ProfessionalCard({ professional }: ProfessionalCardProps
           </p>
           
           <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center mt-auto">
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">
+            <span className="text-sm text-neutral-900 dark:text-neutral-100 font-medium">
               {professional.reviewsCount} avaliações
             </span>
             <span className="text-sm font-medium text-amber-600 dark:text-amber-400 group-hover:text-amber-500 flex items-center">

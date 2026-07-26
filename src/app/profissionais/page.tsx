@@ -62,7 +62,7 @@ export default function ProfissionaisPage() {
                 <MapPin className="w-8 h-8" />
               </div>
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">De qual cidade você é?</h2>
-              <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+              <p className="text-neutral-900 dark:text-neutral-100 font-medium text-sm">
                 Selecione sua cidade para encontrarmos os melhores profissionais na sua região.
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function ProfissionaisPage() {
           <div className="text-center py-20 bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-100 dark:border-neutral-800 max-w-2xl mx-auto">
             <MapPin className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-3">Nenhum profissional em {userCity}</h3>
-            <p className="text-neutral-500 dark:text-neutral-400 mb-8 max-w-md mx-auto">
+            <p className="text-neutral-900 dark:text-neutral-100 font-medium mb-8 max-w-md mx-auto">
               Ainda não temos parceiros cadastrados nesta categoria em sua cidade. Mas estamos expandindo nossa rede!
             </p>
             <button 

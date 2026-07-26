@@ -211,7 +211,7 @@ export function SeoFAQ({ items }: SeoFAQProps) {
               className="w-full px-5 py-4 flex justify-between items-center text-left gap-4 font-bold text-brown-dark dark:text-white hover:text-primary transition-colors cursor-pointer"
             >
               <span className="text-sm md:text-base leading-snug">{item.question}</span>
-              <div className={`p-1.5 rounded-full bg-slate-50 dark:bg-neutral-800 text-stone-600 dark:text-stone-300 transition-transform duration-300 ${isOpen ? "rotate-185 bg-primary/20 text-brown-dark dark:text-primary" : ""}`}>
+              <div className={`p-1.5 rounded-full bg-slate-50 dark:bg-neutral-800 text-stone-900 dark:text-stone-100 font-medium transition-transform duration-300 ${isOpen ? "rotate-185 bg-primary/20 text-brown-dark dark:text-primary" : ""}`}>
                 <ChevronDown className="h-4 w-4" />
               </div>
             </button>
@@ -346,7 +346,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
             <CheckCircle className="h-10 w-10 animate-bounce" />
           </div>
           <h4 className="font-bold text-lg text-brown-dark dark:text-white">Lead Capturado com Sucesso!</h4>
-          <p className="text-xs text-stone-500 dark:text-stone-400 max-w-xs mx-auto">
+          <p className="text-xs text-stone-800 dark:text-stone-100 font-medium max-w-xs mx-auto">
             Estamos preparando sua ficha técnica e cotação de frete. Você será redirecionado para o WhatsApp corporativo em instantes...
           </p>
           <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto pt-2"></div>
@@ -354,7 +354,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
       ) : (
         <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-4">
           <div className="space-y-1">
-            <label className="text-[10px] md:text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider block">Nome Completo</label>
+            <label className="text-[10px] md:text-xs font-bold text-stone-800 dark:text-stone-100 font-medium uppercase tracking-wider block">Nome Completo</label>
             <input
               type="text"
               required
@@ -366,7 +366,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] md:text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider block">Telefone / WhatsApp com DDD</label>
+            <label className="text-[10px] md:text-xs font-bold text-stone-800 dark:text-stone-100 font-medium uppercase tracking-wider block">Telefone / WhatsApp com DDD</label>
             <input
               type="tel"
               required
@@ -379,7 +379,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-[10px] md:text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider block">Cidade de Entrega</label>
+              <label className="text-[10px] md:text-xs font-bold text-stone-800 dark:text-stone-100 font-medium uppercase tracking-wider block">Cidade de Entrega</label>
               <input
                 type="text"
                 required
@@ -390,7 +390,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] md:text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider block">Estado</label>
+              <label className="text-[10px] md:text-xs font-bold text-stone-800 dark:text-stone-100 font-medium uppercase tracking-wider block">Estado</label>
               <select
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value })}

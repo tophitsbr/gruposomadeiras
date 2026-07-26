@@ -106,7 +106,7 @@ export default async function ProfessionalPortfolioPage({ params }: { params: Pr
                   ))}
                 </div>
               ) : (
-                <p className="text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-center">Nenhum projeto adicionado ainda.</p>
+                <p className="text-neutral-900 dark:text-neutral-100 font-medium bg-white dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-center">Nenhum projeto adicionado ainda.</p>
               )}
             </section>
 
