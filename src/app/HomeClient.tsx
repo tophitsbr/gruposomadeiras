@@ -593,7 +593,8 @@ export default function SoMadeirasFullStack() {
   } | null>(null);
   const [clientLoginForm, setClientLoginForm] = useState({ name: "", phone: "", city: "", state: "SE" });
   const [selectedTrackingLeadId, setSelectedTrackingLeadId] = useState<string | null>(null);
-  const [loginMethod, setLoginMethod] = useState<"traditional" | "social" | "email">("traditional");
+  const [loginMethod, setLoginMethod] = useState<"traditional" | "social" | "email" | "staff">("traditional");
+  const [staffLoginForm, setStaffLoginForm] = useState<{ role: "admin" | "seller", pin: string }>({ role: "admin", pin: "" });
   const [isSocialConnecting, setIsSocialConnecting] = useState(false);
   const [socialProvider, setSocialProvider] = useState<"google" | "facebook" | null>(null);
   const [emailLoginForm, setEmailLoginForm] = useState({
@@ -1888,40 +1889,64 @@ export default function SoMadeirasFullStack() {
     <div className={`min-h-full flex flex-col overflow-x-hidden ${darkMode ? "dark" : ""}`}>
       
       {/* ==========================================
-          TOP DUAL PERSPECTIVE SWITCHER (DEVELOPER BAR)
+          TOP USER ACCESS & HEADER BAR
           ========================================== */}
-      <div className="no-print bg-brown-dark text-white border-b-4 border-primary px-4 py-2 text-sm flex flex-col md:flex-row justify-between items-center gap-2 z-50 sticky top-0 shadow-md">
-        <div className="flex items-center gap-2">
-          <span className="bg-primary text-brown-dark font-black px-2 py-0.5 rounded text-xs">SIMULADOR</span>
-          <span className="font-medium text-xs md:text-sm">Altere a visão da loja para testar os fluxos integrados:</span>
-        </div>
-        <div className="flex bg-brown-medium rounded-lg p-0.5 border border-brown-light overflow-hidden">
-          <button 
-            onClick={() => { setViewMode("client"); trackClick("dev-mode-store"); }} 
-            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${viewMode === "client" ? "bg-primary text-brown-dark shadow-sm" : "hover:bg-brown-dark/30 text-gray-200"}`}
-          >
-            <ShoppingBag className="h-3.5 w-3.5" /> Client Storefront
-          </button>
-          <button 
-            onClick={() => { setViewMode("seller"); trackClick("dev-mode-seller"); }} 
-            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${viewMode === "seller" ? "bg-primary text-brown-dark shadow-sm" : "hover:bg-brown-dark/30 text-gray-200"}`}
-          >
-            <Users className="h-3.5 w-3.5" /> Seller Dashboard
-          </button>
-          <button 
-            onClick={() => { setViewMode("admin"); trackClick("dev-mode-admin"); }} 
-            className={`px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${viewMode === "admin" ? "bg-primary text-brown-dark shadow-sm" : "hover:bg-brown-dark/30 text-gray-200"}`}
-          >
-            <TrendingUp className="h-3.5 w-3.5" /> Admin / CRM Dashboard
-          </button>
-        </div>
+      <div className="no-print bg-brown-dark text-white border-b-2 border-primary/30 px-4 py-2 text-xs flex flex-col md:flex-row justify-between items-center gap-2 z-50 sticky top-0 shadow-md">
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-gray-300 font-medium">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            <span>Estância - SE & Região</span>
+          </div>
+          <span className="hidden sm:inline text-white/20">|</span>
+          <div className="hidden sm:flex items-center gap-1.5 text-gray-300 font-medium">
+            <Phone className="h-3.5 w-3.5 text-primary" />
+            <span>(79) 99629-8990</span>
+          </div>
+          <span className="hidden md:inline text-white/20">|</span>
+          <span className="hidden md:inline bg-primary/20 text-primary px-2 py-0.5 rounded font-semibold text-[11px]">
+            🚚 Entrega Rápida em Sergipe
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Active Session Status (Admin / Seller / Client) */}
+          {viewMode !== "client" || activeClient || isAdminAuthenticated ? (
+            <div className="flex items-center gap-2 bg-white/10 px-2.5 py-1 rounded-md border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-white text-[11px]">
+                {viewMode === "admin"
+                  ? "🛡️ Admin (Cockpit CRM)"
+                  : viewMode === "seller"
+                  ? "💼 Vendedor"
+                  : `👤 ${activeClient?.name || "Cliente"}`}
+              </span>
+              <button
+                onClick={() => {
+                  setViewMode("client");
+                  setIsAdminAuthenticated(false);
+                  setActiveClient(null);
+                }}
+                className="ml-1 text-xs text-red-300 hover:text-red-100 underline font-semibold"
+                title="Encerrar sessão"
+              >
+                Sair
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsMinhaContaOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-brown-dark font-extrabold px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+            >
+              <Users className="h-3.5 w-3.5" /> Área de Login / Entrar
+            </button>
+          )}
+
           {/* Notifications dropdown count */}
           <div className="relative group cursor-pointer">
             <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold animate-pulse">
               {notifications.length}
             </span>
-            <span className="text-gray-300 hover:text-white transition text-xs">🔔 Notificações</span>
+            <span className="text-gray-300 hover:text-white transition text-xs">🔔</span>
             <div className="hidden group-hover:block absolute right-0 mt-2 bg-white text-brown-dark w-72 rounded-lg shadow-xl border border-gray-200 p-2 z-[999] text-xs">
               <h5 className="font-bold border-b border-gray-100 pb-1.5 mb-1.5 text-brown-medium">Notificações do Sistema</h5>
               <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -1934,10 +1959,11 @@ export default function SoMadeirasFullStack() {
               </div>
             </div>
           </div>
+
           {/* Dark Mode toggle */}
           <button 
             onClick={() => setDarkMode(!darkMode)} 
-            className="p-1 rounded bg-brown-medium hover:bg-brown-light text-primary transition"
+            className="p-1.5 rounded bg-brown-medium hover:bg-brown-light text-primary transition"
             title="Alternar Tema"
           >
             {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -8608,7 +8634,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                       </div>
 
                       {/* Login Method Tabs */}
-                      <div className="flex border-b border-gray-200 dark:border-neutral-800 text-xs font-bold text-gray-400">
+                      <div className="flex border-b border-gray-200 dark:border-neutral-800 text-[11px] font-bold text-gray-400">
                         <button
                           type="button"
                           onClick={() => setLoginMethod("traditional")}
@@ -8621,14 +8647,21 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           onClick={() => setLoginMethod("email")}
                           className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "email" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
                         >
-                          ✉️ E-mail / Senha
+                          ✉️ E-mail
                         </button>
                         <button
                           type="button"
                           onClick={() => setLoginMethod("social")}
                           className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "social" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
                         >
-                          🌐 Redes Sociais
+                          🌐 Sociais
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLoginMethod("staff")}
+                          className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "staff" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
+                        >
+                          🔐 Equipe / Admin
                         </button>
                       </div>
 
@@ -8941,6 +8974,63 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             <span>Conectar com Facebook</span>
                           </button>
                         </div>
+                      )}
+
+                      {/* STAFF / ADMIN LOGIN FORM */}
+                      {loginMethod === "staff" && (
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            if (staffLoginForm.role === "admin") {
+                              setIsAdminAuthenticated(true);
+                              setViewMode("admin");
+                              setIsMinhaContaOpen(false);
+                              addSystemNotification("🛡️ Acesso concedido: Painel de Administração!");
+                            } else {
+                              setViewMode("seller");
+                              setIsMinhaContaOpen(false);
+                              addSystemNotification("💼 Acesso concedido: Painel do Vendedor!");
+                            }
+                          }}
+                          className="space-y-4 pt-2 animate-fade-in text-left"
+                        >
+                          <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-lg p-3 text-[11px] text-amber-800 dark:text-amber-300 font-medium leading-relaxed">
+                            🔒 <strong>Acesso Restrito:</strong> Esta área é exclusiva para a equipe interna de vendedores e administradores do grupo <strong>Só Madeiras</strong>.
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nível de Acesso / Perfil:</label>
+                            <select
+                              value={staffLoginForm.role}
+                              onChange={(e) => setStaffLoginForm({ ...staffLoginForm, role: e.target.value as "admin" | "seller" })}
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[36px] font-bold"
+                            >
+                              <option value="admin">🛡️ Administrador / Gestor CRM</option>
+                              <option value="seller">💼 Vendedor / Atendimento</option>
+                            </select>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">PIN / Senha da Equipe:</label>
+                            <input 
+                              type="password"
+                              required
+                              value={staffLoginForm.pin}
+                              onChange={(e) => setStaffLoginForm({ ...staffLoginForm, pin: e.target.value })}
+                              placeholder="Digite a senha ou PIN de acesso (ex: 1234)"
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                            />
+                            <span className="text-[10px] text-gray-400 block pt-0.5">Dica: Digite <strong>1234</strong> ou qualquer senha.</span>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="w-full bg-brown-dark hover:bg-brown-medium text-white font-black text-xs py-3 rounded-lg shadow transition active:scale-95 cursor-pointer mt-4 flex items-center justify-center gap-2"
+                          >
+                            <Lock className="h-4 w-4 text-primary" />
+                            <span>Acessar Painel da Equipe</span>
+                          </button>
+                        </form>
                       )}
                     </>
                   )}
