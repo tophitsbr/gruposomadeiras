@@ -1037,10 +1037,9 @@ export default function SoMadeirasFullStack() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // 1. Initial State Sync
-    const clientIpInfo = Security.SecurityRepository.getClientIp();
-    const isBlocked = Security.SecurityRepository.getBlockedIps().includes(clientIpInfo.ip);
-    setIsIpBlocked(isBlocked);
+    // 1. Initial State Sync & Clear any simulated IP blocks
+    try { localStorage.removeItem("somadeiras_blocked_ips"); } catch(e) {}
+    setIsIpBlocked(false);
 
     setSecurityLogs(Security.SecurityRepository.getLogs());
     setSecurityAlerts(Security.SecurityRepository.getAlerts());
@@ -1112,10 +1111,7 @@ export default function SoMadeirasFullStack() {
       setBlockedIps(Security.SecurityRepository.getBlockedIps());
       setSecurityConfig(Security.SecurityRepository.getConfig());
 
-      const currentIp = Security.SecurityRepository.getClientIp().ip;
-      if (Security.SecurityRepository.getBlockedIps().includes(currentIp)) {
-        setIsIpBlocked(true);
-      }
+      // Keep logs synced without blocking storefront users
     }, 5000);
 
     return () => {
@@ -1974,8 +1970,8 @@ export default function SoMadeirasFullStack() {
       {/* ==========================================
           CLIENT PERSPECTIVE (STOREFRONT & E-COMMERCE)
           ========================================== */}
-      {/* ── Security Firewall IP Block Screen ── */}
-      {isIpBlocked && viewMode !== "admin" ? (
+      {/* ── Security Firewall IP Block Screen (Disabled for Storefront Visitors) ── */}
+      {false ? (
         <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-100 dark:bg-neutral-950 min-h-[85vh] text-center select-none animate-fade-in">
           <div className="max-w-md w-full bg-white dark:bg-neutral-900 border border-red-200 dark:border-red-950/45 p-8 rounded-2xl shadow-2xl space-y-6">
             <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-950/30 flex items-center justify-center text-3xl mx-auto animate-bounce text-red-600 dark:text-red-400">
