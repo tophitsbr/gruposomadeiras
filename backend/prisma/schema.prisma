@@ -1,0 +1,148 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// SYSTEM USER & SELLER MODELS
+// ==========================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SELLER
+}
+
+model Seller {
+  id             String   @id @default(uuid())
+  name           String
+  avatar         String   @default("👨‍💼")
+  commissionRate Float    @default(0.03) // 3% commission
+  goal           Float    @default(30000.00) // Monthly sales target
+  salesCount     Int      @default(0)
+  salesValue     Float    @default(0.0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  leads          Lead[]   @relation("SellerLeads")
+}
+
+// ==========================================
+// CRM LEAD CAPTURE & HISTORY
+// ==========================================
+
+model Lead {
+  id           String     @id @default(uuid())
+  name         String
+  phone        String
+  city         String
+  state        String
+  location     String     // "City - State" formatted
+  source       String     // "Google Ads", "Instagram", etc.
+  utm          String?    // Full query string tracking UTMs
+  products     String[]   // List of products formatted: "Viga x 10"
+  total        Float      // Total budget valuation
+  status       LeadStatus @default(NEW_LEAD)
+  notes        String?    @db.Text
+  device       String     // Browser user agent metadata
+  sessionIp    String     @default("127.0.0.1")
+  
+  sellerId     String
+  seller       Seller     @relation("SellerLeads", fields: [sellerId], references: [id])
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum LeadStatus {
+  NEW_LEAD            // Novo Lead
+  IN_SERVICE          // Em Atendimento
+  BUDGET_SENT         // Orçamento Enviado
+  NEGOTIATION         // Negociação
+  WAITING_CLIENT      // Aguardando Cliente
+  SALE_WON            // Venda Fechada
+  SALE_LOST           // Venda Perdida
+}
+
+// ==========================================
+// CATALOG & CONTENT MODELS (CMS)
+// ==========================================
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  desc        String   @db.Text
+  categorySlug String
+  category    Category @relation(fields: [categorySlug], references: [slug])
+  brandName   String
+  brand       Brand    @relation(fields: [brandName], references: [name])
+  price       Float
+  stock       Int      @default(0)
+  rating      Float    @default(5.0)
+  img         String   @default("🪵") // Emoji or S3/R2 URL key
+  videoUrl    String?
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  slug      String    @id
+  name      String
+  icon      String    @default("🪵")
+  color     String    @default("from-amber-700 to-amber-800")
+  products  Product[]
+}
+
+model Brand {
+  name     String    @id
+  origin   String
+  products Product[]
+}
+
+model Banner {
+  id          String    @id @default(uuid())
+  title       String
+  subtitle    String
+  highlight   String
+  bgClass     String    @default("wood-gradient")
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model BlogPost {
+  id        String   @id @default(uuid())
+  title     String
+  excerpt   String   @db.Text
+  content   String   @db.Text
+  views     Int      @default(0)
+  readTime  String   @default("5 min")
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// ANALYTICS & CLICK TRACKING (HEATMAP)
+// ==========================================
+
+model Event {
+  id        String   @id @default(uuid())
+  elementId String   // ID of button or component clicked
+  sessionIp String   @default("127.0.0.1")
+  device    String
+  timestamp DateTime @default(now())
+}

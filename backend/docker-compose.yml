@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # NestJS Application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: somadeiras_nestjs_api
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DATABASE_URL=postgresql://somadeiras_user:somadeiras_pass@postgres:5432/somadeiras_db?schema=public
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=somadeiras_super_secret_key_2026
+      - CLOUDFLARE_R2_ACCESS_KEY=your_r2_access_key
+      - CLOUDFLARE_R2_SECRET_KEY=your_r2_secret_key
+      - CLOUDFLARE_R2_BUCKET=somadeiras-storage
+      - CLOUDFLARE_R2_ENDPOINT=https://your_cloudflare_id.r2.cloudflarestorage.com
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - somadeiras_network
+
+  # PostgreSQL Relational Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: somadeiras_postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=somadeiras_user
+      - POSTGRES_PASSWORD=somadeiras_pass
+      - POSTGRES_DB=somadeiras_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - somadeiras_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U somadeiras_user -d somadeiras_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache Engine
+  redis:
+    image: redis:7-alpine
+    container_name: somadeiras_redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - somadeiras_network
+
+networks:
+  somadeiras_network:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+  redisdata:
+    driver: local
