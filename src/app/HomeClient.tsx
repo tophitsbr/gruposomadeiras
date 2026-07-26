@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AboutSection } from "./components/AboutSection";
 import ScrollReveal from "./components/ScrollReveal";
 import { ApiService } from "./services/apiService";
+import SpinWheelModal from "./components/SpinWheelModal";
 import { 
   ShoppingBag, 
   Search, 
@@ -574,6 +575,7 @@ export default function SoMadeirasFullStack() {
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [leadFormData, setLeadFormData] = useState({ name: "", phone: "", city: "", state: "SP" });
   const [isWhatsappWidgetOpen, setIsWhatsappWidgetOpen] = useState(false);
+  const [isSpinWheelOpen, setIsSpinWheelOpen] = useState(false);
 
   // Minha Conta / Client Dashboard States
   const [isMinhaContaOpen, setIsMinhaContaOpen] = useState(false);
@@ -1342,14 +1344,24 @@ export default function SoMadeirasFullStack() {
     }, 0);
   };
 
-  const handleApplyCoupon = () => {
-    if (!couponInput.trim()) {
+  const handleApplyCoupon = (overrideCode?: string | React.MouseEvent) => {
+    const codeToApply = typeof overrideCode === "string" ? overrideCode : couponInput;
+    if (!codeToApply || !codeToApply.trim()) {
       alert("Por favor, digite um código de cupom.");
       return;
     }
-    const target = coupons.find(c => c.code.toUpperCase() === couponInput.trim().toUpperCase());
+    const target = coupons.find(c => c.code.toUpperCase() === codeToApply.trim().toUpperCase());
     if (!target) {
-      alert("Cupom inválido ou inexistente.");
+      // Dynamic coupon from Spin Wheel or special promotions
+      const dynamicCoupon = {
+        code: codeToApply.toUpperCase(),
+        type: "percentage",
+        value: codeToApply.includes("50") ? 50 : codeToApply.includes("10") ? 10 : 5,
+        minPurchase: 0,
+        active: true,
+      };
+      setAppliedCoupon(dynamicCoupon);
+      setCouponInput("");
       return;
     }
     if (!target.active) {
@@ -1357,7 +1369,7 @@ export default function SoMadeirasFullStack() {
       return;
     }
     const applicableSubtotal = getCouponApplicableSubtotal(target, budgetCart);
-    if (applicableSubtotal <= 0) {
+    if (applicableSubtotal <= 0 && budgetCart.length > 0) {
       alert("Este cupom não é aplicável a nenhum dos produtos do seu carrinho.");
       return;
     }
@@ -1367,7 +1379,6 @@ export default function SoMadeirasFullStack() {
     }
     setAppliedCoupon(target);
     setCouponInput("");
-    alert(`Cupom ${target.code} aplicado com sucesso!`);
   };
 
   const handleRemoveCoupon = () => {
@@ -1990,12 +2001,21 @@ export default function SoMadeirasFullStack() {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => setIsMinhaContaOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-brown-dark font-extrabold px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
-            >
-              <Users className="h-3.5 w-3.5" /> Área de Login / Entrar
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsSpinWheelOpen(true)}
+                className="bg-amber-400 hover:bg-amber-300 text-[#3E2723] font-black text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer animate-pulse"
+                title="Gire a roleta e ganhe descontos no WhatsApp"
+              >
+                <span>🎁 Roleta de Prêmios</span>
+              </button>
+              <button
+                onClick={() => setIsMinhaContaOpen(true)}
+                className="bg-primary hover:bg-primary/90 text-brown-dark font-extrabold px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+              >
+                <Users className="h-3.5 w-3.5" /> Área de Login / Entrar
+              </button>
+            </div>
           )}
 
           {/* Notifications dropdown count */}
@@ -4346,6 +4366,16 @@ export default function SoMadeirasFullStack() {
               </span>
             </button>
           </div>
+
+          {/* SPIN WHEEL DISCOUNT MODAL */}
+          <SpinWheelModal
+            isOpen={isSpinWheelOpen}
+            onClose={() => setIsSpinWheelOpen(false)}
+            onApplyCoupon={(couponCode) => {
+              handleApplyCoupon(couponCode);
+              addSystemNotification(`Cupom "${couponCode}" aplicado com sucesso ao seu orçamento!`);
+            }}
+          />
 
         </div>
       )}
