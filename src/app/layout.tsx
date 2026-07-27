@@ -90,6 +90,31 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* Meta (Facebook) SDK Script */}
+        <Script id="facebook-jssdk" strategy="afterInteractive">
+          {`
+            window.fbAsyncInit = function() {
+              if (window.FB) {
+                window.FB.init({
+                  appId      : '${process.env.NEXT_PUBLIC_META_APP_ID || "1394385749224181"}',
+                  cookie     : true,
+                  xfbml      : true,
+                  version    : 'v20.0'
+                });
+              }
+            };
+            (function(d, s, id){
+               var js, fjs = d.getElementsByTagName(s)[0];
+               if (d.getElementById(id)) {return;}
+               js = d.createElement(s); js.id = id;
+               js.src = "https://connect.facebook.net/pt_BR/sdk.js";
+               if (fjs && fjs.parentNode) {
+                 fjs.parentNode.insertBefore(js, fjs);
+               }
+             }(document, 'script', 'facebook-jssdk'));
+          `}
+        </Script>
+
         {children}
         <GlobalPopup />
       </body>
