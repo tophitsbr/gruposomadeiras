@@ -5,12 +5,13 @@ import { Star, MessageSquarePlus, ImagePlus, X } from 'lucide-react';
 import { Review } from '../profissionais/data';
 
 interface ReviewSectionProps {
+  professionalId?: string;
   initialReviews: Review[];
   overallRating: number;
   reviewsCount: number;
 }
 
-export default function ReviewSection({ initialReviews, overallRating, reviewsCount }: ReviewSectionProps) {
+export default function ReviewSection({ professionalId, initialReviews, overallRating, reviewsCount }: ReviewSectionProps) {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newRating, setNewRating] = useState(5);
@@ -18,6 +19,22 @@ export default function ReviewSection({ initialReviews, overallRating, reviewsCo
   const [newComment, setNewComment] = useState('');
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (professionalId && typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`somadeiras_reviews_${professionalId}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setReviews([...parsed, ...initialReviews]);
+          }
+        } catch (e) {
+          console.error("Erro ao carregar avaliações", e);
+        }
+      }
+    }
+  }, [professionalId]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -51,7 +68,14 @@ export default function ReviewSection({ initialReviews, overallRating, reviewsCo
       photos: selectedPhotos.length > 0 ? selectedPhotos : undefined,
     };
 
-    setReviews([newReviewObj, ...reviews]);
+    const updatedReviews = [newReviewObj, ...reviews];
+    setReviews(updatedReviews);
+
+    if (professionalId && typeof window !== 'undefined') {
+      const userCreatedReviews = updatedReviews.filter(r => !initialReviews.some(ir => ir.id === r.id));
+      localStorage.setItem(`somadeiras_reviews_${professionalId}`, JSON.stringify(userCreatedReviews));
+    }
+
     setIsFormOpen(false);
     setNewName('');
     setNewComment('');

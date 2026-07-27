@@ -428,12 +428,16 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
 // 4. REUSABLE PREMIUM SEO FOOTER
 // ==========================================
 interface SeoFooterProps {
-  pageTitle: string;
-  regionsText: string;
+  pageTitle?: string;
+  regionsText?: string;
   whatsappNumber?: string;
 }
 
-export function SeoFooter({ pageTitle, regionsText, whatsappNumber = "5579996298990" }: SeoFooterProps) {
+export function SeoFooter({ 
+  pageTitle = "Só Madeiras", 
+  regionsText = "Atendemos com frota própria em Estância, Aracaju, Itabaiana, Lagarto, Propriá, Tobias Barreto, Nossa Senhora do Socorro e todo o estado de Sergipe e norte da Bahia.", 
+  whatsappNumber = "5579996298990" 
+}: SeoFooterProps) {
   const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 
 // Database product IDs for sitemap generation
 const PRODUCT_IDS = Array.from({ length: 19 }, (_, i) => i + 1);
+const PROFESSIONAL_IDS = [1, 2, 3, 4, 5, 6];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://somadeiras.com.br";
@@ -13,6 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/galpoes-currais",
     "/forro-pvc",
     "/eucalipto-tratado-estancia-se",
+    "/eucalipto-tratado-aracaju-se",
+    "/portas-de-madeira-estancia-se",
     "/mourao-de-eucalipto-tratado",
     "/postes-de-eucalipto-tratado",
     "/portas-de-madeira",
@@ -30,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1.0 : 0.8
   }));
 
-  // 2. Dynamic Product Pages (1 to 19)
+  // 2. Dynamic Product Pages
   const productRoutes = PRODUCT_IDS.map(id => ({
     url: `${baseUrl}/produtos/${id}`,
     lastModified: new Date(),
@@ -38,5 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }));
 
-  return [...staticRoutes, ...productRoutes];
+  // 3. Dynamic Professional Profile Pages
+  const professionalRoutes = PROFESSIONAL_IDS.map(id => ({
+    url: `${baseUrl}/profissionais/${id}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7
+  }));
+
+  return [...staticRoutes, ...productRoutes, ...professionalRoutes];
 }

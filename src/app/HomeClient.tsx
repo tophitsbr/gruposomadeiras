@@ -597,7 +597,7 @@ export default function SoMadeirasFullStack() {
   } | null>(null);
   const [clientLoginForm, setClientLoginForm] = useState({ name: "", phone: "", city: "", state: "SE" });
   const [selectedTrackingLeadId, setSelectedTrackingLeadId] = useState<string | null>(null);
-  const [loginMethod, setLoginMethod] = useState<"traditional" | "social" | "email" | "staff">("traditional");
+  const [loginMethod, setLoginMethod] = useState<"traditional" | "social" | "email" | "staff">("social");
   const [staffLoginForm, setStaffLoginForm] = useState<{ role: "admin" | "seller", pin: string }>({ role: "admin", pin: "" });
   const [isSocialConnecting, setIsSocialConnecting] = useState(false);
   const [socialProvider, setSocialProvider] = useState<"google" | "facebook" | null>(null);
@@ -9172,9 +9172,9 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                       {/* SOCIAL NETWORK LOGIN OPTIONS */}
                       {loginMethod === "social" && (
-                        <div className="space-y-4 pt-2 animate-fade-in">
-                          <p className="text-[10px] text-gray-400 dark:text-gray-400 text-center font-light leading-normal pb-2">
-                            Selecione um provedor de identidade social para conectar sua conta automaticamente de forma segura.
+                        <div className="space-y-3 pt-2 animate-fade-in">
+                          <p className="text-[11px] text-gray-500 dark:text-gray-300 text-center font-medium leading-normal pb-1">
+                            Conecte-se com sua rede social preferida em 1 clique para rastrear seus orçamentos e ver seu cashback:
                           </p>
                           
                           {/* Google Connection Button */}
@@ -9187,25 +9187,26 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               setTimeout(() => {
                                 setIsSocialConnecting(false);
                                 const googleUser = {
-                                  name: "Marcelo Silva (Google)",
-                                  phone: "(79) 99999-1234",
+                                  name: "Cliente Google",
+                                  phone: "(79) 99962-8990",
                                   city: "Estância",
                                   state: "SE",
-                                  email: "marcelo.silva@gmail.com",
+                                  email: "cliente.google@gmail.com",
                                   provider: "google"
                                 };
                                 setActiveClient(googleUser);
+                                ApiService.registerLead(googleUser.phone, googleUser.name);
                                 localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(googleUser));
                                 setLeadFormData({ name: googleUser.name, phone: googleUser.phone, city: googleUser.city, state: googleUser.state });
                                 addSystemNotification("👋 Autenticado via Google (Gmail)!");
-                              }, 1500);
+                              }, 1200);
                             }}
-                            className="w-full bg-white hover:bg-neutral-50 text-stone-750 font-bold text-xs py-3 rounded-lg border border-neutral-250 shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer"
+                            className="w-full bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-750 text-stone-850 dark:text-white font-bold text-xs py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer"
                           >
-                            <svg className="h-5 w-5" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
                               <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.477 0-6.295-2.818-6.295-6.295s2.818-6.295 6.295-6.295c1.637 0 3.125.626 4.254 1.646l3.059-3.059C19.167 2.656 15.86 1.5 12.24 1.5 6.208 1.5 1.32 6.388 1.32 12.42s4.888 10.92 10.92 10.92c6.305 0 10.493-4.432 10.493-10.686 0-.747-.075-1.3-.18-1.637H12.24z"/>
                             </svg>
-                            <span>Conectar com Google / Gmail</span>
+                            <span>Entrar com Google / Gmail</span>
                           </button>
 
                           {/* Facebook Connection Button */}
@@ -9218,25 +9219,66 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               setTimeout(() => {
                                 setIsSocialConnecting(false);
                                 const fbUser = {
-                                  name: "Marcelo Silva (Facebook)",
-                                  phone: "(79) 99999-5678",
+                                  name: "Cliente Facebook",
+                                  phone: "(79) 99962-8990",
                                   city: "Estância",
                                   state: "SE",
-                                  email: "marcelo.silva.fb@hotmail.com",
+                                  email: "cliente.facebook@facebook.com",
                                   provider: "facebook"
                                 };
                                 setActiveClient(fbUser);
+                                ApiService.registerLead(fbUser.phone, fbUser.name);
                                 localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
                                 setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
                                 addSystemNotification("👋 Autenticado via Facebook!");
-                              }, 1500);
+                              }, 1200);
                             }}
-                            className="w-full bg-[#1877F2] hover:bg-[#1565C0] text-white font-bold text-xs py-3 rounded-lg shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
+                            className="w-full bg-[#1877F2] hover:bg-[#1565C0] text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
                           >
-                            <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
+                            <svg className="h-5 w-5 fill-current shrink-0" viewBox="0 0 24 24">
                               <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
                             </svg>
-                            <span>Conectar com Facebook</span>
+                            <span>Entrar com Facebook</span>
+                          </button>
+
+                          {/* Apple ID Connection Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsSocialConnecting(true);
+                              setSocialProvider("google");
+                              trackClick("btn-social-auth-apple");
+                              setTimeout(() => {
+                                setIsSocialConnecting(false);
+                                const appleUser = {
+                                  name: "Cliente Apple ID",
+                                  phone: "(79) 99962-8990",
+                                  city: "Estância",
+                                  state: "SE",
+                                  email: "cliente.apple@icloud.com",
+                                  provider: "apple"
+                                };
+                                setActiveClient(appleUser);
+                                ApiService.registerLead(appleUser.phone, appleUser.name);
+                                localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(appleUser));
+                                setLeadFormData({ name: appleUser.name, phone: appleUser.phone, city: appleUser.city, state: appleUser.state });
+                                addSystemNotification("👋 Autenticado via Apple ID!");
+                              }, 1200);
+                            }}
+                            className="w-full bg-black hover:bg-neutral-900 text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border border-neutral-700"
+                          >
+                            <span className="text-base"></span>
+                            <span>Entrar com Apple ID</span>
+                          </button>
+
+                          {/* WhatsApp One-Touch Connection Button */}
+                          <button
+                            type="button"
+                            onClick={() => setLoginMethod("traditional")}
+                            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
+                          >
+                            <Phone className="h-4 w-4" />
+                            <span>Entrar com WhatsApp / Celular</span>
                           </button>
                         </div>
                       )}

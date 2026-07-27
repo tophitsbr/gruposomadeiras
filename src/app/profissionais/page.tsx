@@ -11,6 +11,7 @@ export default function ProfissionaisPage() {
   const [userCity, setUserCity] = useState<string | null>(null);
   const [tempCity, setTempCity] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
+  const [selectedTier, setSelectedTier] = useState<string>('Todos');
   const [isCityModalOpen, setIsCityModalOpen] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
@@ -39,8 +40,12 @@ export default function ProfissionaisPage() {
   const professionals = userCity ? getProfessionalsByCity(userCity) : [];
 
   const filteredProfessionals = professionals.filter((prof) => {
-    if (selectedCategory === 'Todos') return true;
-    return prof.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'Todos' || prof.category === selectedCategory;
+    const matchesTier = selectedTier === 'Todos' || (
+      selectedTier === 'Verificados' ? prof.verificationTier === 'verificado' || prof.verificationTier === 'ouro' || prof.verificationTier === 'destaque' :
+      selectedTier === 'Destaques' ? (prof.verificationTier === 'ouro' || prof.verificationTier === 'destaque') : true
+    );
+    return matchesCategory && matchesTier;
   });
 
   if (!isMounted) return null;
@@ -129,31 +134,54 @@ export default function ProfissionaisPage() {
       {/* Filtros e Listagem */}
       <section className="max-w-7xl mx-auto px-6 sm:px-12 -mt-8 relative z-20">
         
-        {/* Categories Filter */}
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md p-4 mb-12 border border-neutral-100 dark:border-neutral-800 flex flex-wrap gap-2 justify-center">
-          <button
-            onClick={() => setSelectedCategory('Todos')}
-            className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
-              selectedCategory === 'Todos' 
-                ? 'bg-amber-500 text-white shadow-md' 
-                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
-            }`}
-          >
-            Todos
-          </button>
-          {categories.map((cat) => (
+        {/* Categories & Verification Filters */}
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-md p-5 mb-12 border border-neutral-100 dark:border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2 justify-center md:justify-start">
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
-                selectedCategory === cat 
+              onClick={() => setSelectedCategory('Todos')}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                selectedCategory === 'Todos' 
                   ? 'bg-amber-500 text-white shadow-md' 
                   : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
               }`}
             >
-              {cat}
+              Todas as Categorias
             </button>
-          ))}
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  selectedCategory === cat 
+                    ? 'bg-amber-500 text-white shadow-md' 
+                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-neutral-100 dark:border-neutral-800 w-full md:w-auto justify-center">
+            <span className="text-xs font-bold uppercase text-neutral-400 dark:text-neutral-500 mr-1">Filtrar Selo:</span>
+            {[
+              { id: 'Todos', label: 'Todos' },
+              { id: 'Verificados', label: '🛡️ Verificados' },
+              { id: 'Destaques', label: '⭐ Destaques' },
+            ].map(tier => (
+              <button
+                key={tier.id}
+                onClick={() => setSelectedTier(tier.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  selectedTier === tier.id
+                    ? 'bg-neutral-900 text-white dark:bg-amber-400 dark:text-neutral-950 shadow-sm'
+                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200'
+                }`}
+              >
+                {tier.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Grid de Profissionais */}
