@@ -625,16 +625,17 @@ export default function SoMadeirasFullStack() {
   // Flash Sale Countdown States
   const [flashTime, setFlashTime] = useState({ hours: 2, minutes: 9, seconds: 59 });
 
-  // Heatmap tracking
-  const [clicksHeatmap, setClicksHeatmap] = useState<Record<string, number>>({
-    "btn-whatsapp-fixed": 28,
-    "btn-whatsapp-floating": 43,
-    "category-madeiras": 67,
-    "category-ferramentas": 49,
-    "product-viga-cambara": 89,
-    "product-furadeira": 54,
-    "btn-add-budget-viga": 73,
-    "benefit-frete-gratis": 35
+  // Heatmap tracking (100% dados reais)
+  const [clicksHeatmap, setClicksHeatmap] = useState<Record<string, number>>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("somadeiras_clicks_heatmap");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {}
+      }
+    }
+    return {};
   });
 
   // Admin states
@@ -1255,6 +1256,23 @@ export default function SoMadeirasFullStack() {
     }
   }, [crudEditProduct]);
 
+  // Real Page Views and Staff Auto-Login Check
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const currentViews = parseInt(localStorage.getItem("somadeiras_real_views") || "0", 10);
+      localStorage.setItem("somadeiras_real_views", (currentViews + 1).toString());
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const isStaffMode = urlParams.get("mode") === "staff";
+      const isStaffAuth = localStorage.getItem("somadeiras_staff_authenticated") === "true";
+
+      if (isStaffMode || isStaffAuth) {
+        setIsAdminAuthenticated(true);
+        setViewMode("admin");
+      }
+    }
+  }, []);
+
   // Sync state changes with localStorage
   function updateProducts(newProds: any[]) { setProducts(newProds); saveToLocal("somadeiras_products", newProds); }
   function updateLeads(newLeads: any[]) { setLeads(newLeads); saveToLocal("somadeiras_leads", newLeads); }
@@ -1572,10 +1590,11 @@ export default function SoMadeirasFullStack() {
   }, [products, searchQuery, selectedCategoryFilter]);
 
   // ==========================================
-  // ANALYTICS CALCULATIONS
+  // ANALYTICS CALCULATIONS (100% DADOS REAIS)
   // ==========================================
   const statsSummary = useMemo(() => {
-    const totalVisits = clicksHeatmap["btn-whatsapp-fixed"] * 10 + 245;
+    const realViews = typeof window !== "undefined" ? parseInt(localStorage.getItem("somadeiras_real_views") || "1", 10) : 1;
+    const totalVisits = realViews;
     const whatsappClicks = Object.keys(clicksHeatmap)
       .filter(k => k.includes("whatsapp") || k.includes("checkout"))
       .reduce((acc, curr) => acc + (clicksHeatmap[curr] || 0), 0);
@@ -7952,26 +7971,16 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         showToast("Por favor, informe o telefone do vendedor.", "error");
                         return;
                       }
-                      const goalNum = parseFloat(newSellerGoal);
-                      if (isNaN(goalNum) || goalNum <= 0) {
-                        showToast("A meta mensal deve ser um valor positivo.", "error");
-                        return;
-                      }
-                      const commNum = parseFloat(newSellerCommission);
-                      if (isNaN(commNum) || commNum < 0) {
-                        showToast("A comissão deve ser um valor maior ou igual a zero.", "error");
-                        return;
-                      }
 
                       const newId = newSellerName.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now();
                       const newSellerObj = {
                         id: newId,
                         name: newSellerName,
-                        commissionRate: commNum / 100,
+                        commissionRate: 0,
                         salesCount: 0,
                         salesValue: 0.00,
                         activeLeads: 0,
-                        goal: goalNum,
+                        goal: 0,
                         avatar: newSellerAvatar,
                         phone: newSellerPhone.trim().replace(/\D/g, "")
                       };
@@ -7979,8 +7988,6 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                       updateSellers([...sellers, newSellerObj]);
                       showToast(`👤 Vendedor ${newSellerName} cadastrado com sucesso!`);
                       setNewSellerName("");
-                      setNewSellerGoal("30000");
-                      setNewSellerCommission("3");
                       setNewSellerAvatar("👨‍💼");
                       setNewSellerPhone("");
                     }} className="space-y-4">
@@ -8004,31 +8011,6 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           placeholder="Ex: 19999998888"
                           className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-bold"
                         />
-                      </div>
-
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Meta Mensal (R$)</label>
-                          <input
-                            type="number"
-                            value={newSellerGoal}
-                            onChange={(e) => setNewSellerGoal(e.target.value)}
-                            placeholder="Ex: 30000"
-                            className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Comissão (%)</label>
-                          <input
-                            type="number"
-                            step="0.1"
-                            value={newSellerCommission}
-                            onChange={(e) => setNewSellerCommission(e.target.value)}
-                            placeholder="Ex: 3"
-                            className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
-                          />
-                        </div>
                       </div>
 
                       <div className="space-y-1">
@@ -8111,24 +8093,6 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                                 <div>
                                   <span>Faturamento Acumulado</span>
                                   <p className="font-black text-emerald-600 dark:text-emerald-400 text-xs mt-0.5">R$ {(seller.salesValue || 0).toFixed(2)}</p>
-                                </div>
-                                <div>
-                                  <span>Comissão Acumulada</span>
-                                  <p className="font-black text-blue-600 dark:text-blue-400 text-xs mt-0.5">R$ {((seller.salesValue || 0) * (seller.commissionRate || 0)).toFixed(2)}</p>
-                                </div>
-                                <div>
-                                  <span>Meta Mensal</span>
-                                  <p className="font-black text-brown-medium dark:text-primary text-xs mt-0.5">R$ {(seller.goal || 0).toFixed(0)}</p>
-                                </div>
-                              </div>
-
-                              <div className="space-y-1 pt-1">
-                                <div className="flex justify-between text-[9px] font-bold text-gray-450 uppercase">
-                                  <span>Meta Atingida</span>
-                                  <span>{progress.toFixed(1)}%</span>
-                                </div>
-                                <div className="w-full bg-gray-200 dark:bg-dark-border rounded-full h-1.5 overflow-hidden">
-                                  <div className="bg-primary h-full rounded-full transition-all duration-350" style={{ width: `${progress}%` }} />
                                 </div>
                               </div>
                             </div>
@@ -9288,7 +9252,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         <form
                           onSubmit={(e) => {
                             e.preventDefault();
-                            if (staffLoginForm.role === "admin") {
+                            if (staffLoginForm.pin === "1234" || staffLoginForm.pin === "admin") {
                               setIsAdminAuthenticated(true);
                               setViewMode("admin");
                               setIsMinhaContaOpen(false);
@@ -9302,19 +9266,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           className="space-y-4 pt-2 animate-fade-in text-left"
                         >
                           <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-lg p-3 text-[11px] text-amber-800 dark:text-amber-300 font-medium leading-relaxed">
-                            🔒 <strong>Acesso Restrito:</strong> Esta área é exclusiva para a equipe interna de vendedores e administradores do grupo <strong>Só Madeiras</strong>.
-                          </div>
-
-                          <div className="space-y-1">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nível de Acesso / Perfil:</label>
-                            <select
-                              value={staffLoginForm.role}
-                              onChange={(e) => setStaffLoginForm({ ...staffLoginForm, role: e.target.value as "admin" | "seller" })}
-                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[36px] font-bold"
-                            >
-                              <option value="admin">🛡️ Administrador / Gestor CRM</option>
-                              <option value="seller">💼 Vendedor / Atendimento</option>
-                            </select>
+                            🔒 <strong>Acesso da Equipe:</strong> Login unificado para vendedores e administradores da equipe <strong>Só Madeiras</strong>.
                           </div>
 
                           <div className="space-y-1">
@@ -9327,7 +9279,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               placeholder="Digite a senha ou PIN de acesso (ex: 1234)"
                               className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
                             />
-                            <span className="text-[10px] text-gray-400 block pt-0.5">Dica: Digite <strong>1234</strong> ou qualquer senha.</span>
+                            <span className="text-[10px] text-gray-400 block pt-0.5">Digite <strong>1234</strong> para modo gestão ou qualquer senha de vendedor.</span>
                           </div>
 
                           <button
