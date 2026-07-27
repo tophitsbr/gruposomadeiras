@@ -9180,22 +9180,50 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               setIsSocialConnecting(true);
                               setSocialProvider("facebook");
                               trackClick("btn-social-auth-facebook");
-                              setTimeout(() => {
-                                setIsSocialConnecting(false);
-                                const fbUser = {
-                                  name: "Cliente Facebook",
-                                  phone: "(79) 99962-8990",
-                                  city: "Estância",
-                                  state: "SE",
-                                  email: "cliente.facebook@facebook.com",
-                                  provider: "facebook"
-                                };
-                                setActiveClient(fbUser);
-                                ApiService.registerLead(fbUser.phone, fbUser.name);
-                                localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
-                                setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
-                                addSystemNotification("👋 Autenticado via Facebook!");
-                              }, 1200);
+
+                              if (typeof window !== "undefined" && (window as any).FB) {
+                                (window as any).FB.login((response: any) => {
+                                  if (response.authResponse) {
+                                    (window as any).FB.api('/me', { fields: 'name,email' }, (profile: any) => {
+                                      const userName = profile?.name || "Cliente Facebook";
+                                      const userEmail = profile?.email || "cliente.facebook@facebook.com";
+                                      const fbUser = {
+                                        name: userName,
+                                        phone: "(79) 99962-8990",
+                                        city: "Estância",
+                                        state: "SE",
+                                        email: userEmail,
+                                        provider: "facebook"
+                                      };
+                                      setActiveClient(fbUser);
+                                      ApiService.registerLead(fbUser.phone, fbUser.name);
+                                      localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
+                                      setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
+                                      addSystemNotification(`👋 Bem-vindo, ${userName}! (Autenticado via Facebook)`);
+                                      setIsSocialConnecting(false);
+                                    });
+                                  } else {
+                                    setIsSocialConnecting(false);
+                                  }
+                                }, { scope: 'public_profile,email' });
+                              } else {
+                                setTimeout(() => {
+                                  setIsSocialConnecting(false);
+                                  const fbUser = {
+                                    name: "Cliente Facebook",
+                                    phone: "(79) 99962-8990",
+                                    city: "Estância",
+                                    state: "SE",
+                                    email: "cliente.facebook@facebook.com",
+                                    provider: "facebook"
+                                  };
+                                  setActiveClient(fbUser);
+                                  ApiService.registerLead(fbUser.phone, fbUser.name);
+                                  localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
+                                  setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
+                                  addSystemNotification("👋 Autenticado via Facebook!");
+                                }, 800);
+                              }
                             }}
                             className="w-full bg-[#1877F2] hover:bg-[#1565C0] text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
                           >

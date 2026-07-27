@@ -35,15 +35,34 @@ export default function StaffLoginClient() {
     setSocialProvider(provider);
     setErrorMsg('');
 
-    setTimeout(() => {
-      setIsSocialConnecting(false);
-      localStorage.setItem('somadeiras_staff_authenticated', 'true');
-      localStorage.setItem('somadeiras_staff_provider', provider);
-      setSuccessMsg(`Autenticado com sucesso via ${provider}! Entrando no painel...`);
+    if (provider === 'Facebook' && typeof window !== 'undefined' && (window as any).FB) {
+      (window as any).FB.login((response: any) => {
+        if (response.authResponse) {
+          (window as any).FB.api('/me', { fields: 'name,email' }, (profile: any) => {
+            const userName = profile?.name || "Membro Staff Facebook";
+            localStorage.setItem('somadeiras_staff_authenticated', 'true');
+            localStorage.setItem('somadeiras_staff_provider', provider);
+            localStorage.setItem('somadeiras_staff_user', JSON.stringify({ name: userName, email: profile?.email }));
+            setSuccessMsg(`Autenticado como ${userName} via Facebook! Entrando no painel...`);
+            setTimeout(() => {
+              window.location.href = '/?mode=staff';
+            }, 1000);
+          });
+        } else {
+          setIsSocialConnecting(false);
+        }
+      }, { scope: 'public_profile,email' });
+    } else {
       setTimeout(() => {
-        window.location.href = '/?mode=staff';
+        setIsSocialConnecting(false);
+        localStorage.setItem('somadeiras_staff_authenticated', 'true');
+        localStorage.setItem('somadeiras_staff_provider', provider);
+        setSuccessMsg(`Autenticado com sucesso via ${provider}! Entrando no painel...`);
+        setTimeout(() => {
+          window.location.href = '/?mode=staff';
+        }, 1000);
       }, 1000);
-    }, 1200);
+    }
   };
 
   return (
