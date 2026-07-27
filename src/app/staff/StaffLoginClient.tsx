@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { Lock, ArrowLeft, ShieldCheck, Phone, CheckCircle, KeyRound } from 'lucide-react';
 
 export default function StaffLoginClient() {
+  const [memberName, setMemberName] = useState('');
+  const [memberPhone, setMemberPhone] = useState('');
+  const [username, setUsername] = useState('');
   const [pin, setPin] = useState('');
-  const [isSocialConnecting, setIsSocialConnecting] = useState(false);
-  const [socialProvider, setSocialProvider] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -15,54 +16,24 @@ export default function StaffLoginClient() {
     e.preventDefault();
     setErrorMsg('');
 
-    if (!pin.trim()) {
-      setErrorMsg('Por favor, digite a senha ou PIN de acesso.');
+    if (!memberName.trim() || !memberPhone.trim() || !username.trim() || !pin.trim()) {
+      setErrorMsg('Por favor, preencha o Nome, WhatsApp, Nome de Usuário e PIN.');
       return;
     }
 
     // Set staff login session flag in localStorage
     localStorage.setItem('somadeiras_staff_authenticated', 'true');
     localStorage.setItem('somadeiras_staff_pin', pin);
+    localStorage.setItem('somadeiras_staff_user', JSON.stringify({
+      name: memberName.trim(),
+      username: username.trim(),
+      phone: memberPhone.trim()
+    }));
     
-    setSuccessMsg('Acesso concedido! Redirecionando para o painel...');
+    setSuccessMsg(`Acesso concedido para @${username.trim()}! Redirecionando para o painel...`);
     setTimeout(() => {
       window.location.href = '/?mode=staff';
     }, 1000);
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    setIsSocialConnecting(true);
-    setSocialProvider(provider);
-    setErrorMsg('');
-
-    if (provider === 'Facebook' && typeof window !== 'undefined' && (window as any).FB) {
-      (window as any).FB.login((response: any) => {
-        if (response.authResponse) {
-          (window as any).FB.api('/me', { fields: 'name,email' }, (profile: any) => {
-            const userName = profile?.name || "Membro Staff Facebook";
-            localStorage.setItem('somadeiras_staff_authenticated', 'true');
-            localStorage.setItem('somadeiras_staff_provider', provider);
-            localStorage.setItem('somadeiras_staff_user', JSON.stringify({ name: userName, email: profile?.email }));
-            setSuccessMsg(`Autenticado como ${userName} via Facebook! Entrando no painel...`);
-            setTimeout(() => {
-              window.location.href = '/?mode=staff';
-            }, 1000);
-          });
-        } else {
-          setIsSocialConnecting(false);
-        }
-      }, { scope: 'public_profile,email' });
-    } else {
-      setTimeout(() => {
-        setIsSocialConnecting(false);
-        localStorage.setItem('somadeiras_staff_authenticated', 'true');
-        localStorage.setItem('somadeiras_staff_provider', provider);
-        setSuccessMsg(`Autenticado com sucesso via ${provider}! Entrando no painel...`);
-        setTimeout(() => {
-          window.location.href = '/?mode=staff';
-        }, 1000);
-      }, 1000);
-    }
   };
 
   return (
@@ -113,53 +84,53 @@ export default function StaffLoginClient() {
             </div>
           )}
 
-          {/* Social Logins */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => handleSocialLogin('Google')}
-              disabled={isSocialConnecting}
-              className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs py-3.5 rounded-xl border border-neutral-800 shadow-sm flex items-center justify-center gap-3 transition cursor-pointer disabled:opacity-50"
-            >
-              <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.477 0-6.295-2.818-6.295-6.295s2.818-6.295 6.295-6.295c1.637 0 3.125.626 4.254 1.646l3.059-3.059C19.167 2.656 15.86 1.5 12.24 1.5 6.208 1.5 1.32 6.388 1.32 12.42s4.888 10.92 10.92 10.92c6.305 0 10.493-4.432 10.493-10.686 0-.747-.075-1.3-.18-1.637H12.24z"/>
-              </svg>
-              <span>Entrar com Google (Gmail)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSocialLogin('Facebook')}
-              disabled={isSocialConnecting}
-              className="w-full bg-[#1877F2] hover:bg-[#1565C0] text-white font-bold text-xs py-3.5 rounded-xl shadow-sm flex items-center justify-center gap-3 transition cursor-pointer border-none disabled:opacity-50"
-            >
-              <svg className="h-4 w-4 fill-current shrink-0" viewBox="0 0 24 24">
-                <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
-              </svg>
-              <span>Entrar com Facebook</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSocialLogin('WhatsApp')}
-              disabled={isSocialConnecting}
-              className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs py-3.5 rounded-xl shadow-sm flex items-center justify-center gap-3 transition cursor-pointer border-none disabled:opacity-50"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Entrar com WhatsApp Comercial</span>
-            </button>
-          </div>
-
-          <div className="relative flex items-center justify-center my-4">
-            <div className="border-t border-neutral-800 w-full"></div>
-            <span className="bg-neutral-950 px-3 text-[10px] uppercase font-bold text-neutral-500 absolute">ou com Senha / PIN</span>
-          </div>
-
-          {/* PIN Form */}
+          {/* Staff Login Form (Nome + Numero + Usuario + PIN) */}
           <form onSubmit={handleStaffLogin} className="space-y-4">
             <div>
-              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1.5">
-                Senha / PIN da Equipe
+              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                Nome Completo do Membro:
+              </label>
+              <input 
+                type="text"
+                value={memberName}
+                onChange={(e) => setMemberName(e.target.value)}
+                placeholder="Ex: Marcelo Silva"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                WhatsApp / Celular Comercial:
+              </label>
+              <input 
+                type="tel"
+                value={memberPhone}
+                onChange={(e) => setMemberPhone(e.target.value)}
+                placeholder="Ex: (79) 99999-8888"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                Nome de Usuário (Username):
+              </label>
+              <input 
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
+                placeholder="Ex: marcelo.staff"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                Senha / PIN da Equipe:
               </label>
               <div className="relative">
                 <input 
@@ -176,7 +147,7 @@ export default function StaffLoginClient() {
 
             <button
               type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 mt-2"
             >
               <Lock className="h-4 w-4" />
               <span>Acessar Painel da Equipe</span>

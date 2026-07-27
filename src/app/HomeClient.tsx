@@ -595,9 +595,9 @@ export default function SoMadeirasFullStack() {
     partnerCode?: string,
     indicatedLeadsCount?: number
   } | null>(null);
-  const [clientLoginForm, setClientLoginForm] = useState({ name: "", phone: "", city: "", state: "SE" });
+  const [clientLoginForm, setClientLoginForm] = useState({ name: "", username: "", phone: "", city: "Estância", state: "SE" });
   const [selectedTrackingLeadId, setSelectedTrackingLeadId] = useState<string | null>(null);
-  const [loginMethod, setLoginMethod] = useState<"traditional" | "social" | "email" | "staff">("social");
+  const [loginMethod, setLoginMethod] = useState<"traditional" | "staff">("traditional");
   const [staffLoginForm, setStaffLoginForm] = useState<{ role: "admin" | "seller", pin: string }>({ role: "admin", pin: "" });
   const [isSocialConnecting, setIsSocialConnecting] = useState(false);
   const [socialProvider, setSocialProvider] = useState<"google" | "facebook" | null>(null);
@@ -1072,9 +1072,10 @@ export default function SoMadeirasFullStack() {
         const client = JSON.parse(savedClient);
         setActiveClient(client);
         setClientLoginForm({
-          name: client.name,
-          phone: client.phone,
-          city: client.city,
+          name: client.name || "",
+          username: client.username || "",
+          phone: client.phone || "",
+          city: client.city || "Estância",
           state: client.state || "SE"
         });
       } catch (e) {}
@@ -8869,79 +8870,79 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           onClick={() => setLoginMethod("traditional")}
                           className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "traditional" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
                         >
-                          📱 WhatsApp
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLoginMethod("email")}
-                          className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "email" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
-                        >
-                          ✉️ E-mail
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLoginMethod("social")}
-                          className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "social" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
-                        >
-                          🌐 Sociais
+                          👤 Cliente
                         </button>
                         <button
                           type="button"
                           onClick={() => setLoginMethod("staff")}
                           className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "staff" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
                         >
-                          🔐 Equipe / Admin
+                          🔐 Equipe / Staff
                         </button>
                       </div>
 
-                      {/* TRADITIONAL WHATSAPP LOGIN */}
+                      {/* CLIENT DIRECT LOGIN FORM (NOME + NUMERO + USUARIO) */}
                       {loginMethod === "traditional" && (
                         <form 
                           onSubmit={(e) => {
                             e.preventDefault();
-                            if (!clientLoginForm.name || !clientLoginForm.phone || !clientLoginForm.city) {
-                              alert("Por favor, preencha todos os campos.");
+                            if (!clientLoginForm.name.trim() || !clientLoginForm.phone.trim() || !clientLoginForm.username.trim()) {
+                              alert("Por favor, preencha o Nome, WhatsApp e Nome de Usuário.");
                               return;
                             }
                             const user = {
-                              name: clientLoginForm.name,
-                              phone: clientLoginForm.phone,
-                              city: clientLoginForm.city,
-                              state: clientLoginForm.state,
-                              provider: "whatsapp"
+                              name: clientLoginForm.name.trim(),
+                              username: clientLoginForm.username.trim(),
+                              phone: clientLoginForm.phone.trim(),
+                              city: clientLoginForm.city || "Estância",
+                              state: clientLoginForm.state || "SE",
+                              provider: "direto"
                             };
                             setActiveClient(user);
+                            ApiService.registerLead(user.phone, user.name);
                             localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
                             setLeadFormData({ name: user.name, phone: user.phone, city: user.city, state: user.state });
-                            addSystemNotification(`👋 Bem-vindo ao portal, ${user.name}!`);
+                            addSystemNotification(`👋 Bem-vindo(a), ${user.name} (@${user.username})!`);
                           }}
-                          className="space-y-4 pt-2 animate-fade-in"
+                          className="space-y-4 pt-2 animate-fade-in text-left"
                         >
-                          <div className="space-y-1 text-left">
+                          <div className="space-y-1">
                             <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome Completo:</label>
                             <input 
                               type="text"
                               required
                               value={clientLoginForm.name}
                               onChange={(e) => setClientLoginForm({ ...clientLoginForm, name: e.target.value })}
-                              placeholder="Ex: João da Silva"
-                              className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                              placeholder="Ex: Marcelo Silva"
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
                             />
                           </div>
 
-                          <div className="space-y-1 text-left">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-355 tracking-wider block">WhatsApp / Celular:</label>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Número de Celular / WhatsApp:</label>
                             <input 
                               type="tel"
                               required
                               value={clientLoginForm.phone}
                               onChange={(e) => setClientLoginForm({ ...clientLoginForm, phone: e.target.value })}
-                              placeholder="Ex: (79) 99999-9999"
-                              className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                              placeholder="Ex: (79) 99999-8888"
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
                             />
                           </div>
 
-                          <div className="grid grid-cols-3 gap-2 text-left">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome de Usuário (Username):</label>
+                            <input 
+                              type="text"
+                              required
+                              value={clientLoginForm.username}
+                              onChange={(e) => setClientLoginForm({ ...clientLoginForm, username: e.target.value.toLowerCase().replace(/\s+/g, '') })}
+                              placeholder="Ex: marcelo.silva"
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2">
                             <div className="col-span-2 space-y-1">
                               <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Cidade:</label>
                               <input 
@@ -8950,7 +8951,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                                 value={clientLoginForm.city}
                                 onChange={(e) => setClientLoginForm({ ...clientLoginForm, city: e.target.value })}
                                 placeholder="Ex: Estância"
-                                className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                                className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
                               />
                             </div>
                             <div className="space-y-1">
@@ -8958,7 +8959,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               <select
                                 value={clientLoginForm.state}
                                 onChange={(e) => setClientLoginForm({ ...clientLoginForm, state: e.target.value })}
-                                className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[34px]"
+                                className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[34px]"
                               >
                                 <option value="SE">SE</option>
                                 <option value="BA">BA</option>
@@ -8973,306 +8974,11 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                           <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow transition active:scale-95 cursor-pointer mt-4"
+                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow-md transition active:scale-95 cursor-pointer mt-4"
                           >
-                            Acessar Painel do Cliente
+                            Entrar no Portal do Cliente
                           </button>
                         </form>
-                      )}
-
-                      {/* EMAIL / PASSWORD LOGIN & SIGNUP */}
-                      {loginMethod === "email" && (
-                        <form 
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            if (!emailLoginForm.email || !emailLoginForm.password) {
-                              alert("Preencha e-mail e senha.");
-                              return;
-                            }
-                            if (emailLoginForm.isSignUp && (!emailLoginForm.name || !emailLoginForm.phone || !emailLoginForm.city)) {
-                              alert("Preencha todos os campos do cadastro.");
-                              return;
-                            }
-
-                            if (emailLoginForm.isSignUp) {
-                              const user = {
-                                name: emailLoginForm.name,
-                                phone: emailLoginForm.phone,
-                                city: emailLoginForm.city,
-                                state: emailLoginForm.state,
-                                email: emailLoginForm.email,
-                                provider: "email"
-                              };
-                              setActiveClient(user);
-                              localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
-                              setLeadFormData({ name: user.name, phone: user.phone, city: user.city, state: user.state });
-                              addSystemNotification(`👋 Cadastro criado! Bem-vindo, ${user.name}!`);
-                            } else {
-                              const cleanEmail = emailLoginForm.email.trim();
-                              const matchedLead = leads.find(l => l.notes?.includes(cleanEmail) || l.name.toLowerCase().replace(/\s/g, "") === cleanEmail.split("@")[0]);
-                              
-                              const userName = matchedLead ? matchedLead.name : emailLoginForm.email.split("@")[0].replace(/\W/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-                              const userPhone = matchedLead ? matchedLead.phone : "(79) 99999-1000";
-                              const userCity = matchedLead ? matchedLead.city : "Estância";
-                              const userState = matchedLead ? matchedLead.state : "SE";
-
-                              const user = {
-                                name: userName,
-                                phone: userPhone,
-                                city: userCity,
-                                state: userState,
-                                email: cleanEmail,
-                                provider: "email"
-                              };
-                              setActiveClient(user);
-                              localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
-                              setLeadFormData({ name: user.name, phone: user.phone, city: user.city, state: user.state });
-                              addSystemNotification(`👋 Login efetuado com sucesso!`);
-                            }
-                          }}
-                          className="space-y-4 pt-2 animate-fade-in text-left"
-                        >
-                          {emailLoginForm.isSignUp && (
-                            <>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome Completo:</label>
-                                <input 
-                                  type="text"
-                                  required
-                                  value={emailLoginForm.name}
-                                  onChange={(e) => setEmailLoginForm({ ...emailLoginForm, name: e.target.value })}
-                                  placeholder="Ex: João da Silva"
-                                  className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">WhatsApp / Celular:</label>
-                                <input 
-                                  type="tel"
-                                  required
-                                  value={emailLoginForm.phone}
-                                  onChange={(e) => setEmailLoginForm({ ...emailLoginForm, phone: e.target.value })}
-                                  placeholder="Ex: (79) 99999-9999"
-                                  className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                                />
-                              </div>
-                            </>
-                          )}
-
-                          <div className="space-y-1">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-355 tracking-wider block">Endereço de E-mail:</label>
-                            <input 
-                              type="email"
-                              required
-                              value={emailLoginForm.email}
-                              onChange={(e) => setEmailLoginForm({ ...emailLoginForm, email: e.target.value })}
-                              placeholder="Ex: joao@gmail.com"
-                              className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                            />
-                          </div>
-
-                          <div className="space-y-1">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Senha:</label>
-                            <input 
-                              type="password"
-                              required
-                              value={emailLoginForm.password}
-                              onChange={(e) => setEmailLoginForm({ ...emailLoginForm, password: e.target.value })}
-                              placeholder="Digite sua senha"
-                              className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                            />
-                          </div>
-
-                          {emailLoginForm.isSignUp && (
-                            <div className="grid grid-cols-3 gap-2 text-left">
-                              <div className="col-span-2 space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Cidade:</label>
-                                <input 
-                                  type="text"
-                                  required
-                                  value={emailLoginForm.city}
-                                  onChange={(e) => setEmailLoginForm({ ...emailLoginForm, city: e.target.value })}
-                                  placeholder="Ex: Estância"
-                                  className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Estado:</label>
-                                <select
-                                  value={emailLoginForm.state}
-                                  onChange={(e) => setEmailLoginForm({ ...emailLoginForm, state: e.target.value })}
-                                  className="w-full bg-slate-50 dark:bg-neutral-955 border border-gray-255 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[34px]"
-                                >
-                                  <option value="SE">SE</option>
-                                  <option value="BA">BA</option>
-                                  <option value="AL">AL</option>
-                                  <option value="PE">PE</option>
-                                  <option value="SP">SP</option>
-                                  <option value="RJ">RJ</option>
-                                  <option value="MG">MG</option>
-                                </select>
-                              </div>
-                            </div>
-                          )}
-
-                          <button
-                            type="submit"
-                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow transition active:scale-95 cursor-pointer mt-4"
-                          >
-                            {emailLoginForm.isSignUp ? "Cadastrar & Acessar Painel" : "Acessar Painel do Cliente"}
-                          </button>
-
-                          <div className="text-center pt-2">
-                            <button
-                              type="button"
-                              onClick={() => setEmailLoginForm({ ...emailLoginForm, isSignUp: !emailLoginForm.isSignUp })}
-                              className="text-[10px] text-brown-medium hover:text-primary-hover dark:text-gray-350 font-bold transition hover:underline animate-fade-in"
-                            >
-                              {emailLoginForm.isSignUp ? "Já possui conta? Faça Login por e-mail" : "Não tem conta? Cadastre-se com e-mail"}
-                            </button>
-                          </div>
-                        </form>
-                      )}
-
-                      {/* SOCIAL NETWORK LOGIN OPTIONS */}
-                      {loginMethod === "social" && (
-                        <div className="space-y-3 pt-2 animate-fade-in">
-                          <p className="text-[11px] text-gray-500 dark:text-gray-300 text-center font-medium leading-normal pb-1">
-                            Conecte-se com sua rede social preferida em 1 clique para rastrear seus orçamentos e ver seu cashback:
-                          </p>
-                          
-                          {/* Google Connection Button */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsSocialConnecting(true);
-                              setSocialProvider("google");
-                              trackClick("btn-social-auth-google");
-                              setTimeout(() => {
-                                setIsSocialConnecting(false);
-                                const googleUser = {
-                                  name: "Cliente Google",
-                                  phone: "(79) 99962-8990",
-                                  city: "Estância",
-                                  state: "SE",
-                                  email: "cliente.google@gmail.com",
-                                  provider: "google"
-                                };
-                                setActiveClient(googleUser);
-                                ApiService.registerLead(googleUser.phone, googleUser.name);
-                                localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(googleUser));
-                                setLeadFormData({ name: googleUser.name, phone: googleUser.phone, city: googleUser.city, state: googleUser.state });
-                                addSystemNotification("👋 Autenticado via Google (Gmail)!");
-                              }, 1200);
-                            }}
-                            className="w-full bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-750 text-stone-850 dark:text-white font-bold text-xs py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer"
-                          >
-                            <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
-                              <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.477 0-6.295-2.818-6.295-6.295s2.818-6.295 6.295-6.295c1.637 0 3.125.626 4.254 1.646l3.059-3.059C19.167 2.656 15.86 1.5 12.24 1.5 6.208 1.5 1.32 6.388 1.32 12.42s4.888 10.92 10.92 10.92c6.305 0 10.493-4.432 10.493-10.686 0-.747-.075-1.3-.18-1.637H12.24z"/>
-                            </svg>
-                            <span>Entrar com Google / Gmail</span>
-                          </button>
-
-                          {/* Facebook Connection Button */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsSocialConnecting(true);
-                              setSocialProvider("facebook");
-                              trackClick("btn-social-auth-facebook");
-
-                              if (typeof window !== "undefined" && (window as any).FB) {
-                                (window as any).FB.login((response: any) => {
-                                  if (response.authResponse) {
-                                    (window as any).FB.api('/me', { fields: 'name,email' }, (profile: any) => {
-                                      const userName = profile?.name || "Cliente Facebook";
-                                      const userEmail = profile?.email || "cliente.facebook@facebook.com";
-                                      const fbUser = {
-                                        name: userName,
-                                        phone: "(79) 99962-8990",
-                                        city: "Estância",
-                                        state: "SE",
-                                        email: userEmail,
-                                        provider: "facebook"
-                                      };
-                                      setActiveClient(fbUser);
-                                      ApiService.registerLead(fbUser.phone, fbUser.name);
-                                      localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
-                                      setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
-                                      addSystemNotification(`👋 Bem-vindo, ${userName}! (Autenticado via Facebook)`);
-                                      setIsSocialConnecting(false);
-                                    });
-                                  } else {
-                                    setIsSocialConnecting(false);
-                                  }
-                                }, { scope: 'public_profile,email' });
-                              } else {
-                                setTimeout(() => {
-                                  setIsSocialConnecting(false);
-                                  const fbUser = {
-                                    name: "Cliente Facebook",
-                                    phone: "(79) 99962-8990",
-                                    city: "Estância",
-                                    state: "SE",
-                                    email: "cliente.facebook@facebook.com",
-                                    provider: "facebook"
-                                  };
-                                  setActiveClient(fbUser);
-                                  ApiService.registerLead(fbUser.phone, fbUser.name);
-                                  localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(fbUser));
-                                  setLeadFormData({ name: fbUser.name, phone: fbUser.phone, city: fbUser.city, state: fbUser.state });
-                                  addSystemNotification("👋 Autenticado via Facebook!");
-                                }, 800);
-                              }
-                            }}
-                            className="w-full bg-[#1877F2] hover:bg-[#1565C0] text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
-                          >
-                            <svg className="h-5 w-5 fill-current shrink-0" viewBox="0 0 24 24">
-                              <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
-                            </svg>
-                            <span>Entrar com Facebook</span>
-                          </button>
-
-                          {/* Apple ID Connection Button */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsSocialConnecting(true);
-                              setSocialProvider("google");
-                              trackClick("btn-social-auth-apple");
-                              setTimeout(() => {
-                                setIsSocialConnecting(false);
-                                const appleUser = {
-                                  name: "Cliente Apple ID",
-                                  phone: "(79) 99962-8990",
-                                  city: "Estância",
-                                  state: "SE",
-                                  email: "cliente.apple@icloud.com",
-                                  provider: "apple"
-                                };
-                                setActiveClient(appleUser);
-                                ApiService.registerLead(appleUser.phone, appleUser.name);
-                                localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(appleUser));
-                                setLeadFormData({ name: appleUser.name, phone: appleUser.phone, city: appleUser.city, state: appleUser.state });
-                                addSystemNotification("👋 Autenticado via Apple ID!");
-                              }, 1200);
-                            }}
-                            className="w-full bg-black hover:bg-neutral-900 text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border border-neutral-700"
-                          >
-                            <span className="text-base"></span>
-                            <span>Entrar com Apple ID</span>
-                          </button>
-
-                          {/* WhatsApp One-Touch Connection Button */}
-                          <button
-                            type="button"
-                            onClick={() => setLoginMethod("traditional")}
-                            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-sm flex items-center justify-center gap-3 transition duration-200 active:scale-98 cursor-pointer border-none"
-                          >
-                            <Phone className="h-4 w-4" />
-                            <span>Entrar com WhatsApp / Celular</span>
-                          </button>
-                        </div>
                       )}
 
                       {/* STAFF / ADMIN LOGIN FORM */}
