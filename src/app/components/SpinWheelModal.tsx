@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { X, Gift, Sparkles, Check, Copy, Phone, ArrowRight } from "lucide-react";
 import { ApiService } from "../services/apiService";
+import { saveData } from "@/lib/dataService";
 
 interface SpinWheelModalProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export default function SpinWheelModal({ isOpen, onClose, onApplyCoupon }: SpinW
         date: new Date().toISOString().split("T")[0],
         status: "Roleta de Prêmios",
       });
-      localStorage.setItem("somadeiras_leads", JSON.stringify(existingLeads));
+      saveData("somadeiras_leads", existingLeads);
     } catch (err) {}
 
     setTimeout(() => {

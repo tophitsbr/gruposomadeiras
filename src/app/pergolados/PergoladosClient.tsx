@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { AboutSection } from "../components/AboutSection";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { 
   ShoppingBag, 
   MapPin, 
@@ -455,7 +456,7 @@ export default function PergoladosPage() {
           };
           
           const updated = [newAbandonedLead, ...leadsListLocal];
-          localStorage.setItem("somadeiras_leads", JSON.stringify(updated));
+          saveData("somadeiras_leads", updated);
           setLeadsList(updated);
         }
       }
@@ -499,7 +500,7 @@ export default function PergoladosPage() {
     };
 
     const updatedLeads = [newLead, ...leadsList];
-    localStorage.setItem("somadeiras_leads", JSON.stringify(updatedLeads));
+    saveData("somadeiras_leads", updatedLeads);
     setLeadsList(updatedLeads);
 
     trackPergoladosStat("leads");

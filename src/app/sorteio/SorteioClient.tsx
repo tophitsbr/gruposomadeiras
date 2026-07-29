@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { 
   ArrowLeft, 
   Gift, 
@@ -205,7 +206,7 @@ export default function SorteioClient() {
       location: "Estância - SE",
       notes: `Cadastrou o pedido #${newParticipant.orderNumber} no Sorteio de Prêmios. Cupom: ${newParticipant.code}`
     };
-    localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...leadsList]));
+    saveData("somadeiras_leads", [newLead, ...leadsList]);
 
     // Success and save ticket visual state
     setRegisteredCupom(newParticipant);

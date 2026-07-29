@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { AboutSection } from "./AboutSection";
 import { 
   Phone, 
@@ -293,7 +294,7 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
         notes: `Interessado em ${pageTitle}. Lead gerado na página SEO institucional.`
       };
 
-      localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...existingLeads]));
+      saveData("somadeiras_leads", [newLead, ...existingLeads]);
 
       // Also trigger a system notification on the admin dashboard if active
       const notifsStr = localStorage.getItem("somadeiras_notifications") || "[]";

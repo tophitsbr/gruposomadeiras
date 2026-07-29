@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import {
   ArrowLeft,
   Phone,
@@ -428,7 +429,7 @@ export default function CalculadoraTelhadoClient() {
       status: "Novo Lead", sellerId: "maria",
       notes: `Telhado ${width}x${length}m, inclinação ${slope}%, telha ${calc.tileSpec.label}. Vol: ${calc.finalVol}m³.`,
     };
-    localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...parsedCRM]));
+    saveData("somadeiras_leads", [newLead, ...parsedCRM]);
     setLeadModalOpen(false);
     window.open(`https://api.whatsapp.com/send?phone=${activeWhatsapp}&text=${encodeURIComponent(text)}`, "_blank");
   };

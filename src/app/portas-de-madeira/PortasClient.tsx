@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { AboutSection } from "../components/AboutSection";
 import { 
   ArrowLeft, 
@@ -405,7 +406,7 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
         notes: `Lead configurou uma porta no modal de detalhes: ${selectedProduct.title}`
       };
       const currentLeads = localStorage.getItem("somadeiras_leads") || "[]";
-      localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...JSON.parse(currentLeads)]));
+      saveData("somadeiras_leads", [newLead, ...JSON.parse(currentLeads)]);
       
       const notifs = localStorage.getItem("somadeiras_notifications") || "[]";
       const newNotif = {
@@ -1188,7 +1189,7 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
                 // Update in dbProducts & localStorage
                 const updatedDb = dbProducts.map(p => p.id === selectedProduct.id ? { ...p, ...updatedProduct } : p);
                 setDbProducts(updatedDb);
-                localStorage.setItem("somadeiras_products", JSON.stringify(updatedDb));
+                saveData("somadeiras_products", updatedDb);
 
                 setIsEditingTechSpec(false);
                 showToastMsg("✅ Ficha técnica atualizada com sucesso!");

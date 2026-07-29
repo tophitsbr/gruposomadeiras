@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { 
   ArrowLeft, 
   ShoppingBag, 
@@ -275,7 +276,7 @@ export default function LookbookClient() {
     // Save lead to local storage CRM db
     const currentLeads = localStorage.getItem("somadeiras_leads");
     const leadsList = currentLeads ? JSON.parse(currentLeads) : [];
-    localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...leadsList]));
+    saveData("somadeiras_leads", [newLead, ...leadsList]);
 
     // WhatsApp Redirect
     const waMessage = `Olá! Meu nome é interessado no Lookbook Só Madeiras.\n\nTenho interesse nos seguintes materiais vistos nas inspirações:\n${cartText}\n\n*Total Estimado:* R$ ${cartTotal.toFixed(2)}\n*Valor Pix (10% Off):* R$ ${pixTotal.toFixed(2)}\n\nGostaria de cotar frete para Sergipe.`;

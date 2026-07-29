@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { AboutSection } from "./components/AboutSection";
 import ScrollReveal from "./components/ScrollReveal";
 import { ApiService } from "./services/apiService";
 import SpinWheelModal from "./components/SpinWheelModal";
+import { saveData, loadAllData, migrateLocalToRedis } from "@/lib/dataService";
 import { 
   ShoppingBag, 
   Search, 
@@ -821,7 +822,7 @@ export default function SoMadeirasFullStack() {
   const handleSavePopupCampaign = (updatedConfig: PopupConfig) => {
     setPopupCampaign(updatedConfig);
     try {
-      localStorage.setItem("somadeiras_active_popup", JSON.stringify(updatedConfig));
+      saveData("somadeiras_active_popup", updatedConfig);
       window.dispatchEvent(new Event("somadeiras_reload_popup"));
       showToast("🚀 Campanha de Popup salva com sucesso e ativa no site!");
     } catch (err) {
@@ -906,7 +907,7 @@ export default function SoMadeirasFullStack() {
 
   const saveBannerZones = (zones: BannerZoneData[]) => {
     setBannerZones(zones);
-    localStorage.setItem("somadeiras_banner_zones", JSON.stringify(zones));
+    saveData("somadeiras_banner_zones", zones);
   };
 
   const handleMenuLinkClick = (e: React.MouseEvent, link: string) => {
@@ -1048,10 +1049,11 @@ export default function SoMadeirasFullStack() {
     },
   ], [settings]);
 
-  // Load and Save localStorage DB
+  // Load data from Redis (server) with localStorage fallback
   useEffect(() => {
     setMounted(true);
-    // Load local storage or default data
+
+    // 1. Immediately load from localStorage for instant UI
     const localProds = localStorage.getItem("somadeiras_products");
     const localLeads = localStorage.getItem("somadeiras_leads");
     const localSellers = localStorage.getItem("somadeiras_sellers");
@@ -1070,7 +1072,6 @@ export default function SoMadeirasFullStack() {
     if (localSellers) setSellers(JSON.parse(localSellers)); else setSellers(INITIAL_SELLERS);
     if (localTelhas) setTelhasList(JSON.parse(localTelhas)); else setTelhasList(INITIAL_TELHAS);
     if (localCats) setCategories(JSON.parse(localCats)); else setCategories(INITIAL_CATEGORIES);
-
     setBrands(INITIAL_BRANDS);
     if (localPosts) setBlogPosts(JSON.parse(localPosts)); else setBlogPosts(INITIAL_BLOG_POSTS);
     if (localHeatmap) setClicksHeatmap(JSON.parse(localHeatmap));
@@ -1079,43 +1080,53 @@ export default function SoMadeirasFullStack() {
     if (localBannerSlides) setBannerSlides(JSON.parse(localBannerSlides));
     if (localMenuItems) setMenuItems(JSON.parse(localMenuItems)); else setMenuItems(DEFAULT_MENU_ITEMS);
 
-    
     const localNextSellerIndex = localStorage.getItem("somadeiras_next_seller_index");
     if (localNextSellerIndex) setNextSellerIndex(parseInt(localNextSellerIndex, 10));
-
     const localCoupons = localStorage.getItem("somadeiras_coupons");
     if (localCoupons) setCoupons(JSON.parse(localCoupons)); else setCoupons(INITIAL_COUPONS);
 
-
-    
     if (localCart) {
-      try {
-        setBudgetCart(JSON.parse(localCart));
-      } catch (err) {
-        console.error("Erro ao carregar o carrinho:", err);
-      }
+      try { setBudgetCart(JSON.parse(localCart)); } catch (err) { console.error("Erro ao carregar o carrinho:", err); }
     }
-
     const localDraft = localStorage.getItem("somadeiras_draft_lead");
-    if (localDraft) {
-      try {
-        setLeadFormData(JSON.parse(localDraft));
-      } catch (e) {}
-    }
-
+    if (localDraft) { try { setLeadFormData(JSON.parse(localDraft)); } catch (e) {} }
     const savedClient = localStorage.getItem("somadeiras_logged_in_client");
     if (savedClient) {
       try {
         const client = JSON.parse(savedClient);
         setActiveClient(client);
-        setClientLoginForm({
-          name: client.name || "",
-          username: client.username || "",
-          phone: client.phone || "",
-          city: client.city || "Estância",
-          state: client.state || "SE"
-        });
+        setClientLoginForm({ name: client.name || "", username: client.username || "", phone: client.phone || "", city: client.city || "Estância", state: client.state || "SE" });
       } catch (e) {}
+    }
+
+    // 2. Then fetch from Redis server (source of truth) and override local data
+    loadAllData().then((serverData) => {
+      if (serverData.somadeiras_products) setProducts(serverData.somadeiras_products as any[]);
+      if (serverData.somadeiras_leads) setLeads(serverData.somadeiras_leads as any[]);
+      if (serverData.somadeiras_sellers) setSellers(serverData.somadeiras_sellers as any[]);
+      if (serverData.somadeiras_tiles) setTelhasList(serverData.somadeiras_tiles as any[]);
+      if (serverData.somadeiras_categories) setCategories(serverData.somadeiras_categories as any[]);
+      if (serverData.somadeiras_blog_posts) setBlogPosts(serverData.somadeiras_blog_posts as any[]);
+      if (serverData.somadeiras_heatmap) setClicksHeatmap(serverData.somadeiras_heatmap as any);
+      if (serverData.somadeiras_settings) setSettings(serverData.somadeiras_settings as any);
+      if (serverData.somadeiras_flash_deals) setFlashDeals(serverData.somadeiras_flash_deals as any[]);
+      if (serverData.somadeiras_banner_slides) setBannerSlides(serverData.somadeiras_banner_slides as any[]);
+      if (serverData.somadeiras_menu_items) setMenuItems(serverData.somadeiras_menu_items as any[]);
+      if (serverData.somadeiras_coupons) setCoupons(serverData.somadeiras_coupons as any[]);
+      if (serverData.somadeiras_next_seller_index) setNextSellerIndex(Number(serverData.somadeiras_next_seller_index));
+      if (serverData.somadeiras_banner_zones) setBannerZones(serverData.somadeiras_banner_zones as any);
+      if (serverData.somadeiras_active_popup) setPopupCampaign(serverData.somadeiras_active_popup as any);
+    }).catch(() => {
+      console.warn("[HomeClient] Failed to load from Redis, using localStorage data");
+    });
+
+    // 3. Migrate any existing localStorage data to Redis (runs once per browser)
+    const migrated = localStorage.getItem("somadeiras_redis_migrated");
+    if (!migrated) {
+      migrateLocalToRedis().then(() => {
+        localStorage.setItem("somadeiras_redis_migrated", "true");
+        console.log("[HomeClient] localStorage data migrated to Redis");
+      }).catch(() => {});
     }
   }, []);
 
@@ -1255,7 +1266,7 @@ export default function SoMadeirasFullStack() {
   }, [budgetCart]);
 
   const saveToLocal = (key: string, data: any) => {
-    localStorage.setItem(key, JSON.stringify(data));
+    saveData(key, data);
   };
 
   // Automatic banner slide interval
@@ -1333,7 +1344,7 @@ export default function SoMadeirasFullStack() {
 
     const nextIndex = (index + 1) % sellers.length;
     setNextSellerIndex(nextIndex);
-    localStorage.setItem("somadeiras_next_seller_index", nextIndex.toString());
+    saveData("somadeiras_next_seller_index", nextIndex);
 
     return assigned;
   };

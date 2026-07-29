@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
+import { saveData } from "@/lib/dataService";
 import { AboutSection } from "../components/AboutSection";
 import { 
   ArrowLeft, 
@@ -504,7 +505,7 @@ export default function CalculadoraAgro() {
         : `Solicitou Curral de ${cCapacity} cabeças c/ ${cDivisions} divisórias, tronco: ${cHasTronco ? "sim" : "não"}, embarcador: ${cHasEmbarcador ? "sim" : "não"}.`
     };
 
-    localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...parsedLeads]));
+    saveData("somadeiras_leads", [newLead, ...parsedLeads]);
 
     setIsLeadModalOpen(false);
     addSystemNotification("Orçamento enviado! Direcionando para o WhatsApp...");

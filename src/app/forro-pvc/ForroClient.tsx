@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { AboutSection } from "../components/AboutSection";
+import { saveData, loadData } from "@/lib/dataService";
 import { 
   ArrowLeft, 
   Phone, 
@@ -97,30 +98,21 @@ export default function CalculadoraForroPVC() {
       }
     }
 
+    // Load from localStorage instantly
     const local = localStorage.getItem("somadeiras_settings");
-    if (local) {
-      try {
-        setSettings(JSON.parse(local));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
+    if (local) { try { setSettings(JSON.parse(local)); } catch (e) { console.error(e); } }
     const localForros = localStorage.getItem("somadeiras_forro_products");
-    if (localForros) {
-      try {
-        setForroProducts(JSON.parse(localForros));
-      } catch (e) {
-        setForroProducts(INITIAL_FORRO_PRODUCTS);
-      }
-    } else {
-      setForroProducts(INITIAL_FORRO_PRODUCTS);
-    }
+    if (localForros) { try { setForroProducts(JSON.parse(localForros)); } catch (e) { setForroProducts(INITIAL_FORRO_PRODUCTS); } }
+    else { setForroProducts(INITIAL_FORRO_PRODUCTS); }
+
+    // Then sync from Redis server (source of truth)
+    loadData("somadeiras_settings").then((data) => { if (data) setSettings(data as any); }).catch(() => {});
+    loadData("somadeiras_forro_products").then((data) => { if (data) setForroProducts(data as any[]); }).catch(() => {});
   }, []);
 
   const updateForroProducts = (newList: ForroProduct[]) => {
     setForroProducts(newList);
-    localStorage.setItem("somadeiras_forro_products", JSON.stringify(newList));
+    saveData("somadeiras_forro_products", newList);
   };
 
   const activeWhatsapp = settings?.whatsappNumber || "5579996298990";
@@ -217,7 +209,7 @@ export default function CalculadoraForroPVC() {
             notes: `Carrinho abandonado na simulação de Forro PVC para ${roomsList.length} cômodo(s). Área total: ${consolidatedMaterials.totalArea.toFixed(1)}m².`
           };
 
-          localStorage.setItem("somadeiras_leads", JSON.stringify([newAbandonedLead, ...parsedLeads]));
+          saveData("somadeiras_leads", [newAbandonedLead, ...parsedLeads]);
         }
       }
     }
@@ -435,7 +427,7 @@ export default function CalculadoraForroPVC() {
     };
 
 
-    localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...parsedLeads]));
+    saveData("somadeiras_leads", [newLead, ...parsedLeads]);
 
     setIsSubmitted(true);
     setIsLeadModalOpen(false);
