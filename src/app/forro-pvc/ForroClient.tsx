@@ -74,6 +74,7 @@ export default function CalculadoraForroPVC() {
   const [settings, setSettings] = useState<any>(null);
 
   // Forro Products Management State
+  const [isAdmin, setIsAdmin] = useState(false);
   const [forroProducts, setForroProducts] = useState<ForroProduct[]>([]);
   const [isForroModalOpen, setIsForroModalOpen] = useState(false);
   const [editingForro, setEditingForro] = useState<ForroProduct | null>(null);
@@ -88,6 +89,14 @@ export default function CalculadoraForroPVC() {
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined") {
+      const isStaff = localStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const mode = new URLSearchParams(window.location.search).get("mode");
+      if (isStaff || mode === "admin" || mode === "staff") {
+        setIsAdmin(true);
+      }
+    }
+
     const local = localStorage.getItem("somadeiras_settings");
     if (local) {
       try {
@@ -491,23 +500,25 @@ export default function CalculadoraForroPVC() {
               <p className="text-[10px] text-slate-400">Cadastre, edite informações ou troque imagens dos forros do catálogo</p>
             </div>
             
-            <button
-              onClick={() => {
-                setEditingForro(null);
-                setForroForm({
-                  name: "",
-                  brand: "Só Madeiras",
-                  image: "",
-                  desc: "",
-                  specs: "20cm de largura | 8mm de espessura",
-                  color: "Branco"
-                });
-                setIsForroModalOpen(true);
-              }}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2 rounded-full shadow transition flex items-center gap-1.5 cursor-pointer"
-            >
-              <span>➕ Cadastrar Forro</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => {
+                  setEditingForro(null);
+                  setForroForm({
+                    name: "",
+                    brand: "Só Madeiras",
+                    image: "",
+                    desc: "",
+                    specs: "20cm de largura | 8mm de espessura",
+                    color: "Branco"
+                  });
+                  setIsForroModalOpen(true);
+                }}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2 rounded-full shadow transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>➕ Cadastrar Forro</span>
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -524,71 +535,76 @@ export default function CalculadoraForroPVC() {
                     onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop"; }}
                   />
                   
-                  {/* Photo Change trigger */}
-                  <label className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white p-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition">
-                    📷 Trocar Foto
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            const updated = forroProducts.map(f => f.id === forro.id ? { ...f, image: reader.result as string } : f);
-                            updateForroProducts(updated);
-                            setSystemNotification(`📷 Foto do ${forro.name} alterada!`);
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                    />
-                  </label>
+                  {/* Photo Change trigger - APENAS ADMIN */}
+                  {isAdmin && (
+                    <label className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white p-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition">
+                      📷 Trocar Foto
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              const updated = forroProducts.map(f => f.id === forro.id ? { ...f, image: reader.result as string } : f);
+                              updateForroProducts(updated);
+                              setSystemNotification(`📷 Foto do ${forro.name} alterada!`);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  )}
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <div className="flex justify-between items-start gap-2">
                     <span className="text-[9px] font-black uppercase text-[#F4B400] tracking-wider">{forro.brand}</span>
-                    <span className="text-[9px] bg-slate-200 dark:bg-neutral-800 px-2 py-0.5 rounded font-bold text-slate-700 dark:text-stone-300">{forro.color}</span>
+                    <span className="text-[9px] bg-slate-200 dark:bg-neutral-800 px-2 py-0.5 rounded font-black text-slate-800 dark:text-stone-200">{forro.color}</span>
                   </div>
-                  <h4 className="font-bold text-xs text-slate-800 dark:text-white leading-snug">{forro.name}</h4>
-                  <p className="text-[10px] text-slate-500 dark:text-stone-400 leading-normal font-light line-clamp-2">{forro.desc}</p>
-                  <p className="text-[9px] text-slate-400 font-mono pt-1">{forro.specs}</p>
+                  <h4 className="font-black text-xs text-slate-900 dark:text-white leading-snug">{forro.name}</h4>
+                  <p className="text-[11px] text-slate-700 dark:text-stone-300 leading-normal font-medium line-clamp-2">{forro.desc}</p>
+                  <p className="text-[10px] text-slate-800 dark:text-stone-200 font-bold font-mono pt-1">{forro.specs}</p>
                 </div>
 
-                <div className="pt-2 border-t border-slate-200/60 dark:border-neutral-800 flex justify-end gap-2 text-xs">
-                  <button
-                    onClick={() => {
-                      setEditingForro(forro);
-                      setForroForm({
-                        name: forro.name,
-                        brand: forro.brand,
-                        image: forro.image,
-                        desc: forro.desc,
-                        specs: forro.specs,
-                        color: forro.color
-                      });
-                      setIsForroModalOpen(true);
-                    }}
-                    className="px-3 py-1 bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-800 dark:text-amber-300 rounded-lg font-bold text-[10px]"
-                  >
-                    ✏️ Editar Info
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (window.confirm(`Deseja realmente excluir o forro "${forro.name}"?`)) {
-                        const updated = forroProducts.filter(f => f.id !== forro.id);
-                        updateForroProducts(updated);
-                        setSystemNotification(`🗑️ Forro "${forro.name}" removido!`);
-                      }
-                    }}
-                    className="px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 rounded-lg font-bold text-[10px]"
-                  >
-                    🗑️ Excluir
-                  </button>
-                </div>
+                {isAdmin && (
+                  <div className="pt-2 border-t border-slate-200/60 dark:border-neutral-800 flex justify-end gap-2 text-xs">
+                    <button
+                      onClick={() => {
+                        setEditingForro(forro);
+                        setForroForm({
+                          name: forro.name,
+                          brand: forro.brand,
+                          image: forro.image,
+                          desc: forro.desc,
+                          specs: forro.specs,
+                          color: forro.color
+                        });
+                        setIsForroModalOpen(true);
+                      }}
+                      className="px-3 py-1 bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-800 dark:text-amber-300 rounded-lg font-bold text-[10px]"
+                    >
+                      ✏️ Editar Info
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Deseja realmente excluir o forro "${forro.name}"?`)) {
+                          const updated = forroProducts.filter(f => f.id !== forro.id);
+                          updateForroProducts(updated);
+                          setSystemNotification(`🗑️ Forro "${forro.name}" removido!`);
+                        }
+                      }}
+                      className="px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 rounded-lg font-bold text-[10px]"
+                    >
+                      🗑️ Excluir
+                    </button>
+                  </div>
+                )}
               </div>
+
             ))}
           </div>
         </section>
@@ -913,66 +929,57 @@ export default function CalculadoraForroPVC() {
                         <div className="overflow-x-auto">
                           <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                              <tr className="text-slate-400 dark:text-stone-500 font-bold uppercase text-[8px] tracking-wider border-b border-slate-100 dark:border-neutral-850">
-                                <th className="py-1">Item / Insumo</th>
-                                <th className="py-1">Dimensões / Especificações</th>
-                                <th className="py-1 text-right">Quant.</th>
-                                <th className="py-1 text-center">Unid.</th>
-                                <th className="py-1 text-right">Preço Estimado</th>
+                              <tr className="text-slate-900 dark:text-stone-300 font-black uppercase text-[9px] tracking-wider border-b border-slate-200 dark:border-neutral-800">
+                                <th className="py-2">Item / Insumo</th>
+                                <th className="py-2">Dimensões / Especificações</th>
+                                <th className="py-2 text-right">Quant.</th>
+                                <th className="py-2 text-center">Unid.</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100/50 dark:divide-neutral-850/30 text-[11px]">
+                            <tbody className="divide-y divide-slate-200 dark:divide-neutral-800 text-[11px]">
                               {/* PVC panels */}
-                              <tr className="hover:bg-white/40 dark:hover:bg-neutral-800/10">
-                                <td className="py-2 font-bold text-slate-700 dark:text-slate-200">Placas Forro PVC 20cm</td>
-                                <td className="py-2 text-slate-400 font-mono text-[9px]">Placa de 20cm larg. x {room.panelLength.toFixed(1)}m comp.</td>
-                                <td className="py-2 text-right font-black text-slate-800 dark:text-[#F4B400]">{room.panelsQty}</td>
-                                <td className="py-2 text-center text-slate-450 text-[9px]">Peças</td>
-                                <td className="py-2 text-right font-bold text-slate-700 dark:text-stone-300">R$ {panelsCost.toFixed(2)}</td>
+                              <tr className="hover:bg-slate-100 dark:hover:bg-neutral-800/40">
+                                <td className="py-2.5 font-bold text-slate-900 dark:text-slate-100">Placas Forro PVC 20cm</td>
+                                <td className="py-2.5 text-slate-700 dark:text-slate-300 font-bold font-mono text-[10px]">Placa de 20cm larg. x {room.panelLength.toFixed(1)}m comp.</td>
+                                <td className="py-2.5 text-right font-black text-slate-900 dark:text-[#F4B400] text-xs">{room.panelsQty}</td>
+                                <td className="py-2.5 text-center text-slate-700 dark:text-slate-300 font-bold text-[10px]">Peças</td>
                               </tr>
                               {/* Ripão */}
-                              <tr className="hover:bg-white/40 dark:hover:bg-neutral-800/10">
-                                <td className="py-2 font-bold text-slate-700 dark:text-slate-200">Ripão Estrutural de Madeira 5x3cm</td>
-                                <td className="py-2 text-slate-400 font-mono text-[9px]">Peça de {room.ripaoLength.toFixed(1)}m | Espaçamento 60cm perpendicular</td>
-                                <td className="py-2 text-right font-black text-slate-800 dark:text-[#F4B400]">{room.ripaoQty}</td>
-                                <td className="py-2 text-center text-slate-450 text-[9px]">Peças</td>
-                                <td className="py-2 text-right font-bold text-slate-700 dark:text-stone-300">R$ {ripaoCost.toFixed(2)}</td>
+                              <tr className="hover:bg-slate-100 dark:hover:bg-neutral-800/40">
+                                <td className="py-2.5 font-bold text-slate-900 dark:text-slate-100">Ripão Estrutural de Madeira 5x3cm</td>
+                                <td className="py-2.5 text-slate-700 dark:text-slate-300 font-bold font-mono text-[10px]">Peça de {room.ripaoLength.toFixed(1)}m | Espaçamento 60cm perpendicular</td>
+                                <td className="py-2.5 text-right font-black text-slate-900 dark:text-[#F4B400] text-xs">{room.ripaoQty}</td>
+                                <td className="py-2.5 text-center text-slate-700 dark:text-slate-300 font-bold text-[10px]">Peças</td>
                               </tr>
                               {/* Ripas */}
-                              <tr className="hover:bg-white/40 dark:hover:bg-neutral-800/10">
-                                <td className="py-2 font-bold text-slate-700 dark:text-slate-200">Ripa Niveladora de Madeira 5x1cm</td>
-                                <td className="py-2 text-slate-400 font-mono text-[9px]">Peça de 3.0m | Nivelamento perímetro alvenaria</td>
-                                <td className="py-2 text-right font-black text-slate-800 dark:text-[#F4B400]">{room.ripasQty}</td>
-                                <td className="py-2 text-center text-slate-450 text-[9px]">Peças</td>
-                                <td className="py-2 text-right font-bold text-slate-700 dark:text-stone-300">R$ {ripasCost.toFixed(2)}</td>
+                              <tr className="hover:bg-slate-100 dark:hover:bg-neutral-800/40">
+                                <td className="py-2.5 font-bold text-slate-900 dark:text-slate-100">Ripa Niveladora de Madeira 5x1cm</td>
+                                <td className="py-2.5 text-slate-700 dark:text-slate-300 font-bold font-mono text-[10px]">Peça de 3.0m | Nivelamento perímetro alvenaria</td>
+                                <td className="py-2.5 text-right font-black text-slate-900 dark:text-[#F4B400] text-xs">{room.ripasQty}</td>
+                                <td className="py-2.5 text-center text-slate-700 dark:text-slate-300 font-bold text-[10px]">Peças</td>
                               </tr>
                               {/* Trim */}
-                              <tr className="hover:bg-white/40 dark:hover:bg-neutral-800/10">
-                                <td className="py-2 font-bold text-slate-700 dark:text-slate-200">Moldura Acabamento Perfil U</td>
-                                <td className="py-2 text-slate-400 font-mono text-[9px]">Barra de 3.0m | Contorno perimetral estético</td>
-                                <td className="py-2 text-right font-black text-slate-800 dark:text-[#F4B400]">{room.trimQty}</td>
-                                <td className="py-2 text-center text-slate-450 text-[9px]">Peças</td>
-                                <td className="py-2 text-right font-bold text-slate-700 dark:text-stone-300">R$ {trimCost.toFixed(2)}</td>
+                              <tr className="hover:bg-slate-100 dark:hover:bg-neutral-800/40">
+                                <td className="py-2.5 font-bold text-slate-900 dark:text-slate-100">Moldura Acabamento Perfil U</td>
+                                <td className="py-2.5 text-slate-700 dark:text-slate-300 font-bold font-mono text-[10px]">Barra de 3.0m | Contorno perimetral estético</td>
+                                <td className="py-2.5 text-right font-black text-slate-900 dark:text-[#F4B400] text-xs">{room.trimQty}</td>
+                                <td className="py-2.5 text-center text-slate-700 dark:text-slate-300 font-bold text-[10px]">Peças</td>
                               </tr>
                               {/* Screws */}
-                              <tr className="hover:bg-white/40 dark:hover:bg-neutral-800/10">
-                                <td className="py-2 font-bold text-slate-700 dark:text-slate-200">Parafusos e Buchas S8 + Soberbos</td>
-                                <td className="py-2 text-slate-400 font-mono text-[9px]">Kit de fixação placas e madeira (Laje/Parede)</td>
-                                <td className="py-2 text-right font-black text-slate-800 dark:text-[#F4B400]">{room.screwsQty}</td>
-                                <td className="py-2 text-center text-slate-450 text-[9px]">un</td>
-                                <td className="py-2 text-right font-bold text-slate-700 dark:text-stone-300">R$ {screwsCost.toFixed(2)}</td>
+                              <tr className="hover:bg-slate-100 dark:hover:bg-neutral-800/40">
+                                <td className="py-2.5 font-bold text-slate-900 dark:text-slate-100">Parafusos e Buchas S8 + Soberbos</td>
+                                <td className="py-2.5 text-slate-700 dark:text-slate-300 font-bold font-mono text-[10px]">Kit de fixação placas e madeira (Laje/Parede)</td>
+                                <td className="py-2.5 text-right font-black text-slate-900 dark:text-[#F4B400] text-xs">{room.screwsQty}</td>
+                                <td className="py-2.5 text-center text-slate-700 dark:text-slate-300 font-bold text-[10px]">un</td>
                               </tr>
                             </tbody>
                           </table>
-                        </div>
-
-                        <div className="flex justify-end pt-2 border-t border-slate-100 dark:border-neutral-800 text-xs font-black text-[#3E2723] dark:text-[#F4B400]">
-                          Subtotal {room.name}: R$ {roomSubtotal.toFixed(2)}
                         </div>
                       </div>
                     );
                   })}
                 </div>
+
 
                 {/* CONSOLIDATED TOTAL FOR STOCK/PURCHASE */}
                 <div className="pt-6 border-t border-slate-200 dark:border-neutral-800 space-y-4">
@@ -1066,14 +1073,36 @@ export default function CalculadoraForroPVC() {
                       </span>
                     </div>
                     
-                    <button
-                      type="button"
-                      onClick={() => { setIsSubmitted(false); setIsLeadModalOpen(true); }}
-                      className="w-full sm:w-auto shrink-0 bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs px-8 py-4 rounded-xl shadow-xl transition cursor-pointer uppercase tracking-wider border-none active:scale-97"
-                    >
-                      ⚙️ Solicitar Cotação / Enviar p/ WhatsApp
-                    </button>
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (typeof window !== "undefined") {
+                            const saved = JSON.parse(localStorage.getItem("somadeiras_saved_forro_budgets") || "[]");
+                            const newEntry = {
+                              id: `forro-budget-${Date.now()}`,
+                              date: new Date().toLocaleDateString("pt-BR"),
+                              rooms: roomsList,
+                              totalArea: consolidatedMaterials.totalArea
+                            };
+                            localStorage.setItem("somadeiras_saved_forro_budgets", JSON.stringify([newEntry, ...saved]));
+                            alert(`💾 Orçamento de Forro PVC salvo com sucesso para ${roomsList.length} cômodo(s)!`);
+                          }
+                        }}
+                        className="flex-1 sm:flex-none bg-stone-800 hover:bg-stone-700 text-white font-black text-xs px-5 py-4 rounded-xl shadow-lg transition cursor-pointer uppercase tracking-wider border border-white/10 active:scale-97"
+                      >
+                        💾 Salvar Orçamento
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setIsSubmitted(false); setIsLeadModalOpen(true); }}
+                        className="flex-1 sm:flex-none bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs px-8 py-4 rounded-xl shadow-xl transition cursor-pointer uppercase tracking-wider border-none active:scale-97"
+                      >
+                        ⚙️ Solicitar Cotação / Enviar p/ WhatsApp
+                      </button>
+                    </div>
                   </div>
+
 
                 </div>
               </>

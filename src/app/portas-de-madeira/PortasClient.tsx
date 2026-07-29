@@ -511,16 +511,17 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="bg-primary text-brown-dark font-black px-4.5 py-2.5 rounded-full text-xs hover:bg-primary-hover transition shadow flex items-center gap-1.5 active:scale-95"
+              className="bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black px-5 py-2.5 rounded-full text-xs transition shadow-lg flex items-center gap-2 active:scale-95 cursor-pointer uppercase tracking-wider border-2 border-white/20"
             >
-              <ShoppingBag className="h-4.5 w-4.5" />
-              <span>Orçamento</span>
+              <ShoppingBag className="h-4.5 w-4.5 text-[#3E2723]" />
+              <span className="font-black text-[#3E2723]">MEU ORÇAMENTO</span>
               {cart.length > 0 && (
-                <span className="bg-brown-dark text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black">
+                <span className="bg-[#3E2723] text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow-inner">
                   {cart.reduce((a, b) => a + b.quantity, 0)}
                 </span>
               )}
             </button>
+
           </div>
         </div>
       </header>

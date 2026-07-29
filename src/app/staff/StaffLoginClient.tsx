@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Lock, ArrowLeft, ShieldCheck, Phone, CheckCircle, KeyRound } from 'lucide-react';
+import { Lock, ArrowLeft, ShieldCheck, CheckCircle } from 'lucide-react';
 
 export default function StaffLoginClient() {
-  const [memberName, setMemberName] = useState('');
-  const [memberPhone, setMemberPhone] = useState('');
   const [username, setUsername] = useState('');
   const [pin, setPin] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -16,8 +14,8 @@ export default function StaffLoginClient() {
     e.preventDefault();
     setErrorMsg('');
 
-    if (!memberName.trim() || !memberPhone.trim() || !username.trim() || !pin.trim()) {
-      setErrorMsg('Por favor, preencha o Nome, WhatsApp, Nome de Usuário e PIN.');
+    if (!username.trim() || !pin.trim()) {
+      setErrorMsg('Por favor, preencha o Usuário e a Senha/PIN.');
       return;
     }
 
@@ -25,15 +23,15 @@ export default function StaffLoginClient() {
     localStorage.setItem('somadeiras_staff_authenticated', 'true');
     localStorage.setItem('somadeiras_staff_pin', pin);
     localStorage.setItem('somadeiras_staff_user', JSON.stringify({
-      name: memberName.trim(),
       username: username.trim(),
-      phone: memberPhone.trim()
+      name: username.trim(),
+      phone: "(79) 99629-8990"
     }));
     
     setSuccessMsg(`Acesso concedido para @${username.trim()}! Redirecionando para o painel...`);
     setTimeout(() => {
       window.location.href = '/?mode=staff';
-    }, 1000);
+    }, 800);
   };
 
   return (
@@ -51,7 +49,7 @@ export default function StaffLoginClient() {
           Voltar ao site
         </Link>
         <span className="text-xs font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-          Portal da Equipe
+          Acesso Restrito
         </span>
       </div>
 
@@ -61,13 +59,13 @@ export default function StaffLoginClient() {
           
           <div className="text-center space-y-2">
             <div className="w-14 h-14 bg-amber-500 text-neutral-950 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20 font-black text-xl mb-3">
-              🪵
+              🔐
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-white">
-              SÓ MADEIRAS <span className="text-amber-500">STAFF</span>
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+              PAINEL DA <span className="text-amber-500">EQUIPE & ADMIN</span>
             </h1>
             <p className="text-xs text-neutral-400">
-              Acesso unificado para vendedores e administradores da equipe.
+              Digite seu nome de usuário e senha de acesso.
             </p>
           </div>
 
@@ -84,36 +82,8 @@ export default function StaffLoginClient() {
             </div>
           )}
 
-          {/* Staff Login Form (Nome + Numero + Usuario + PIN) */}
+          {/* Staff Login Form (Usuário + Senha) */}
           <form onSubmit={handleStaffLogin} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
-                Nome Completo do Membro:
-              </label>
-              <input 
-                type="text"
-                value={memberName}
-                onChange={(e) => setMemberName(e.target.value)}
-                placeholder="Ex: Marcelo Silva"
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
-                WhatsApp / Celular Comercial:
-              </label>
-              <input 
-                type="tel"
-                value={memberPhone}
-                onChange={(e) => setMemberPhone(e.target.value)}
-                placeholder="Ex: (79) 99999-8888"
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
-                required
-              />
-            </div>
-
             <div>
               <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
                 Nome de Usuário (Username):
@@ -122,7 +92,7 @@ export default function StaffLoginClient() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
-                placeholder="Ex: marcelo.staff"
+                placeholder="Ex: vendedor.marcelo ou admin"
                 className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
                 required
               />
@@ -130,7 +100,7 @@ export default function StaffLoginClient() {
 
             <div>
               <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
-                Senha / PIN da Equipe:
+                Senha / PIN de Acesso:
               </label>
               <div className="relative">
                 <input 
@@ -138,33 +108,28 @@ export default function StaffLoginClient() {
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   placeholder="Digite sua senha ou PIN (ex: 1234)"
-                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
+                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold pr-10"
                   required
                 />
-                <KeyRound className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/20 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition active:scale-98 uppercase tracking-wider cursor-pointer border-none flex items-center justify-center gap-2 mt-6"
             >
-              <Lock className="h-4 w-4" />
-              <span>Acessar Painel da Equipe</span>
+              <ShieldCheck className="w-4 h-4" />
+              Entrar no Painel da Equipe
             </button>
           </form>
-
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="max-w-md mx-auto w-full text-center pb-4 text-xs text-neutral-500 relative z-10">
-        <p className="flex items-center justify-center gap-1">
-          <ShieldCheck className="w-4 h-4 text-amber-500" />
-          Acesso Restrito - Grupo Só Madeiras Sergipe
-        </p>
+      {/* Footer info */}
+      <div className="max-w-md mx-auto w-full pb-4 text-center text-xs text-neutral-500 relative z-10">
+        <p>© 2026 SÓ MADEIRAS LTDA • Sistema Interno de Gestão</p>
       </div>
-
     </div>
   );
 }

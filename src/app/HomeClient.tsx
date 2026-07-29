@@ -623,6 +623,8 @@ export default function SoMadeirasFullStack() {
     indicatedLeadsCount?: number
   } | null>(null);
   const [clientLoginForm, setClientLoginForm] = useState({ name: "", username: "", phone: "", city: "Estância", state: "SE" });
+  const [clientTabMode, setClientTabMode] = useState<"register" | "login">("register");
+
   const [selectedTrackingLeadId, setSelectedTrackingLeadId] = useState<string | null>(null);
   const [loginMethod, setLoginMethod] = useState<"traditional" | "staff">("traditional");
   const [staffLoginForm, setStaffLoginForm] = useState<{ role: "admin" | "seller", pin: string }>({ role: "admin", pin: "" });
@@ -3375,29 +3377,31 @@ export default function SoMadeirasFullStack() {
                   </p>
                 </div>
                 <div className="flex gap-2 items-center">
-                  <button
-                    onClick={() => {
-                      setEditingTelha(null);
-                      setTelhaForm({
-                        name: "",
-                        desc: "",
-                        img: "",
-                        brand: "Só Madeiras",
-                        tileType: "ceramic",
-                        coverage: "12.0",
-                        weight: "3.0",
-                        price: "5.00",
-                        minSlope: "30",
-                        maxSlope: "60",
-                        qtyPerSqm: "12.0",
-                        notes: ""
-                      });
-                      setIsTelhaModalOpen(true);
-                    }}
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <span>➕ Adicionar Telha</span>
-                  </button>
+                  {(viewMode as any) === "admin" && (
+                    <button
+                      onClick={() => {
+                        setEditingTelha(null);
+                        setTelhaForm({
+                          name: "",
+                          desc: "",
+                          img: "",
+                          brand: "Só Madeiras",
+                          tileType: "ceramic",
+                          coverage: "12.0",
+                          weight: "3.0",
+                          price: "5.00",
+                          minSlope: "30",
+                          maxSlope: "60",
+                          qtyPerSqm: "12.0",
+                          notes: ""
+                        });
+                        setIsTelhaModalOpen(true);
+                      }}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>➕ Adicionar Telha</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => { setSelectedCategoryFilter("all"); trackClick("btn-special-tiles-back-home"); }}
                     className="bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs px-5 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
@@ -3413,10 +3417,10 @@ export default function SoMadeirasFullStack() {
               {/* Left Column: Tile Selection (7 of 12 cols) */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="flex justify-between items-center border-b border-gray-150 dark:border-neutral-800 pb-2">
-                  <h4 className="font-bold text-xs uppercase text-brown-medium dark:text-primary tracking-wider">
+                  <h4 className="font-black text-xs uppercase text-slate-900 dark:text-primary tracking-wider">
                     Selecione o Modelo de Telha:
                   </h4>
-                  <span className="text-[10px] text-stone-400 font-bold">
+                  <span className="text-[10px] text-slate-600 dark:text-stone-300 font-black">
                     {telhasList.length} telhas cadastradas
                   </span>
                 </div>
@@ -3432,52 +3436,56 @@ export default function SoMadeirasFullStack() {
                           isSelected ? 'border-primary ring-2 ring-primary/20 dark:ring-primary/10' : 'border-gray-150 dark:border-neutral-800 hover:border-gray-300 dark:hover:border-neutral-700'
                         }`}
                       >
-                        {/* Action buttons (Edit & Delete) */}
-                        <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingTelha(tile);
-                              setTelhaForm({
-                                name: tile.name || "",
-                                desc: tile.desc || "",
-                                img: tile.img || "",
-                                brand: tile.brand || "Só Madeiras",
-                                tileType: tile.tileType || "ceramic",
-                                coverage: (tile.coverage || 12).toString(),
-                                weight: (tile.weight || 3).toString(),
-                                price: (tile.price || 4.2).toString(),
-                                minSlope: (tile.minSlope || 30).toString(),
-                                maxSlope: (tile.maxSlope || 60).toString(),
-                                qtyPerSqm: (tile.qtyPerSqm || 12).toString(),
-                                notes: tile.notes || ""
-                              });
-                              setIsTelhaModalOpen(true);
-                            }}
-                            className="bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-700 dark:text-amber-300 p-1 rounded-md text-[10px] font-bold"
-                            title="Editar Telha"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (window.confirm(`Deseja remover a telha "${tile.name}"?`)) {
-                                const updated = telhasList.filter(t => t.id !== tile.id);
-                                updateTelhas(updated);
-                                showToast(`🗑️ Telha "${tile.name}" removida!`);
-                              }
-                            }}
-                            className="bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 p-1 rounded-md text-[10px] font-bold"
-                            title="Excluir Telha"
-                          >
-                            🗑️
-                          </button>
-                        </div>
+                        {/* Action buttons (Edit & Delete) - Visíveis APENAS para Admin */}
+                        {(viewMode as any) === "admin" && (
+                          <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingTelha(tile);
+                                setTelhaForm({
+                                  name: tile.name || "",
+                                  desc: tile.desc || "",
+                                  img: tile.img || "",
+                                  brand: tile.brand || "Só Madeiras",
+                                  tileType: tile.tileType || "ceramic",
+                                  coverage: (tile.coverage || 12).toString(),
+                                  weight: (tile.weight || 3).toString(),
+                                  price: (tile.price || 4.2).toString(),
+                                  minSlope: (tile.minSlope || 30).toString(),
+                                  maxSlope: (tile.maxSlope || 60).toString(),
+                                  qtyPerSqm: (tile.qtyPerSqm || 12).toString(),
+                                  notes: tile.notes || ""
+                                });
+                                setIsTelhaModalOpen(true);
+                              }}
+                              className="bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-700 dark:text-amber-300 p-1 rounded-md text-[10px] font-bold"
+                              title="Editar Telha"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (window.confirm(`Deseja remover a telha "${tile.name}"?`)) {
+                                  const updated = telhasList.filter(t => t.id !== tile.id);
+                                  updateTelhas(updated);
+                                  showToast(`🗑️ Telha "${tile.name}" removida!`);
+                                }
+                              }}
+                              className="bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 p-1 rounded-md text-[10px] font-bold"
+                              title="Remover Telha"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        )}
 
                         <div>
+
                           {/* Tile Image Frame */}
                           <div className="bg-slate-50 dark:bg-neutral-905 rounded-lg h-28 flex items-center justify-center mb-3 select-none overflow-hidden p-2">
                             <img
@@ -9123,22 +9131,40 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     </div>
                   ) : (
                     <>
-                      <div className="text-center space-y-1.5 pb-2">
-                        <span className="text-3xl">🔑</span>
-                        <h4 className="font-black text-brown-dark dark:text-white text-base">Acesse sua Conta de Cliente</h4>
-                        <p className="text-xs text-gray-450 dark:text-gray-400">Escolha a melhor opção para se conectar e ver seus orçamentos e cashback.</p>
+                      <div className="text-center space-y-1 pb-2">
+                        <span className="text-3xl">👤</span>
+                        <h4 className="font-black text-brown-dark dark:text-white text-base">Portal do Cliente Só Madeiras</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Acesse seus orçamentos salvos e acompanhe suas cotações.</p>
                       </div>
 
-                      {/* Login Header */}
-                      <div className="border-b border-gray-200 dark:border-neutral-800 pb-2 text-center">
-                        <span className="text-xs font-black uppercase text-brown-dark dark:text-primary tracking-wider">
-                          👤 Login / Cadastro de Cliente
-                        </span>
+                      {/* 2 Tabs: Criar Cadastro vs Entrar */}
+                      <div className="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-neutral-950 p-1.5 rounded-xl border border-gray-200 dark:border-neutral-800">
+                        <button
+                          type="button"
+                          onClick={() => setClientTabMode("register")}
+                          className={`py-2 rounded-lg font-black text-xs transition cursor-pointer flex items-center justify-center gap-1.5 ${
+                            clientTabMode === "register"
+                              ? "bg-primary text-brown-dark shadow"
+                              : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                          }`}
+                        >
+                          <span>🆕 Criar Cadastro</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setClientTabMode("login")}
+                          className={`py-2 rounded-lg font-black text-xs transition cursor-pointer flex items-center justify-center gap-1.5 ${
+                            clientTabMode === "login"
+                              ? "bg-primary text-brown-dark shadow"
+                              : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                          }`}
+                        >
+                          <span>🔑 Já Tenho Cadastro</span>
+                        </button>
                       </div>
 
-
-                      {/* CLIENT DIRECT LOGIN FORM (NOME + NUMERO + USUARIO) */}
-                      {loginMethod === "traditional" && (
+                      {/* TAB 1: CRIAR CADASTRO */}
+                      {clientTabMode === "register" && (
                         <form 
                           onSubmit={(e) => {
                             e.preventDefault();
@@ -9158,9 +9184,9 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             ApiService.registerLead(user.phone, user.name);
                             localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
                             setLeadFormData({ name: user.name, phone: user.phone, city: user.city, state: user.state });
-                            addSystemNotification(`👋 Bem-vindo(a), ${user.name} (@${user.username})!`);
+                            addSystemNotification(`👋 Cadastro criado! Bem-vindo(a), ${user.name}!`);
                           }}
-                          className="space-y-4 pt-2 animate-fade-in text-left"
+                          className="space-y-3.5 pt-2 animate-fade-in text-left"
                         >
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome Completo:</label>
@@ -9187,13 +9213,13 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           </div>
 
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome de Usuário (Username):</label>
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Nome de Usuário Desejado:</label>
                             <input 
                               type="text"
                               required
                               value={clientLoginForm.username}
                               onChange={(e) => setClientLoginForm({ ...clientLoginForm, username: e.target.value.toLowerCase().replace(/\s+/g, '') })}
-                              placeholder="Ex: marcelo.silva"
+                              placeholder="Ex: marcelosilva"
                               className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
                             />
                           </div>
@@ -9230,20 +9256,59 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                           <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow-md transition active:scale-95 cursor-pointer mt-4"
+                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow-md transition active:scale-95 cursor-pointer mt-3 uppercase tracking-wider"
                           >
-                            Entrar no Portal do Cliente
+                            Concluir Cadastro
                           </button>
+                        </form>
+                      )}
 
-                          <p className="text-[10px] text-gray-400 text-center pt-3 border-t border-gray-150 dark:border-neutral-800">
-                            É funcionário ou vendedor da Só Madeiras?{" "}
-                            <Link href="/equipe" onClick={() => setIsMinhaContaOpen(false)} className="text-primary hover:underline font-bold">
-                              Acesse a Área da Equipe
-                            </Link>
-                          </p>
+                      {/* TAB 2: JÁ TENHO CADASTRO (LOGIN SIMPLES) */}
+                      {clientTabMode === "login" && (
+                        <form 
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            if (!clientLoginForm.phone.trim() && !clientLoginForm.username.trim()) {
+                              alert("Por favor, digite seu Celular ou Nome de Usuário para acessar.");
+                              return;
+                            }
+                            const identifier = clientLoginForm.phone.trim() || clientLoginForm.username.trim();
+                            const user = {
+                              name: clientLoginForm.name || identifier,
+                              username: clientLoginForm.username || identifier.toLowerCase().replace(/\s+/g, ''),
+                              phone: clientLoginForm.phone || "(79) 99999-9999",
+                              city: clientLoginForm.city || "Estância",
+                              state: clientLoginForm.state || "SE",
+                              provider: "direto"
+                            };
+                            setActiveClient(user);
+                            localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
+                            addSystemNotification(`👋 Login realizado com sucesso! Olá, ${user.name}!`);
+                          }}
+                          className="space-y-4 pt-2 animate-fade-in text-left"
+                        >
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">Celular (WhatsApp) ou Usuário:</label>
+                            <input 
+                              type="text"
+                              required
+                              value={clientLoginForm.phone || clientLoginForm.username}
+                              onChange={(e) => setClientLoginForm({ ...clientLoginForm, phone: e.target.value, username: e.target.value })}
+                              placeholder="Digite seu WhatsApp ou Usuário cadastrado"
+                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
+                            />
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="w-full bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs py-3 rounded-lg shadow-md transition active:scale-95 cursor-pointer mt-3 uppercase tracking-wider"
+                          >
+                            Entrar na Minha Conta
+                          </button>
                         </form>
                       )}
                     </>
+
 
                   )}
 
