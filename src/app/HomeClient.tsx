@@ -1101,9 +1101,24 @@ export default function SoMadeirasFullStack() {
 
     // 2. Then fetch from Redis server (source of truth) and override local data
     loadAllData().then((serverData) => {
-      if (serverData.somadeiras_products) setProducts(serverData.somadeiras_products as any[]);
-      if (serverData.somadeiras_leads) setLeads(serverData.somadeiras_leads as any[]);
-      if (serverData.somadeiras_sellers) setSellers(serverData.somadeiras_sellers as any[]);
+      if (serverData.somadeiras_products) {
+        setProducts(serverData.somadeiras_products as any[]);
+      } else if (localProds) {
+        saveData("somadeiras_products", JSON.parse(localProds));
+      }
+
+      if (serverData.somadeiras_leads) {
+        setLeads(serverData.somadeiras_leads as any[]);
+      } else if (localLeads) {
+        saveData("somadeiras_leads", JSON.parse(localLeads));
+      }
+
+      if (serverData.somadeiras_sellers) {
+        setSellers(serverData.somadeiras_sellers as any[]);
+      } else if (localSellers) {
+        saveData("somadeiras_sellers", JSON.parse(localSellers));
+      }
+
       if (serverData.somadeiras_tiles) setTelhasList(serverData.somadeiras_tiles as any[]);
       if (serverData.somadeiras_categories) setCategories(serverData.somadeiras_categories as any[]);
       if (serverData.somadeiras_blog_posts) setBlogPosts(serverData.somadeiras_blog_posts as any[]);
@@ -8160,6 +8175,17 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                       Adicione ou remova membros da equipe de vendas. A distribuição de orçamentos (leads) é feita ciclicamente (Round-Robin) de maneira justa e igualitária.
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      saveData("somadeiras_sellers", sellers);
+                      showToast("☁️ Vendedores sincronizados com sucesso no Banco Global!");
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-stone-900 font-black text-xs px-4 py-2.5 rounded-lg shadow transition flex items-center gap-2 shrink-0 cursor-pointer active:scale-95"
+                    title="Forçar envio da lista de vendedores para o banco de dados nuvem"
+                  >
+                    ☁️ Sincronizar c/ Servidor
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
