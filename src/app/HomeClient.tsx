@@ -839,6 +839,9 @@ export default function SoMadeirasFullStack() {
   const [newSellerAvatar, setNewSellerAvatar] = useState("👨‍💼");
   const [newSellerPhone, setNewSellerPhone] = useState("");
   const [newSellerPhotoUrl, setNewSellerPhotoUrl] = useState("");
+  const [newSellerUsername, setNewSellerUsername] = useState("");
+  const [newSellerPin, setNewSellerPin] = useState("1234");
+
 
 
 
@@ -8165,11 +8168,17 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         showToast("Por favor, informe o telefone do vendedor.", "error");
                         return;
                       }
+                      if (!newSellerUsername.trim()) {
+                        showToast("Por favor, crie um nome de usuário (Username).", "error");
+                        return;
+                      }
 
-                      const newId = newSellerName.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now();
+                      const newId = newSellerUsername.trim().toLowerCase().replace(/[^a-z0-9]/g, "-") || ("vendedor-" + Date.now());
                       const newSellerObj = {
                         id: newId,
                         name: newSellerName.trim(),
+                        username: newSellerUsername.trim().toLowerCase().replace(/\s+/g, ''),
+                        pin: newSellerPin.trim() || "1234",
                         commissionRate: parseFloat(newSellerCommission) / 100 || 0.03,
                         salesCount: 0,
                         salesValue: 0.00,
@@ -8182,16 +8191,19 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
                       const nextSellers = [...sellers, newSellerObj];
                       updateSellers(nextSellers);
-                      showToast(`👤 Vendedor ${newSellerName} cadastrado com sucesso!`);
+                      showToast(`👤 Vendedor ${newSellerName} (@${newSellerObj.username}) cadastrado com sucesso!`);
                       setNewSellerName("");
+                      setNewSellerUsername("");
+                      setNewSellerPin("1234");
                       setNewSellerAvatar("👨‍💼");
                       setNewSellerPhone("");
                       setNewSellerPhotoUrl("");
                     }} className="space-y-4">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Nome Completo</label>
+                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Nome Completo do Vendedor *</label>
                         <input
                           type="text"
+                          required
                           value={newSellerName}
                           onChange={(e) => setNewSellerName(e.target.value)}
                           placeholder="Ex: Marcelo Santos"
@@ -8199,16 +8211,44 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         />
                       </div>
 
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Nome de Usuário (Username Login) *</label>
+                          <input
+                            type="text"
+                            required
+                            value={newSellerUsername}
+                            onChange={(e) => setNewSellerUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
+                            placeholder="Ex: marcelo.vendas"
+                            className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-bold"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Senha / PIN de Acesso *</label>
+                          <input
+                            type="text"
+                            required
+                            value={newSellerPin}
+                            onChange={(e) => setNewSellerPin(e.target.value)}
+                            placeholder="Ex: 1234"
+                            className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-bold"
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-1">
-                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">WhatsApp / Telefone Comercial</label>
+                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">WhatsApp / Telefone Comercial *</label>
                         <input
                           type="text"
+                          required
                           value={newSellerPhone}
                           onChange={(e) => setNewSellerPhone(e.target.value)}
                           placeholder="Ex: 79999998888"
                           className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-bold"
                         />
                       </div>
+
 
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Foto de Perfil (Upload / Opcional)</label>
@@ -8300,10 +8340,16 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                                   )}
                                   <div>
                                     <h6 className="font-display font-bold text-sm text-brown-dark dark:text-white leading-snug">{seller.name}</h6>
+                                    {seller.username && (
+                                      <span className="text-[9px] text-amber-600 dark:text-amber-400 font-black block">
+                                        @{seller.username} • PIN: {seller.pin || "1234"}
+                                      </span>
+                                    )}
                                     <span className="text-[10px] text-gray-400 font-medium block mt-0.5">
                                       WhatsApp: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{seller.phone}</strong>
                                     </span>
                                   </div>
+
                                 </div>
                                 
                                 <div className="flex items-center gap-1">
