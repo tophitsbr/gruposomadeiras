@@ -22,7 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/portas-semiocas",
     "/portas-pivotantes",
     "/janelas-de-madeira",
+    "/portas-e-janelas-de-aluminio",
+    "/pre-moldados",
     "/calculadora-telhado",
+
     "/lookbook",
     "/profissionais",
     "/sorteio"

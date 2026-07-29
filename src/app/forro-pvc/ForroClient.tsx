@@ -38,9 +38,53 @@ interface RoomItem {
   area: number; // m2
 }
 
+interface ForroProduct {
+  id: string;
+  name: string;
+  brand: string;
+  image: string;
+  desc: string;
+  specs: string;
+  color: string;
+}
+
+const INITIAL_FORRO_PRODUCTS: ForroProduct[] = [
+  {
+    id: "forro-pvc-1",
+    name: "Forro PVC Branco Frisado 20cm x 8mm",
+    brand: "Plastilit / Madelar",
+    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop",
+    desc: "Forro de PVC rígido anticorrosivo com excelente isolamento térmico e acústico. Não propaga chamas.",
+    specs: "20cm de largura | 8mm de espessura | Peças de 3m, 4m, 5m e 6m",
+    color: "Branco Neve"
+  },
+  {
+    id: "forro-pvc-2",
+    name: "Forro PVC Madeirado Ipê Nobre 20cm x 8mm",
+    brand: "Só Madeiras Premium",
+    image: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?q=80&w=400&auto=format&fit=crop",
+    desc: "Design amadeirado rústico luxo de alta resistência contra raios solares e lavável.",
+    specs: "20cm de largura | 8mm de espessura | Película UV de alta proteção",
+    color: "Madeira Ipê"
+  }
+];
+
 export default function CalculadoraForroPVC() {
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<any>(null);
+
+  // Forro Products Management State
+  const [forroProducts, setForroProducts] = useState<ForroProduct[]>([]);
+  const [isForroModalOpen, setIsForroModalOpen] = useState(false);
+  const [editingForro, setEditingForro] = useState<ForroProduct | null>(null);
+  const [forroForm, setForroForm] = useState({
+    name: "",
+    brand: "Só Madeiras",
+    image: "",
+    desc: "",
+    specs: "20cm de largura | 8mm de espessura",
+    color: "Branco"
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -52,7 +96,23 @@ export default function CalculadoraForroPVC() {
         console.error(e);
       }
     }
+
+    const localForros = localStorage.getItem("somadeiras_forro_products");
+    if (localForros) {
+      try {
+        setForroProducts(JSON.parse(localForros));
+      } catch (e) {
+        setForroProducts(INITIAL_FORRO_PRODUCTS);
+      }
+    } else {
+      setForroProducts(INITIAL_FORRO_PRODUCTS);
+    }
   }, []);
+
+  const updateForroProducts = (newList: ForroProduct[]) => {
+    setForroProducts(newList);
+    localStorage.setItem("somadeiras_forro_products", JSON.stringify(newList));
+  };
 
   const activeWhatsapp = settings?.whatsappNumber || "5579996298990";
 
@@ -75,7 +135,7 @@ export default function CalculadoraForroPVC() {
   const [systemNotification, setSystemNotification] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // CONSOLIDATED MULTI-ROOM TOTAL ESTIMATION
+  // CONSOLIDATED MULTI-ROOM TOTAL ESTIMATION (SEM EXIBIÇÃO DE PREÇOS)
   // ==========================================
   const consolidatedMaterials = useMemo(() => {
     let totalArea = 0;
@@ -99,40 +159,7 @@ export default function CalculadoraForroPVC() {
       ripaoByLength[r.ripaoLength] = (ripaoByLength[r.ripaoLength] || 0) + r.ripaoQty;
     });
 
-    // Approximate unit prices (market estimations)
-    const pricePerM2 = 28.00; // PVC panel m2 equivalent
-    const ripaPriceUnit = 6.20; // Ripa 5x1cm 3m piece
-    const screwBoxPriceUnit = 18.00; // box of 100
-    const trimPriceUnit = 16.50; // 3m piece
-
-    // Screws are estimated in boxes of 100 units
     const screwBoxes = Math.ceil(totalScrews / 100);
-
-    // Detailed panels price
-    let panelsCost = 0;
-    Object.keys(panelsByLength).forEach((lenStr) => {
-      const len = parseFloat(lenStr);
-      const qty = panelsByLength[len];
-      const m2 = qty * (len * 0.20);
-      panelsCost += m2 * pricePerM2;
-    });
-
-    // Detailed Ripão price by length
-    let ripaoCost = 0;
-    Object.keys(ripaoByLength).forEach((lenStr) => {
-      const len = parseFloat(lenStr);
-      const qty = ripaoByLength[len];
-      let priceUnit = 11.50;
-      if (len === 4) priceUnit = 15.30;
-      else if (len === 5) priceUnit = 19.10;
-      else if (len === 6) priceUnit = 23.00;
-      ripaoCost += qty * priceUnit;
-    });
-
-    const ripasCost = totalRipas * ripaPriceUnit;
-    const screwsCost = screwBoxes * screwBoxPriceUnit;
-    const trimCost = totalTrim * trimPriceUnit;
-    const totalEstimatedCost = panelsCost + ripaoCost + ripasCost + screwsCost + trimCost;
 
     return {
       totalArea,
@@ -142,15 +169,10 @@ export default function CalculadoraForroPVC() {
       totalRipas,
       totalScrews,
       screwBoxes,
-      totalTrim,
-      panelsCost,
-      ripaoCost,
-      ripasCost,
-      screwsCost,
-      trimCost,
-      totalEstimatedCost
+      totalTrim
     };
   }, [roomsList]);
+
 
   // Capture lead abandonment when modal closes without submission
   useEffect(() => {
@@ -178,7 +200,8 @@ export default function CalculadoraForroPVC() {
             source: "Calculadora Forro PVC",
             utm: "utm_source=pvc_calculator&utm_medium=cart_abandonment",
             products: [`Forro PVC Multi-Cômodos (${roomsList.length} cômodos) x1`],
-            total: Math.round(consolidatedMaterials.totalEstimatedCost),
+            total: 0,
+
             status: "Carrinho Abandonado",
             sellerId: "maria",
             device: typeof navigator !== "undefined" ? (navigator.userAgent.includes("Mobile") ? "Mobile (Web)" : "Desktop (Web)") : "Web",
@@ -371,15 +394,14 @@ export default function CalculadoraForroPVC() {
     text += `- Acabamento Perímetro Perfil U (3.0m): *${consolidatedMaterials.totalTrim} peças*\n`;
     text += `- Caixa de Parafusos/Buchas (c/ 100): *${consolidatedMaterials.screwBoxes} caixas* (${consolidatedMaterials.totalScrews} un)\n`;
     
-    text += `\n*RESUMO FINANCEIRO (Estimado):*\n`;
-    text += `- Área Total Forrada: ${consolidatedMaterials.totalArea.toFixed(1)}m²\n`;
-    text += `- Total estimado de materiais: R$ ${consolidatedMaterials.totalEstimatedCost.toFixed(2)} (Fob Só Madeiras)\n\n`;
+    text += `\n*RESUMO GERAL DE MATERIAIS:*\n`;
+    text += `- Área Total a Forrar: ${consolidatedMaterials.totalArea.toFixed(1)}m²\n\n`;
 
     text += `*DADOS DO PRODUTOR/COMPRADOR:*\n`;
     text += `- Nome: ${leadName}\n`;
     text += `- Contato: ${leadPhone}\n`;
     text += `- Cidade/UF: ${leadCity} - ${leadState}\n\n`;
-    text += `Solicito contato para negociar frete e obter a proposta final. Obrigado!`;
+    text += `Solicito contato para negociação e proposta final. Obrigado!`;
 
     // Save Lead to localStorage Commercial flow
     const somadeirasLeads = localStorage.getItem("somadeiras_leads");
@@ -396,12 +418,13 @@ export default function CalculadoraForroPVC() {
       source: "Calculadora Forro PVC",
       utm: "utm_source=pvc_calculator&utm_medium=multiroom_simulation",
       products: [`Forro PVC Multi-Cômodos (${roomsList.length} cômodos) x1`],
-      total: Math.round(consolidatedMaterials.totalEstimatedCost),
+      total: 0,
       status: "Novo Lead",
       sellerId: "maria",
       device: typeof navigator !== "undefined" ? (navigator.userAgent.includes("Mobile") ? "Mobile / Web" : "Windows / Web") : "Web",
       notes: `Solicitou orçamento para ${roomsList.length} cômodos. Área total de ${consolidatedMaterials.totalArea.toFixed(1)}m².`
     };
+
 
     localStorage.setItem("somadeiras_leads", JSON.stringify([newLead, ...parsedLeads]));
 
@@ -456,10 +479,124 @@ export default function CalculadoraForroPVC() {
       )}
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 space-y-6">
         
-        {/* LEFT COLUMN: CONFIGURATOR INPUT PANEL */}
-        <section className="lg:col-span-4 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-3xl p-5 shadow-sm space-y-5 self-start">
+        {/* FORRO PRODUCTS CATALOG & MANAGEMENT SECTION */}
+        <section className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-3xl p-5 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-150 dark:border-neutral-800 pb-3">
+            <div>
+              <h3 className="font-display font-black text-sm uppercase text-[#3E2723] dark:text-white flex items-center gap-2">
+                🏠 Modelos de Forro PVC Disponíveis ({forroProducts.length})
+              </h3>
+              <p className="text-[10px] text-slate-400">Cadastre, edite informações ou troque imagens dos forros do catálogo</p>
+            </div>
+            
+            <button
+              onClick={() => {
+                setEditingForro(null);
+                setForroForm({
+                  name: "",
+                  brand: "Só Madeiras",
+                  image: "",
+                  desc: "",
+                  specs: "20cm de largura | 8mm de espessura",
+                  color: "Branco"
+                });
+                setIsForroModalOpen(true);
+              }}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2 rounded-full shadow transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>➕ Cadastrar Forro</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {forroProducts.map((forro) => (
+              <div
+                key={forro.id}
+                className="border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-850 rounded-2xl p-4 space-y-3 relative group transition hover:shadow-md"
+              >
+                <div className="h-36 w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-neutral-900 relative border border-slate-200/50">
+                  <img
+                    src={forro.image || "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop"}
+                    alt={forro.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop"; }}
+                  />
+                  
+                  {/* Photo Change trigger */}
+                  <label className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white p-1.5 rounded-lg text-[10px] font-bold cursor-pointer transition">
+                    📷 Trocar Foto
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const updated = forroProducts.map(f => f.id === forro.id ? { ...f, image: reader.result as string } : f);
+                            updateForroProducts(updated);
+                            setSystemNotification(`📷 Foto do ${forro.name} alterada!`);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="text-[9px] font-black uppercase text-[#F4B400] tracking-wider">{forro.brand}</span>
+                    <span className="text-[9px] bg-slate-200 dark:bg-neutral-800 px-2 py-0.5 rounded font-bold text-slate-700 dark:text-stone-300">{forro.color}</span>
+                  </div>
+                  <h4 className="font-bold text-xs text-slate-800 dark:text-white leading-snug">{forro.name}</h4>
+                  <p className="text-[10px] text-slate-500 dark:text-stone-400 leading-normal font-light line-clamp-2">{forro.desc}</p>
+                  <p className="text-[9px] text-slate-400 font-mono pt-1">{forro.specs}</p>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200/60 dark:border-neutral-800 flex justify-end gap-2 text-xs">
+                  <button
+                    onClick={() => {
+                      setEditingForro(forro);
+                      setForroForm({
+                        name: forro.name,
+                        brand: forro.brand,
+                        image: forro.image,
+                        desc: forro.desc,
+                        specs: forro.specs,
+                        color: forro.color
+                      });
+                      setIsForroModalOpen(true);
+                    }}
+                    className="px-3 py-1 bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-800 dark:text-amber-300 rounded-lg font-bold text-[10px]"
+                  >
+                    ✏️ Editar Info
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.confirm(`Deseja realmente excluir o forro "${forro.name}"?`)) {
+                        const updated = forroProducts.filter(f => f.id !== forro.id);
+                        updateForroProducts(updated);
+                        setSystemNotification(`🗑️ Forro "${forro.name}" removido!`);
+                      }
+                    }}
+                    className="px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 rounded-lg font-bold text-[10px]"
+                  >
+                    🗑️ Excluir
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* LEFT COLUMN: CONFIGURATOR INPUT PANEL */}
+          <section className="lg:col-span-4 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-3xl p-5 shadow-sm space-y-5 self-start">
+
           <div className="border-b border-slate-150 dark:border-neutral-800 pb-2">
             <h3 className="font-display font-black text-sm uppercase text-[#3E2723] dark:text-white flex items-center gap-2">
               🚪 1. Configurar Cômodo
@@ -854,7 +991,6 @@ export default function CalculadoraForroPVC() {
                           <th className="py-2">Especificação Técnica</th>
                           <th className="py-2 text-right">Quant. Total</th>
                           <th className="py-2 text-center">Unid.</th>
-                          <th className="py-2 text-right">Preço Estimado</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50 dark:divide-neutral-850">
@@ -863,17 +999,12 @@ export default function CalculadoraForroPVC() {
                           const len = parseFloat(lenStr);
                           const qty = consolidatedMaterials.panelsByLength[len];
                           if (qty === 0) return null;
-                          
-                          const m2 = qty * (len * 0.20);
-                          const price = m2 * 28.00;
-
                           return (
                             <tr key={`pvc-${len}`} className="hover:bg-slate-50/50 dark:hover:bg-neutral-850/10 transition">
                               <td className="py-2.5 font-bold text-slate-700 dark:text-slate-200">Placas de Forro PVC 20cm</td>
                               <td className="py-2.5 font-mono text-[10px] text-slate-500 dark:text-stone-400">Placa Larg. 20cm | Comp. {len.toFixed(1)}m</td>
                               <td className="py-2.5 text-right font-black text-slate-800 dark:text-[#F4B400] text-sm">{qty}</td>
                               <td className="py-2.5 text-center text-slate-450 font-bold text-[10px]">Peças</td>
-                              <td className="py-2.5 text-right font-bold text-slate-700 dark:text-stone-300">R$ {price.toFixed(2)}</td>
                             </tr>
                           );
                         })}
@@ -883,21 +1014,12 @@ export default function CalculadoraForroPVC() {
                           const len = parseFloat(lenStr);
                           const qty = consolidatedMaterials.ripaoByLength[len];
                           if (qty === 0) return null;
-                          
-                          let priceUnit = 11.50;
-                          if (len === 4) priceUnit = 15.30;
-                          else if (len === 5) priceUnit = 19.10;
-                          else if (len === 6) priceUnit = 23.00;
-                          
-                          const price = qty * priceUnit;
-
                           return (
                             <tr key={`ripao-${len}`} className="hover:bg-slate-50/50 dark:hover:bg-neutral-850/10 transition">
                               <td className="py-2.5 font-bold text-slate-700 dark:text-slate-200">Ripão Estrutural de Madeira 5x3cm</td>
                               <td className="py-2.5 font-mono text-[10px] text-slate-500 dark:text-stone-400">Dimensão 5x3cm | Peças de {len.toFixed(1)}m</td>
                               <td className="py-2.5 text-right font-black text-slate-800 dark:text-[#F4B400] text-sm">{qty}</td>
                               <td className="py-2.5 text-center text-slate-450 font-bold text-[10px]">Peças</td>
-                              <td className="py-2.5 text-right font-bold text-slate-700 dark:text-stone-300">R$ {price.toFixed(2)}</td>
                             </tr>
                           );
                         })}
@@ -909,7 +1031,6 @@ export default function CalculadoraForroPVC() {
                             <td className="py-2.5 font-mono text-[10px] text-slate-500 dark:text-stone-400">Dimensão 5x1cm | Peças de 3.0m</td>
                             <td className="py-2.5 text-right font-black text-slate-800 dark:text-[#F4B400] text-sm">{consolidatedMaterials.totalRipas}</td>
                             <td className="py-2.5 text-center text-slate-450 font-bold text-[10px]">Peças</td>
-                            <td className="py-2.5 text-right font-bold text-slate-700 dark:text-stone-300">R$ {consolidatedMaterials.ripasCost.toFixed(2)}</td>
                           </tr>
                         )}
 
@@ -920,7 +1041,6 @@ export default function CalculadoraForroPVC() {
                             <td className="py-2.5 font-mono text-[10px] text-slate-500 dark:text-stone-400">Perfil U / Sanca plástica | Peça de 3.0m</td>
                             <td className="py-2.5 text-right font-black text-slate-800 dark:text-[#F4B400] text-sm">{consolidatedMaterials.totalTrim}</td>
                             <td className="py-2.5 text-center text-slate-450 font-bold text-[10px]">Peças</td>
-                            <td className="py-2.5 text-right font-bold text-slate-700 dark:text-stone-300">R$ {consolidatedMaterials.trimCost.toFixed(2)}</td>
                           </tr>
                         )}
 
@@ -931,42 +1051,38 @@ export default function CalculadoraForroPVC() {
                             <td className="py-2.5 font-mono text-[10px] text-slate-500 dark:text-stone-400">Parafusos soberbos p/ ripamento e PVC</td>
                             <td className="py-2.5 text-right font-black text-slate-800 dark:text-[#F4B400] text-sm">{consolidatedMaterials.screwBoxes}</td>
                             <td className="py-2.5 text-center text-slate-450 font-bold text-[10px]">Caixa (100un)</td>
-                            <td className="py-2.5 text-right font-bold text-slate-700 dark:text-stone-300">R$ {consolidatedMaterials.screwsCost.toFixed(2)}</td>
                           </tr>
                         )}
                       </tbody>
                     </table>
                   </div>
 
-                  {/* CONSOLIDATED PRICE BOX */}
+                  {/* ACTION BOX */}
                   <div className="bg-[#5D4037]/10 border border-[#5D4037]/20 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-3">
                     <div className="space-y-0.5">
-                      <span className="font-bold text-xs text-slate-550 block uppercase tracking-wider">Investimento Total de Materiais (Estimativa):</span>
-                      <span className="font-black text-2xl text-[#3E2723] dark:text-[#F4B400] block">
-                        R$ {consolidatedMaterials.totalEstimatedCost.toFixed(2)}
-                        <span className="text-[10px] text-slate-400 font-bold uppercase ml-2 select-none tracking-widest bg-amber-500/10 text-[#5D4037] px-2.5 py-0.5 rounded-full">
-                          Sob Consulta
-                        </span>
-                      </span>
-                      <span className="text-[9px] text-slate-450 block leading-relaxed max-w-lg pt-1">
-                        *Preço FOB em nossa distribuidora Só Madeiras. Sujeito a negociação de frete regional e descontos para faturamento por volume de obra.
+                      <span className="font-bold text-xs text-slate-550 block uppercase tracking-wider">Projeto Pronto para Cotação Comercial:</span>
+                      <span className="text-[10px] text-slate-450 block leading-relaxed max-w-lg pt-1">
+                        *Solicite proposta personalizada e agende entrega direta na sua obra com a equipe Só Madeiras.
                       </span>
                     </div>
                     
                     <button
                       type="button"
                       onClick={() => { setIsSubmitted(false); setIsLeadModalOpen(true); }}
-                      className="w-full sm:w-auto shrink-0 bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs px-8 py-4 rounded-xl shadow-xl transition cursor-pointer uppercase tracking-wider border-none active:scale-97 animate-pulse"
+                      className="w-full sm:w-auto shrink-0 bg-[#F4B400] hover:bg-[#ffc107] text-[#3E2723] font-black text-xs px-8 py-4 rounded-xl shadow-xl transition cursor-pointer uppercase tracking-wider border-none active:scale-97"
                     >
-                      ⚙️ Negociar Frete e Proposta
+                      ⚙️ Solicitar Cotação / Enviar p/ WhatsApp
                     </button>
                   </div>
+
                 </div>
               </>
             )}
           </div>
         </section>
-      </main>
+      </div>
+    </main>
+
 
       {/* LEAD CAPTURE MODAL OVERLAY */}
       {isLeadModalOpen && (
@@ -1000,8 +1116,9 @@ export default function CalculadoraForroPVC() {
                   📋 Resumo do Orçamento:
                 </span>
                 <span className="text-[10px] text-slate-500 font-semibold block mt-1 leading-relaxed">
-                  Forro PVC com **Ripão 5x3cm** e **Ripa 5x1cm** para *{roomsList.length} cômodos* (Área Total: {consolidatedMaterials.totalArea.toFixed(1)}m²). Valor estimado: *R$ {consolidatedMaterials.totalEstimatedCost.toFixed(2)}*.
+                  Forro PVC com **Ripão 5x3cm** e **Ripa 5x1cm** para *{roomsList.length} cômodos* (Área Total: {consolidatedMaterials.totalArea.toFixed(1)}m²). Cotação sob consulta com entrega direta na obra.
                 </span>
+
               </div>
 
               {/* Name */}
@@ -1076,7 +1193,165 @@ export default function CalculadoraForroPVC() {
         </div>
       )}
 
+      {/* FORRO PRODUCT CRUD MODAL */}
+      {isForroModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in no-print text-left">
+          <div className="bg-white dark:bg-neutral-900 rounded-3xl w-full max-w-lg shadow-2xl p-6 border border-stone-200 dark:border-neutral-800 space-y-4 relative">
+            <button
+              onClick={() => setIsForroModalOpen(false)}
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 dark:hover:text-white p-1 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="border-b border-stone-150 dark:border-neutral-800 pb-3">
+              <h3 className="font-display font-black text-lg text-[#3E2723] dark:text-white uppercase flex items-center gap-2">
+                <span>🏠 {editingForro ? "Editar Forro Cadastrado" : "Cadastrar Novo Forro PVC"}</span>
+              </h3>
+              <p className="text-xs text-stone-400">Preencha as informações do produto de forro para o catálogo</p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!forroForm.name.trim()) {
+                  alert("Por favor, preencha o nome do forro.");
+                  return;
+                }
+
+                const newForroObj: ForroProduct = {
+                  id: editingForro ? editingForro.id : "forro-" + Date.now(),
+                  name: forroForm.name.trim(),
+                  brand: forroForm.brand.trim() || "Só Madeiras",
+                  image: forroForm.image || "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=400&auto=format&fit=crop",
+                  desc: forroForm.desc.trim(),
+                  specs: forroForm.specs.trim(),
+                  color: forroForm.color.trim()
+                };
+
+                let updated: ForroProduct[];
+                if (editingForro) {
+                  updated = forroProducts.map(f => f.id === editingForro.id ? newForroObj : f);
+                  setSystemNotification(`✅ Forro "${newForroObj.name}" atualizado!`);
+                } else {
+                  updated = [newForroObj, ...forroProducts];
+                  setSystemNotification(`🏠 Novo forro "${newForroObj.name}" cadastrado!`);
+                }
+
+                updateForroProducts(updated);
+                setIsForroModalOpen(false);
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Nome do Forro PVC *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Forro PVC Madeirado Ipê 20cm x 8mm"
+                  value={forroForm.name}
+                  onChange={(e) => setForroForm({ ...forroForm, name: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-bold text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Fabricante / Marca *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: Plastilit, Madelar, Só Madeiras"
+                    value={forroForm.brand}
+                    onChange={(e) => setForroForm({ ...forroForm, brand: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Cor / Acabamento *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: Branco Neve, Amadeirado Ipê"
+                    value={forroForm.color}
+                    onChange={(e) => setForroForm({ ...forroForm, color: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Especificações Técnicas</label>
+                <input
+                  type="text"
+                  placeholder="Ex: 20cm largura | 8mm espessura | régua de 3m a 6m"
+                  value={forroForm.specs}
+                  onChange={(e) => setForroForm({ ...forroForm, specs: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-medium text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Imagem do Forro (URL ou Upload)</label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    placeholder="Ex: URL https://..."
+                    value={forroForm.image}
+                    onChange={(e) => setForroForm({ ...forroForm, image: e.target.value })}
+                    className="flex-1 bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-bold text-slate-800 dark:text-white"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setForroForm({ ...forroForm, image: reader.result as string });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-28 text-[9px] cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Descrição Comercial</label>
+                <textarea
+                  rows={3}
+                  placeholder="Ex: Forro de PVC de alta densidade com isolamento termoacústico e visual moderno..."
+                  value={forroForm.desc}
+                  onChange={(e) => setForroForm({ ...forroForm, desc: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-medium text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="pt-3 flex gap-2 justify-end border-t border-stone-150 dark:border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => setIsForroModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border text-stone-600 dark:text-stone-300 font-bold hover:bg-stone-100 dark:hover:bg-neutral-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-500 shadow transition"
+                >
+                  Salvar Forro
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <AboutSection />
+
 
       {/* FOOTER */}
       <footer className="bg-[#3E2723] text-stone-300 border-t border-[#F4B400]/25 py-8 mt-12 no-print">

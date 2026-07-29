@@ -396,9 +396,24 @@ export default function ProductDetailClient({ initialProduct, specsData }: Produ
               🔥 {product.brand} ORIGINAL
             </div>
             
-            {/* Active view photo */}
+            {/* Active view photo or video */}
             <div className="relative h-[25rem] w-full rounded-2xl overflow-hidden bg-slate-50 dark:bg-neutral-950 flex items-center justify-center border border-slate-100 dark:border-neutral-850 p-6 select-none group">
-              {productPhotos[activePhotoIndex] && (productPhotos[activePhotoIndex].startsWith("/") || productPhotos[activePhotoIndex].startsWith("http")) ? (
+              {product?.videoUrl ? (
+                <div className="w-full h-full relative flex items-center justify-center">
+                  <video
+                    src={product.videoUrl}
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="max-h-[22rem] w-full object-contain rounded-xl shadow-md"
+                  />
+                  <span className="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                    🎥 Vídeo Demonstrativo
+                  </span>
+                </div>
+              ) : productPhotos[activePhotoIndex] && (productPhotos[activePhotoIndex].startsWith("/") || productPhotos[activePhotoIndex].startsWith("http")) ? (
                 <img 
                   src={productPhotos[activePhotoIndex]} 
                   alt={product.name} 
@@ -408,6 +423,7 @@ export default function ProductDetailClient({ initialProduct, specsData }: Produ
                 <span className="text-8xl filter drop-shadow-xl animate-pulse">{product.img}</span>
               )}
             </div>
+
 
             {/* Thumbnail Variant Selector list */}
             {productPhotos.length > 1 && (

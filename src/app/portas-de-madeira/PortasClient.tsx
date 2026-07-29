@@ -155,11 +155,26 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
   const [includeBatente, setIncludeBatente] = useState<boolean>(true);
   const [accessoryType, setAccessoryType] = useState<"standard" | "pull_60" | "pull_100" | "smart">("standard");
 
+  // Tech Spec Editing State
+  const [isEditingTechSpec, setIsEditingTechSpec] = useState(false);
+  const [techSpecForm, setTechSpecForm] = useState({
+    desc: "",
+    woodType: "",
+    thickness: "3.5 cm",
+    width: "80",
+    height: "210",
+    finish: "Verniz PU Natural",
+    notes: "Acompanha garantia estrutural de fábrica.",
+    weight: "35 kg",
+    brand: "Só Madeiras"
+  });
+
   // Cart & Toast States
   const [cart, setCart] = useState<Array<{ product: any; quantity: number }>>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [dbProducts, setDbProducts] = useState<any[]>([]);
+
 
   // Sync initial tab filter
   useEffect(() => {
@@ -853,34 +868,130 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
                     </div>
                   )}
 
-                  {/* Option 4: Hardware and lock additions */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-stone-450 tracking-wider block">3. Ferragens e Fechadura</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { id: "standard", label: "🔒 Fechadura Mecânica", desc: "Mecânica padrão chaves" },
-                        { id: "pull_60", label: "🪵 Puxador Inox 60cm", desc: "Barra chata + Rolete (+R$190)" },
-                        { id: "pull_100", label: "👑 Puxador Inox 1.0m", desc: "Luxo ripadora + Rolete (+R$275)" },
-                        { id: "smart", label: "📱 Fechadura Smart", desc: "Biometria digital (+R$495)" }
-                      ].map(acc => (
-                        <button
-                          key={acc.id}
-                          onClick={() => setAccessoryType(acc.id as any)}
-                          className={`p-3 rounded-2xl border text-left transition cursor-pointer ${
-                            accessoryType === acc.id
-                              ? "border-primary bg-primary/10 text-brown-dark dark:text-primary font-bold"
-                              : "border-stone-200 dark:border-neutral-800 text-stone-600 dark:text-stone-400 hover:border-stone-350"
-                          }`}
-                        >
-                          <span className="text-xs block font-bold">{acc.label}</span>
-                          <span className="text-[8px] text-stone-400 mt-1 block">{acc.desc}</span>
-                        </button>
-                      ))}
+                  {/* Batente Exibição Automática */}
+                  <div className="p-3.5 bg-stone-50 dark:bg-neutral-900 border border-stone-200 dark:border-neutral-850 rounded-2xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold block text-brown-dark dark:text-white">🚪 Batente Cadastrado</span>
+                      <Link 
+                        href="/produtos?cat=madeiras"
+                        className="bg-primary/20 hover:bg-primary/30 text-brown-dark dark:text-primary font-bold text-[10px] px-2.5 py-1 rounded-lg transition"
+                      >
+                        Ver mais
+                      </Link>
                     </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-white dark:bg-zinc-800 rounded-xl p-1 border flex items-center justify-center shrink-0">
+                        <img 
+                          src={dbProducts.find(p => p.name?.toLowerCase().includes("batente") || p.name?.toLowerCase().includes("caixão"))?.img || "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=150&auto=format&fit=crop"} 
+                          alt="Batente Cadastrado" 
+                          className="max-h-full max-w-full object-contain"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=150&auto=format&fit=crop"; }}
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xs font-bold block text-brown-dark dark:text-white truncate">
+                          {dbProducts.find(p => p.name?.toLowerCase().includes("batente") || p.name?.toLowerCase().includes("caixão"))?.name || "Kit Batente Regulável Angelim/Tauari"}
+                        </span>
+                        <span className="text-[10px] text-stone-400 block">Caixão Portal regulável com alizares e borracha de amortecimento</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Componentes Compatíveis: Fechadura e Dobradiça */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-stone-450 tracking-wider block">Componentes e Ferragens Compatíveis</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Fechadura Cadastrada */}
+                      {(() => {
+                        const fechaduras = dbProducts.filter(p => p.name?.toLowerCase().includes("fechadura") || p.category === "ferragens");
+                        const item = fechaduras[0] || { id: 6, name: "Fechadura Colonial Premium Pado", img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80" };
+                        const targetUrl = fechaduras.length === 1 ? `/produtos/${item.id}` : "/produtos?cat=ferragens";
+                        return (
+                          <div className="p-3 rounded-2xl border border-stone-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between space-y-2">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-10 h-10 bg-stone-100 dark:bg-neutral-800 rounded-xl p-1 flex items-center justify-center shrink-0">
+                                <img 
+                                  src={item.img || "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80"} 
+                                  alt={item.name} 
+                                  className="max-h-full max-w-full object-contain"
+                                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80"; }}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <span className="text-[9px] font-bold text-stone-400 block uppercase">Fechadura</span>
+                                <span className="text-xs font-bold block text-brown-dark dark:text-white truncate">{item.name}</span>
+                              </div>
+                            </div>
+                            <Link 
+                              href={targetUrl}
+                              className="w-full text-center bg-stone-100 hover:bg-stone-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-brown-dark dark:text-white font-bold text-[10px] py-1.5 rounded-xl transition inline-block"
+                            >
+                              Ver mais
+                            </Link>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Dobradiça Cadastrada */}
+                      {(() => {
+                        const dobradicas = dbProducts.filter(p => p.name?.toLowerCase().includes("dobradiça") || p.category === "ferragens");
+                        const item = dobradicas[0] || { id: "dob-1", name: "Dobradiça Aço Inox 3.5\" Heavy Duty", img: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=80" };
+                        const targetUrl = dobradicas.length === 1 ? `/produtos/${item.id}` : "/produtos?cat=ferragens";
+                        return (
+                          <div className="p-3 rounded-2xl border border-stone-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between space-y-2">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-10 h-10 bg-stone-100 dark:bg-neutral-800 rounded-xl p-1 flex items-center justify-center shrink-0">
+                                <img 
+                                  src={item.img || "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=80"} 
+                                  alt={item.name} 
+                                  className="max-h-full max-w-full object-contain"
+                                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=80"; }}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <span className="text-[9px] font-bold text-stone-400 block uppercase">Dobradiça</span>
+                                <span className="text-xs font-bold block text-brown-dark dark:text-white truncate">{item.name}</span>
+                              </div>
+                            </div>
+                            <Link 
+                              href={targetUrl}
+                              className="w-full text-center bg-stone-100 hover:bg-stone-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-brown-dark dark:text-white font-bold text-[10px] py-1.5 rounded-xl transition inline-block"
+                            >
+                              Ver mais
+                            </Link>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* Editar Ficha Técnica Button */}
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTechSpecForm({
+                          desc: selectedProduct.longDesc || selectedProduct.desc || "",
+                          woodType: selectedProduct.woodType || "Angelim Vermelho",
+                          thickness: selectedProduct.specs.find(s => s.label === "Espessura")?.val || "3.5 cm",
+                          width: chosenWidth.toString(),
+                          height: chosenHeight.toString(),
+                          finish: selectedProduct.specs.find(s => s.label === "Acabamento")?.val || "Verniz PU Natural",
+                          notes: "Montagem em estufa com moisture 10-12%.",
+                          weight: selectedProduct.specs.find(s => s.label === "Peso")?.val || "35 kg",
+                          brand: "Só Madeiras"
+                        });
+                        setIsEditingTechSpec(true);
+                      }}
+                      className="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold text-xs py-2.5 rounded-xl border border-amber-500/30 transition flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>🛠️ Editar Ficha Técnica</span>
+                    </button>
                   </div>
 
                 </div>
               </div>
+
 
               {/* Price Calculation and final checkouts */}
               <div className="mt-8 pt-4 border-t border-stone-200 dark:border-neutral-850 space-y-4">
@@ -1030,6 +1141,166 @@ export default function PortasClient({ initialType = "all" }: PortasClientProps)
         </div>
       )}
 
+
+
+
+      {/* EDIT TECH SPEC MODAL */}
+      {isEditingTechSpec && selectedProduct && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in no-print">
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl w-full max-w-lg shadow-2xl p-6 border border-stone-200 dark:border-neutral-800 space-y-4 relative">
+            <button
+              onClick={() => setIsEditingTechSpec(false)}
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 dark:hover:text-white p-1 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="border-b border-stone-150 dark:border-neutral-800 pb-3">
+              <h3 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase flex items-center gap-2">
+                <span>🛠️ Editar Ficha Técnica</span>
+              </h3>
+              <p className="text-xs text-stone-400">Altere as especificações técnicas de "{selectedProduct.title}"</p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const updatedSpecs = [
+                  { label: "Material", val: techSpecForm.woodType },
+                  { label: "Espessura", val: techSpecForm.thickness },
+                  { label: "Dimensões", val: `${techSpecForm.width} x ${techSpecForm.height} cm` },
+                  { label: "Acabamento", val: techSpecForm.finish },
+                  { label: "Peso", val: techSpecForm.weight },
+                  { label: "Fabricante", val: techSpecForm.brand }
+                ];
+
+                const updatedProduct = {
+                  ...selectedProduct,
+                  woodType: techSpecForm.woodType as any,
+                  longDesc: techSpecForm.desc,
+                  desc: techSpecForm.desc.slice(0, 120) + "...",
+                  specs: updatedSpecs
+                };
+
+                setSelectedProduct(updatedProduct);
+
+                // Update in dbProducts & localStorage
+                const updatedDb = dbProducts.map(p => p.id === selectedProduct.id ? { ...p, ...updatedProduct } : p);
+                setDbProducts(updatedDb);
+                localStorage.setItem("somadeiras_products", JSON.stringify(updatedDb));
+
+                setIsEditingTechSpec(false);
+                showToastMsg("✅ Ficha técnica atualizada com sucesso!");
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Descrição Técnica Detalhada:</label>
+                <textarea
+                  rows={3}
+                  value={techSpecForm.desc}
+                  onChange={(e) => setTechSpecForm({ ...techSpecForm, desc: e.target.value })}
+                  className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2.5 font-medium text-stone-800 dark:text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Tipo da Madeira:</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.woodType}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, woodType: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Espessura:</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.thickness}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, thickness: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Largura (cm):</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.width}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, width: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Altura (cm):</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.height}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, height: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Acabamento:</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.finish}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, finish: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Peso Aprox.:</label>
+                  <input
+                    type="text"
+                    value={techSpecForm.weight}
+                    onChange={(e) => setTechSpecForm({ ...techSpecForm, weight: e.target.value })}
+                    className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 block uppercase text-[10px]">Fabricante:</label>
+                <input
+                  type="text"
+                  value={techSpecForm.brand}
+                  onChange={(e) => setTechSpecForm({ ...techSpecForm, brand: e.target.value })}
+                  className="w-full bg-stone-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-stone-800 dark:text-white"
+                />
+              </div>
+
+              <div className="pt-3 flex gap-2 justify-end border-t border-stone-150 dark:border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditingTechSpec(false)}
+                  className="px-4 py-2 rounded-xl border text-stone-600 dark:text-stone-300 font-bold hover:bg-stone-100 dark:hover:bg-neutral-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-primary text-brown-dark font-black hover:bg-primary-hover shadow transition"
+                >
+                  Salvar Ficha Técnica
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
+

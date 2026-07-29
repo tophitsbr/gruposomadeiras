@@ -55,9 +55,11 @@ import {
   Tractor,
   Layout
 } from "lucide-react";
+import { Instagram, Facebook, YouTube, WhatsAppIcon, VideoIcon } from "./components/Icons";
 import { 
   ResponsiveContainer, 
   AreaChart, 
+
   Area, 
   XAxis, 
   YAxis, 
@@ -111,54 +113,51 @@ const DEFAULT_MENU_ITEMS = [
   },
   {
     id: "menu-2",
-    label: "PORTAS",
+    label: "PORTAS & ESQUADRIAS",
     link: "",
     submenus: [
       { id: "sub-2-1", label: "PORTAS DE MADEIRA", link: "/portas-de-madeira" },
-      { id: "sub-2-2", label: "PORTAS PIVOTANTES", link: "/portas-pivotantes" },
-      { id: "sub-2-3", label: "PORTAS SEMIOCAS", link: "/portas-semiocas" }
+      { id: "sub-2-2", label: "JANELAS DE MADEIRA", link: "/janelas-de-madeira" },
+      { id: "sub-2-3", label: "PORTAS & JANELAS DE ALUMÍNIO", link: "/portas-e-janelas-de-aluminio" },
+      { id: "sub-2-4", label: "PORTAS PIVOTANTES", link: "/portas-pivotantes" },
+      { id: "sub-2-5", label: "PORTAS SEMIOCAS", link: "/portas-semiocas" }
     ]
   },
   {
     id: "menu-3",
-    label: "SIMULADORES 3D",
-    link: "",
+    label: "PRÉ-MOLDADOS",
+    link: "/pre-moldados",
     submenus: [
-      { id: "sub-3-1", label: "PROJETAR PERGOLADO", link: "/pergolados" },
-      { id: "sub-3-2", label: "PROJETAR CURRAL / AGRO", link: "/galpoes-currais" },
-      { id: "sub-3-3", label: "CALCULAR FORRO PVC", link: "/forro-pvc" },
-      { id: "sub-3-4", label: "CALCULADORA DE TELHADOS", link: "/calculadora-telhado" }
+      { id: "sub-3-1", label: "MUROS PRÉ-MOLDADOS", link: "/pre-moldados" },
+      { id: "sub-3-2", label: "MOURÕES DE CONCRETO", link: "/pre-moldados" },
+      { id: "sub-3-3", label: "GALPÕES DE CONCRETO", link: "/pre-moldados" }
     ]
   },
   {
     id: "menu-4",
-    label: "TELHAS",
+    label: "SIMULADORES 3D",
     link: "",
     submenus: [
-      { id: "sub-4-1", label: "TELHA ONDULINE", link: "/?cat=telhas" },
-      { id: "sub-4-2", label: "TELHA PORTUGUESA", link: "/?cat=telhas" },
-      { id: "sub-4-3", label: "TELHA DE CONCRETO", link: "/?cat=telhas" }
+      { id: "sub-4-1", label: "PROJETAR PERGOLADO", link: "/pergolados" },
+      { id: "sub-4-2", label: "PROJETAR CURRAL / AGRO", link: "/galpoes-currais" },
+      { id: "sub-4-3", label: "CALCULAR FORRO PVC", link: "/forro-pvc" },
+      { id: "sub-4-4", label: "CALCULADORA DE TELHADOS", link: "/calculadora-telhado" }
     ]
   },
   {
     id: "menu-5",
-    label: "TODOS OS PRODUTOS",
-    link: "/?cat=all",
-    submenus: []
-  },
-  {
-    id: "menu-6",
     label: "LOOKBOOK",
     link: "/lookbook",
     submenus: []
   },
   {
-    id: "menu-7",
+    id: "menu-6",
     label: "PROFISSIONAIS",
     link: "/profissionais",
     submenus: []
   }
 ];
+
 
 const DEFAULT_FLASH_DEALS = [
   { id: 15, discountPercent: 0.59, label: "-59%", badge: "Oficial", itemsSold: 38, progress: 38 },
@@ -295,6 +294,14 @@ const INITIAL_SELLERS = [
   { id: "maria", name: "Maria (Madeiras & Estruturas)", commissionRate: 0.035, salesCount: 22, salesValue: 28400.00, activeLeads: 6, goal: 40000.00, avatar: "👩‍💼", phone: "19999990002" },
   { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", commissionRate: 0.025, salesCount: 18, salesValue: 15600.00, activeLeads: 5, goal: 25000.00, avatar: "👨‍💻", phone: "19999990003" }
 ];
+
+const INITIAL_TELHAS = [
+  { id: 8, name: "Telha Ecológica Onduline 200x95cm", brand: "Onduline", price: 79.90, coverage: 1.5, weight: 6.4, img: "/images/tiles/telha_onduline.png", tileType: "onduline", minSlope: 10, maxSlope: 45, qtyPerSqm: 0.67, desc: "Termoacústica, ecológica e leve. Ideal para coberturas rápidas e isolamento de alto nível.", notes: "Excelente isolamento térmico." },
+  { id: 17, name: "Telha Cerâmica Portuguesa Natural", brand: "Só Madeiras", price: 2.99, coverage: 17.0, weight: 2.8, img: "/images/tiles/telha_portuguesa.png", tileType: "ceramic", minSlope: 30, maxSlope: 60, qtyPerSqm: 17.0, desc: "Vermelha tradicional de encaixe perfeito. Visual clássico colonial com durabilidade eterna.", notes: "Encaixe reforçado contra ventos." },
+  { id: 18, name: "Telha de Concreto Plana Grafite", brand: "Tegula", price: 8.50, coverage: 10.4, weight: 4.8, img: "/images/tiles/telha_concreto.png", tileType: "concrete", minSlope: 35, maxSlope: 75, qtyPerSqm: 10.4, desc: "Moderna, resistente a tempestades. Encaixe firme com acabamento liso e requinte minimalista.", notes: "Garantia de 20 anos contra gretamento." },
+  { id: 19, name: "Telha Esmaltada Americana Premium", brand: "Só Madeiras", price: 4.20, coverage: 12.0, weight: 3.1, img: "/images/tiles/telha_esmaltada.png", tileType: "glazed", minSlope: 30, maxSlope: 60, qtyPerSqm: 12.0, desc: "Dupla-face brilhante e impermeável. Proteção total contra infiltrações e fungos.", notes: "Impermeável e lavável pela chuva." }
+];
+
 
 
 const INITIAL_COUPONS = [
@@ -562,10 +569,30 @@ export default function SoMadeirasFullStack() {
   const [products, setProducts] = useState<any[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
   const [sellers, setSellers] = useState<any[]>([]);
+  const [telhasList, setTelhasList] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+
+  // Telhas CRUD Modal State
+  const [isTelhaModalOpen, setIsTelhaModalOpen] = useState(false);
+  const [editingTelha, setEditingTelha] = useState<any | null>(null);
+  const [telhaForm, setTelhaForm] = useState({
+    name: "",
+    desc: "",
+    img: "",
+    brand: "Só Madeiras",
+    tileType: "ceramic",
+    coverage: "12.0",
+    weight: "3.0",
+    price: "5.00",
+    minSlope: "30",
+    maxSlope: "60",
+    qtyPerSqm: "12.0",
+    notes: ""
+  });
+
 
   // Client Front-end States
   const [searchQuery, setSearchQuery] = useState("");
@@ -809,6 +836,8 @@ export default function SoMadeirasFullStack() {
   const [newSellerCommission, setNewSellerCommission] = useState("3");
   const [newSellerAvatar, setNewSellerAvatar] = useState("👨‍💼");
   const [newSellerPhone, setNewSellerPhone] = useState("");
+  const [newSellerPhotoUrl, setNewSellerPhotoUrl] = useState("");
+
 
 
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -1021,6 +1050,7 @@ export default function SoMadeirasFullStack() {
     const localProds = localStorage.getItem("somadeiras_products");
     const localLeads = localStorage.getItem("somadeiras_leads");
     const localSellers = localStorage.getItem("somadeiras_sellers");
+    const localTelhas = localStorage.getItem("somadeiras_tiles");
     const localCats = localStorage.getItem("somadeiras_categories");
     const localPosts = localStorage.getItem("somadeiras_blog_posts");
     const localHeatmap = localStorage.getItem("somadeiras_heatmap");
@@ -1033,7 +1063,9 @@ export default function SoMadeirasFullStack() {
     if (localProds) setProducts(JSON.parse(localProds)); else setProducts(INITIAL_PRODUCTS);
     if (localLeads) setLeads(JSON.parse(localLeads)); else setLeads(INITIAL_LEADS);
     if (localSellers) setSellers(JSON.parse(localSellers)); else setSellers(INITIAL_SELLERS);
+    if (localTelhas) setTelhasList(JSON.parse(localTelhas)); else setTelhasList(INITIAL_TELHAS);
     if (localCats) setCategories(JSON.parse(localCats)); else setCategories(INITIAL_CATEGORIES);
+
     setBrands(INITIAL_BRANDS);
     if (localPosts) setBlogPosts(JSON.parse(localPosts)); else setBlogPosts(INITIAL_BLOG_POSTS);
     if (localHeatmap) setClicksHeatmap(JSON.parse(localHeatmap));
@@ -1278,8 +1310,10 @@ export default function SoMadeirasFullStack() {
   function updateProducts(newProds: any[]) { setProducts(newProds); saveToLocal("somadeiras_products", newProds); }
   function updateLeads(newLeads: any[]) { setLeads(newLeads); saveToLocal("somadeiras_leads", newLeads); }
   function updateSellers(newSellers: any[]) { setSellers(newSellers); saveToLocal("somadeiras_sellers", newSellers); }
+  function updateTelhas(newTelhas: any[]) { setTelhasList(newTelhas); saveToLocal("somadeiras_tiles", newTelhas); }
   function updateHeatmap(newHeat: any) { setClicksHeatmap(newHeat); saveToLocal("somadeiras_heatmap", newHeat); }
   function updateCoupons(newCoupons: any[]) { setCoupons(newCoupons); saveToLocal("somadeiras_coupons", newCoupons); }
+
 
 
   const getNextSellerRoundRobin = () => {
@@ -1714,12 +1748,14 @@ export default function SoMadeirasFullStack() {
     const stock = parseInt((form.elements.namedItem("stock") as HTMLInputElement).value);
     const desc = (form.elements.namedItem("desc") as HTMLTextAreaElement).value;
     const img = (form.elements.namedItem("img") as HTMLInputElement).value || "🪵";
+    const videoUrl = (form.elements.namedItem("videoUrl") as HTMLInputElement)?.value || "";
+    const videoPlayMode = (form.elements.namedItem("videoPlayMode") as HTMLSelectElement)?.value || "5s";
     const soldCount = parseInt((form.elements.namedItem("soldCount") as HTMLInputElement)?.value || "0");
 
     if (crudEditProduct) {
       // Edit mode
       const updated = products.map(p => 
-        p.id === crudEditProduct.id ? { ...p, name, category, brand, price, pricePix, stock, desc, img, soldCount } : p
+        p.id === crudEditProduct.id ? { ...p, name, category, brand, price, pricePix, stock, desc, img, videoUrl, videoPlayMode, soldCount } : p
       );
       updateProducts(updated);
       setCrudEditProduct(null);
@@ -1737,6 +1773,8 @@ export default function SoMadeirasFullStack() {
         rating: 5.0,
         desc,
         img,
+        videoUrl,
+        videoPlayMode,
         soldCount
       };
       updateProducts([newProd, ...products]);
@@ -1744,6 +1782,7 @@ export default function SoMadeirasFullStack() {
     }
     form.reset();
   };
+
 
   // Helper to parse bulk text lines
   const parseBulkText = () => {
@@ -2029,6 +2068,13 @@ export default function SoMadeirasFullStack() {
               >
                 <span>🎁 Roleta de Prêmios</span>
               </button>
+              <Link
+                href="/sorteio"
+                className="bg-amber-500 hover:bg-amber-400 text-[#3E2723] font-black text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer"
+                title="Concorra a prêmios no Sorteio do Mês"
+              >
+                <span>🏆 Sorteio do Mês</span>
+              </Link>
               <button
                 onClick={() => setIsMinhaContaOpen(true)}
                 className="bg-primary hover:bg-primary/90 text-brown-dark font-extrabold px-3.5 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
@@ -2036,6 +2082,7 @@ export default function SoMadeirasFullStack() {
                 <Users className="h-3.5 w-3.5" /> Área de Login / Entrar
               </button>
             </div>
+
           )}
 
           {/* Notifications dropdown count */}
@@ -3327,12 +3374,37 @@ export default function SoMadeirasFullStack() {
                     Selecione um modelo de telha ao lado para abrir e atualizar a calculadora instantaneamente com a inclinação, peso total e a quantidade ideal para cobrir a sua obra!
                   </p>
                 </div>
-                <button
-                  onClick={() => { setSelectedCategoryFilter("all"); trackClick("btn-special-tiles-back-home"); }}
-                  className="bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs px-5 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
-                >
-                  ← Voltar para Todos os Produtos
-                </button>
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => {
+                      setEditingTelha(null);
+                      setTelhaForm({
+                        name: "",
+                        desc: "",
+                        img: "",
+                        brand: "Só Madeiras",
+                        tileType: "ceramic",
+                        coverage: "12.0",
+                        weight: "3.0",
+                        price: "5.00",
+                        minSlope: "30",
+                        maxSlope: "60",
+                        qtyPerSqm: "12.0",
+                        notes: ""
+                      });
+                      setIsTelhaModalOpen(true);
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>➕ Adicionar Telha</span>
+                  </button>
+                  <button
+                    onClick={() => { setSelectedCategoryFilter("all"); trackClick("btn-special-tiles-back-home"); }}
+                    className="bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs px-5 py-2.5 rounded-full shadow transition active:scale-95 whitespace-nowrap flex items-center gap-1.5 cursor-pointer"
+                  >
+                    ← Voltar para Todos os Produtos
+                  </button>
+                </div>
               </div>
 
             {/* Split Grid Layout */}
@@ -3340,16 +3412,17 @@ export default function SoMadeirasFullStack() {
               
               {/* Left Column: Tile Selection (7 of 12 cols) */}
               <div className="lg:col-span-7 space-y-6">
-                <h4 className="font-bold text-xs uppercase text-brown-medium dark:text-primary tracking-wider border-b border-gray-150 dark:border-neutral-800 pb-2">
-                  Selecione o Modelo de Telha:
-                </h4>
+                <div className="flex justify-between items-center border-b border-gray-150 dark:border-neutral-800 pb-2">
+                  <h4 className="font-bold text-xs uppercase text-brown-medium dark:text-primary tracking-wider">
+                    Selecione o Modelo de Telha:
+                  </h4>
+                  <span className="text-[10px] text-stone-400 font-bold">
+                    {telhasList.length} telhas cadastradas
+                  </span>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { id: 8, name: "Telha Ecológica Onduline 200x95cm", brand: "Onduline", price: 79.90, coverage: 1.5, weight: 6.4, img: "/images/tiles/telha_onduline.png", desc: "Termoacústica, ecológica e leve. Ideal para coberturas rápidas e isolamento de alto nível." },
-                    { id: 17, name: "Telha Cerâmica Portuguesa Natural", brand: "Só Madeiras", price: 2.99, coverage: 17.0, weight: 2.8, img: "/images/tiles/telha_portuguesa.png", desc: "Vermelha tradicional de encaixe perfeito. Visual clássico colonial com durabilidade eterna." },
-                    { id: 18, name: "Telha de Concreto Plana Grafite", brand: "Tegula", price: 8.50, coverage: 10.4, weight: 4.8, img: "/images/tiles/telha_concreto.png", desc: "Moderna, resistente a tempestades. Encaixe firme com acabamento liso e requinte minimalista." },
-                    { id: 19, name: "Telha Esmaltada Americana Premium", brand: "Só Madeiras", price: 4.20, coverage: 12.0, weight: 3.1, img: "/images/tiles/telha_esmaltada.png", desc: "Dupla-face brilhante e impermeável. Proteção total contra infiltrações e fungos." }
-                  ].map(tile => {
+                  {(telhasList.length > 0 ? telhasList : INITIAL_TELHAS).map(tile => {
                     const isSelected = selectedTileId === tile.id;
                     return (
                       <div
@@ -3359,11 +3432,49 @@ export default function SoMadeirasFullStack() {
                           isSelected ? 'border-primary ring-2 ring-primary/20 dark:ring-primary/10' : 'border-gray-150 dark:border-neutral-800 hover:border-gray-300 dark:hover:border-neutral-700'
                         }`}
                       >
-                        {/* Selector indicator bubble */}
-                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
-                          isSelected ? 'bg-primary border-primary text-brown-dark scale-110' : 'border-gray-300 dark:border-neutral-600 bg-transparent'
-                        }`}>
-                          {isSelected && <span className="text-[10px] font-black">✓</span>}
+                        {/* Action buttons (Edit & Delete) */}
+                        <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingTelha(tile);
+                              setTelhaForm({
+                                name: tile.name || "",
+                                desc: tile.desc || "",
+                                img: tile.img || "",
+                                brand: tile.brand || "Só Madeiras",
+                                tileType: tile.tileType || "ceramic",
+                                coverage: (tile.coverage || 12).toString(),
+                                weight: (tile.weight || 3).toString(),
+                                price: (tile.price || 4.2).toString(),
+                                minSlope: (tile.minSlope || 30).toString(),
+                                maxSlope: (tile.maxSlope || 60).toString(),
+                                qtyPerSqm: (tile.qtyPerSqm || 12).toString(),
+                                notes: tile.notes || ""
+                              });
+                              setIsTelhaModalOpen(true);
+                            }}
+                            className="bg-amber-100 hover:bg-amber-200 dark:bg-neutral-800 text-amber-700 dark:text-amber-300 p-1 rounded-md text-[10px] font-bold"
+                            title="Editar Telha"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm(`Deseja remover a telha "${tile.name}"?`)) {
+                                const updated = telhasList.filter(t => t.id !== tile.id);
+                                updateTelhas(updated);
+                                showToast(`🗑️ Telha "${tile.name}" removida!`);
+                              }
+                            }}
+                            className="bg-red-100 hover:bg-red-200 dark:bg-neutral-800 text-red-600 p-1 rounded-md text-[10px] font-bold"
+                            title="Excluir Telha"
+                          >
+                            🗑️
+                          </button>
                         </div>
 
                         <div>
@@ -3373,6 +3484,7 @@ export default function SoMadeirasFullStack() {
                               src={tile.img}
                               alt={tile.name}
                               className="h-full w-auto object-contain max-h-[100px] transition-transform duration-500 group-hover:scale-108"
+                              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=200&auto=format&fit=crop"; }}
                             />
                           </div>
                           <div className="space-y-1">
@@ -3387,12 +3499,12 @@ export default function SoMadeirasFullStack() {
                         <div className="mt-3 pt-2.5 border-t border-gray-100 dark:border-neutral-850 flex justify-between items-center">
                           <div>
                             <span className="text-[8px] text-gray-400 dark:text-gray-500 uppercase font-medium">Preço unitário</span>
-                            <span className="text-xs font-black text-brown-medium dark:text-primary block">R$ {tile.price.toFixed(2)}</span>
+                            <span className="text-xs font-black text-brown-medium dark:text-primary block">R$ {parseFloat(tile.price || 0).toFixed(2)}</span>
                           </div>
                           <div className="text-right">
                             <span className="text-[8px] text-gray-400 dark:text-gray-500 uppercase font-medium block">Rendimento</span>
                             <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300">
-                              {tile.id === 8 ? `${tile.coverage} m²/peça` : `${tile.coverage} peças/m²`}
+                              {tile.coverage} m²/peça
                             </span>
                           </div>
                         </div>
@@ -3401,6 +3513,7 @@ export default function SoMadeirasFullStack() {
                   })}
                 </div>
               </div>
+
 
               {/* Right Column: Calculator (5 of 12 cols) */}
               <div className="lg:col-span-5">
@@ -3749,20 +3862,36 @@ export default function SoMadeirasFullStack() {
                       className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col group"
                     >
                       {/* Product badge */}
-                      <div className="relative bg-gray-50 dark:bg-neutral-900 h-44 flex items-center justify-center text-6xl group-hover:bg-gray-100 dark:group-hover:bg-neutral-850 transition p-4">
-                        {p.img && (p.img.startsWith("/") || p.img.startsWith("http") || p.img.includes(".") || p.img.includes("data:image")) ? (
+                      <div className="relative bg-gray-50 dark:bg-neutral-900 h-44 flex items-center justify-center text-6xl group-hover:bg-gray-100 dark:group-hover:bg-neutral-850 transition p-4 overflow-hidden">
+                        {p.videoUrl ? (
+                          <div className="w-full h-full relative">
+                            <video
+                              src={p.videoUrl}
+                              autoPlay={p.videoPlayMode !== "click"}
+                              muted
+                              loop
+                              playsInline
+                              controls={p.videoPlayMode === "click"}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                            <span className="absolute bottom-2 left-2 bg-red-600/90 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                              <span>🎥 VÍDEO</span>
+                            </span>
+                          </div>
+                        ) : p.img && (p.img.startsWith("/") || p.img.startsWith("http") || p.img.includes(".") || p.img.includes("data:image")) ? (
                           <img src={p.img} alt={p.name} className="h-36 w-auto object-contain max-h-[140px] transition-transform duration-300 group-hover:scale-105" />
                         ) : (
                           <span className="filter drop-shadow-lg group-hover:rotate-6 transition-transform duration-300">{p.img}</span>
                         )}
-                        <span className="absolute top-2 left-2 bg-brown-dark text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">
+                        <span className="absolute top-2 left-2 bg-brown-dark text-white text-[9px] font-black px-2 py-0.5 rounded uppercase z-10">
                           {p.brand}
                         </span>
                         {p.stock <= 15 && (
-                          <span className="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase animate-pulse">
+                          <span className="absolute top-2 right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase animate-pulse z-10">
                             Baixo Estoque ({p.stock})
                           </span>
                         )}
+
                         {/* Interactive overlay quickview */}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <button
@@ -3888,11 +4017,41 @@ export default function SoMadeirasFullStack() {
                 <p className="text-neutral-500 leading-relaxed text-xs">
                   Plataforma premium líder em materiais de construção, telhas, ferramentas e madeiras nobres tratadas com faturamento corporativo simplificado via WhatsApp.
                 </p>
-                <div className="flex gap-3 text-neutral-400 text-lg">
-                  <a href={settings?.facebookUrl || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition cursor-pointer">📘</a>
-                  <a href={settings?.instagramUrl || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition cursor-pointer">📸</a>
-                  <a href={settings?.youtubeUrl || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition cursor-pointer">🎥</a>
+                <div className="pt-2 space-y-2">
+                  <span className="text-[11px] font-bold text-[#FFC107] uppercase tracking-wider block">
+                    Acompanhe nossas redes sociais
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={settings?.instagramUrl || "https://instagram.com/somadeiras"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-neutral-800 hover:bg-gradient-to-tr hover:from-amber-500 hover:to-pink-500 text-neutral-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow"
+                      title="Instagram Só Madeiras"
+                    >
+                      <Instagram size={18} />
+                    </a>
+                    <a
+                      href={settings?.facebookUrl || "https://facebook.com/somadeiras"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-neutral-800 hover:bg-blue-600 text-neutral-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow"
+                      title="Facebook Só Madeiras"
+                    >
+                      <Facebook size={18} />
+                    </a>
+                    <a
+                      href={settings?.youtubeUrl || "https://youtube.com/somadeiras"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-neutral-800 hover:bg-red-600 text-neutral-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow"
+                      title="YouTube Só Madeiras"
+                    >
+                      <YouTube size={18} />
+                    </a>
+                  </div>
                 </div>
+
               </div>
               <div>
                 <h5 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">Mega Menu</h5>
@@ -3902,10 +4061,13 @@ export default function SoMadeirasFullStack() {
                   )}
                   <li><Link href="/lookbook" className="text-primary hover:text-white transition font-bold flex items-center gap-1">✨ Lookbook Inspirações</Link></li>
                   <li><Link href="/portas-de-madeira" className="hover:text-white transition">Portas de Madeira</Link></li>
+                  <li><Link href="/janelas-de-madeira" className="hover:text-white transition">Janelas de Madeira</Link></li>
+                  <li><Link href="/portas-e-janelas-de-aluminio" className="hover:text-white transition font-bold text-cyan-400">Portas e Janelas de Alumínio</Link></li>
+                  <li><Link href="/pre-moldados" className="hover:text-white transition font-bold text-amber-400">Pré-Moldados de Concreto</Link></li>
                   <li><Link href="/forro-pvc" className="hover:text-white transition">Forro PVC</Link></li>
                   <li><Link href="/pergolados" className="hover:text-white transition">Pergolados</Link></li>
                   <li><Link href="/galpoes-currais" className="hover:text-white transition">Galpões e Currais</Link></li>
-                  <li><Link href="/janelas-de-madeira" className="hover:text-white transition">Janelas de Madeira</Link></li>
+
                 </ul>
               </div>
               <div>
@@ -4377,14 +4539,15 @@ export default function SoMadeirasFullStack() {
             {/* Main Floating Trigger Button */}
             <button
               onClick={() => setIsWhatsappWidgetOpen(!isWhatsappWidgetOpen)}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-full shadow-2xl transition active:scale-90 flex items-center justify-center border-2 border-white relative group"
+              className="bg-[#25D366] hover:bg-[#20ba5a] text-white p-3.5 rounded-full shadow-2xl transition-all duration-300 active:scale-90 flex items-center justify-center border-2 border-white relative group cursor-pointer"
               title="Vendedores de Plantão no WhatsApp"
             >
-              <Phone className="h-7 w-7" />
+              <WhatsAppIcon size={30} fill="#ffffff" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-md animate-bounce">
                 3
               </span>
             </button>
+
           </div>
 
           {/* SPIN WHEEL DISCOUNT MODAL */}
@@ -5144,7 +5307,28 @@ export default function SoMadeirasFullStack() {
                       className="w-full bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
-                  <div className="col-span-1 md:col-span-3 space-y-1">
+                  <div className="space-y-1">
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Vídeo do Produto (Shopee MP4/WEBM)</label>
+                    <input
+                      type="text"
+                      name="videoUrl"
+                      defaultValue={crudEditProduct?.videoUrl || ""}
+                      placeholder="URL do Vídeo MP4/WEBM (opcional)"
+                      className="w-full bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Reprodução do Vídeo</label>
+                    <select
+                      name="videoPlayMode"
+                      defaultValue={crudEditProduct?.videoPlayMode || "5s"}
+                      className="w-full bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                    >
+                      <option value="5s">▶ Autoplay 5 Segundos (Vitrine)</option>
+                      <option value="click">🖱️ Reproduzir ao Clicar</option>
+                    </select>
+                  </div>
+                  <div className="col-span-1 md:col-span-2 space-y-1">
                     <label className="font-bold text-gray-900 dark:text-gray-100 font-medium uppercase">Descrição Técnica (SEO & Vendas)</label>
                     <textarea
                       name="desc"
@@ -5154,6 +5338,7 @@ export default function SoMadeirasFullStack() {
                       className="w-full bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded p-2.5 text-xs min-h-[50px] focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
+
 
                   {/* Google Image Search Results Grid */}
                   {(isSearchingImages || googleImageResults.length > 0) && (
@@ -7976,21 +8161,24 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                       const newId = newSellerName.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now();
                       const newSellerObj = {
                         id: newId,
-                        name: newSellerName,
-                        commissionRate: 0,
+                        name: newSellerName.trim(),
+                        commissionRate: parseFloat(newSellerCommission) / 100 || 0.03,
                         salesCount: 0,
                         salesValue: 0.00,
                         activeLeads: 0,
-                        goal: 0,
-                        avatar: newSellerAvatar,
+                        goal: parseFloat(newSellerGoal) || 30000.00,
+                        avatar: newSellerAvatar || "👨‍💼",
+                        photoUrl: newSellerPhotoUrl || undefined,
                         phone: newSellerPhone.trim().replace(/\D/g, "")
                       };
 
-                      updateSellers([...sellers, newSellerObj]);
+                      const nextSellers = [...sellers, newSellerObj];
+                      updateSellers(nextSellers);
                       showToast(`👤 Vendedor ${newSellerName} cadastrado com sucesso!`);
                       setNewSellerName("");
                       setNewSellerAvatar("👨‍💼");
                       setNewSellerPhone("");
+                      setNewSellerPhotoUrl("");
                     }} className="space-y-4">
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Nome Completo</label>
@@ -8009,13 +8197,46 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           type="text"
                           value={newSellerPhone}
                           onChange={(e) => setNewSellerPhone(e.target.value)}
-                          placeholder="Ex: 19999998888"
+                          placeholder="Ex: 79999998888"
                           className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-bold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Avatar / Emoji</label>
+                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Foto de Perfil (Upload / Opcional)</label>
+                        {newSellerPhotoUrl ? (
+                          <div className="flex items-center gap-3 bg-slate-50 dark:bg-neutral-900 p-2 rounded-xl border">
+                            <img src={newSellerPhotoUrl} alt="Preview" className="w-10 h-10 rounded-full object-cover border" />
+                            <span className="text-[10px] font-bold text-emerald-600">Foto Carregada</span>
+                            <button
+                              type="button"
+                              onClick={() => setNewSellerPhotoUrl("")}
+                              className="ml-auto text-xs text-red-500 hover:underline font-bold"
+                            >
+                              Remover
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                  setNewSellerPhotoUrl(reader.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                            className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3 py-1.5 text-xs cursor-pointer text-gray-500"
+                          />
+                        )}
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Avatar / Emoji Backup</label>
                         <select
                           value={newSellerAvatar}
                           onChange={(e) => setNewSellerAvatar(e.target.value)}
@@ -8053,7 +8274,6 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {sellers.map((seller) => {
-                          const progress = Math.min(100, ((seller.salesValue || 0) / (seller.goal || 1)) * 100);
                           return (
                             <div
                               key={seller.id}
@@ -8061,29 +8281,74 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             >
                               <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-3">
-                                  <span className="text-3xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-dark-border rounded-full w-12 h-12 flex items-center justify-center shadow-2xs">
-                                    {seller.avatar || "👤"}
-                                  </span>
+                                  {seller.photoUrl ? (
+                                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary shrink-0 shadow-2xs">
+                                      <img src={seller.photoUrl} alt={seller.name} className="w-full h-full object-cover" />
+                                    </div>
+                                  ) : (
+                                    <span className="text-3xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-dark-border rounded-full w-12 h-12 flex items-center justify-center shadow-2xs shrink-0">
+                                      {seller.avatar || "👤"}
+                                    </span>
+                                  )}
                                   <div>
                                     <h6 className="font-display font-bold text-sm text-brown-dark dark:text-white leading-snug">{seller.name}</h6>
                                     <span className="text-[10px] text-gray-400 font-medium block mt-0.5">
-                                      Comissão: <strong className="text-brown-medium dark:text-primary">{((seller.commissionRate || 0) * 100).toFixed(1)}%</strong>
+                                      WhatsApp: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{seller.phone}</strong>
                                     </span>
                                   </div>
                                 </div>
                                 
-                                <button
-                                  onClick={() => {
-                                    if (window.confirm(`Deseja realmente remover o vendedor ${seller.name}? Ele não receberá mais novos orçamentos.`)) {
-                                      updateSellers(sellers.filter(s => s.id !== seller.id));
-                                      showToast(`👤 Vendedor ${seller.name} removido!`);
-                                    }
-                                  }}
-                                  className="text-gray-400 hover:text-red-500 transition p-1 hover:bg-red-50 dark:hover:bg-red-950/20 rounded cursor-pointer"
-                                  title="Remover Vendedor"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
+                                <div className="flex items-center gap-1">
+                                  <label className="text-[10px] bg-slate-200 hover:bg-slate-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-stone-700 dark:text-stone-300 p-1.5 rounded cursor-pointer font-bold" title="Alterar Foto">
+                                    📷
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      className="hidden"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          const reader = new FileReader();
+                                          reader.onloadend = () => {
+                                            const updated = sellers.map(s => s.id === seller.id ? { ...s, photoUrl: reader.result as string } : s);
+                                            updateSellers(updated);
+                                            showToast(`📷 Foto de ${seller.name} atualizada!`);
+                                          };
+                                          reader.readAsDataURL(file);
+                                        }
+                                      }}
+                                    />
+                                  </label>
+
+                                  {seller.photoUrl && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = sellers.map(s => s.id === seller.id ? { ...s, photoUrl: undefined } : s);
+                                        updateSellers(updated);
+                                        showToast(`📷 Foto de ${seller.name} removida.`);
+                                      }}
+                                      className="text-[10px] bg-red-100 hover:bg-red-200 dark:bg-red-950/40 text-red-600 p-1.5 rounded font-bold cursor-pointer"
+                                      title="Remover Foto"
+                                    >
+                                      ✖
+                                    </button>
+                                  )}
+
+                                  <button
+                                    onClick={() => {
+                                      if (window.confirm(`Deseja realmente remover o vendedor ${seller.name}? Ele não receberá mais novos orçamentos.`)) {
+                                        const nextSellers = sellers.filter(s => s.id !== seller.id);
+                                        updateSellers(nextSellers);
+                                        showToast(`👤 Vendedor ${seller.name} removido com sucesso!`);
+                                      }
+                                    }}
+                                    className="text-gray-400 hover:text-red-500 transition p-1 hover:bg-red-50 dark:hover:bg-red-950/20 rounded cursor-pointer"
+                                    title="Remover Vendedor"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
                               </div>
 
                               <div className="border-t border-gray-200/50 dark:border-dark-border/40 pt-2.5 grid grid-cols-2 gap-2 text-[10px] text-gray-500">
@@ -8102,6 +8367,7 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                       </div>
                     )}
                   </div>
+
                 </div>
               </div>
             )}
@@ -8863,23 +9129,13 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         <p className="text-xs text-gray-450 dark:text-gray-400">Escolha a melhor opção para se conectar e ver seus orçamentos e cashback.</p>
                       </div>
 
-                      {/* Login Method Tabs */}
-                      <div className="flex border-b border-gray-200 dark:border-neutral-800 text-[11px] font-bold text-gray-400">
-                        <button
-                          type="button"
-                          onClick={() => setLoginMethod("traditional")}
-                          className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "traditional" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
-                        >
-                          👤 Cliente
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setLoginMethod("staff")}
-                          className={`flex-1 py-2.5 text-center border-b-2 transition-all duration-200 ${loginMethod === "staff" ? "border-primary text-brown-dark dark:text-primary font-black" : "border-transparent hover:text-brown-medium dark:hover:text-gray-300"}`}
-                        >
-                          🔐 Equipe / Staff
-                        </button>
+                      {/* Login Header */}
+                      <div className="border-b border-gray-200 dark:border-neutral-800 pb-2 text-center">
+                        <span className="text-xs font-black uppercase text-brown-dark dark:text-primary tracking-wider">
+                          👤 Login / Cadastro de Cliente
+                        </span>
                       </div>
+
 
                       {/* CLIENT DIRECT LOGIN FORM (NOME + NUMERO + USUARIO) */}
                       {loginMethod === "traditional" && (
@@ -8978,54 +9234,17 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                           >
                             Entrar no Portal do Cliente
                           </button>
-                        </form>
-                      )}
 
-                      {/* STAFF / ADMIN LOGIN FORM */}
-                      {loginMethod === "staff" && (
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            if (staffLoginForm.pin === "1234" || staffLoginForm.pin === "admin") {
-                              setIsAdminAuthenticated(true);
-                              setViewMode("admin");
-                              setIsMinhaContaOpen(false);
-                              addSystemNotification("🛡️ Acesso concedido: Painel de Administração!");
-                            } else {
-                              setViewMode("seller");
-                              setIsMinhaContaOpen(false);
-                              addSystemNotification("💼 Acesso concedido: Painel do Vendedor!");
-                            }
-                          }}
-                          className="space-y-4 pt-2 animate-fade-in text-left"
-                        >
-                          <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-lg p-3 text-[11px] text-amber-800 dark:text-amber-300 font-medium leading-relaxed">
-                            🔒 <strong>Acesso da Equipe:</strong> Login unificado para vendedores e administradores da equipe <strong>Só Madeiras</strong>.
-                          </div>
-
-                          <div className="space-y-1">
-                            <label className="text-[10px] font-bold uppercase text-brown-medium dark:text-gray-350 tracking-wider block">PIN / Senha da Equipe:</label>
-                            <input 
-                              type="password"
-                              required
-                              value={staffLoginForm.pin}
-                              onChange={(e) => setStaffLoginForm({ ...staffLoginForm, pin: e.target.value })}
-                              placeholder="Digite a senha ou PIN de acesso (ex: 1234)"
-                              className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white"
-                            />
-                            <span className="text-[10px] text-gray-400 block pt-0.5">Digite <strong>1234</strong> para modo gestão ou qualquer senha de vendedor.</span>
-                          </div>
-
-                          <button
-                            type="submit"
-                            className="w-full bg-brown-dark hover:bg-brown-medium text-white font-black text-xs py-3 rounded-lg shadow transition active:scale-95 cursor-pointer mt-4 flex items-center justify-center gap-2"
-                          >
-                            <Lock className="h-4 w-4 text-primary" />
-                            <span>Acessar Painel da Equipe</span>
-                          </button>
+                          <p className="text-[10px] text-gray-400 text-center pt-3 border-t border-gray-150 dark:border-neutral-800">
+                            É funcionário ou vendedor da Só Madeiras?{" "}
+                            <Link href="/equipe" onClick={() => setIsMinhaContaOpen(false)} className="text-primary hover:underline font-bold">
+                              Acesse a Área da Equipe
+                            </Link>
+                          </p>
                         </form>
                       )}
                     </>
+
                   )}
 
                 </div>
@@ -9280,8 +9499,239 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
           </div>
         </div>
       )}
-        </>
+
+
+
+      {/* TELHAS CRUD MANAGEMENT MODAL */}
+
+      {isTelhaModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in no-print text-left">
+          <div className="bg-white dark:bg-neutral-900 rounded-3xl w-full max-w-xl shadow-2xl p-6 border border-stone-200 dark:border-neutral-800 space-y-4 relative">
+            <button
+              onClick={() => setIsTelhaModalOpen(false)}
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 dark:hover:text-white p-1 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="border-b border-stone-150 dark:border-neutral-800 pb-3">
+              <h3 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase flex items-center gap-2">
+                <span>🏠 {editingTelha ? "Editar Telha Cadastrada" : "Cadastrar Nova Telha"}</span>
+              </h3>
+              <p className="text-xs text-stone-400">Preencha todos os atributos técnicos do modelo de telha</p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!telhaForm.name.trim()) {
+                  showToast("Por favor, preencha o nome da telha.", "error");
+                  return;
+                }
+
+                const tileObj = {
+                  id: editingTelha ? editingTelha.id : Date.now(),
+                  name: telhaForm.name.trim(),
+                  brand: telhaForm.brand.trim(),
+                  tileType: telhaForm.tileType,
+                  coverage: parseFloat(telhaForm.coverage) || 1.0,
+                  weight: parseFloat(telhaForm.weight) || 3.0,
+                  price: parseFloat(telhaForm.price) || 0.0,
+                  minSlope: parseFloat(telhaForm.minSlope) || 10,
+                  maxSlope: parseFloat(telhaForm.maxSlope) || 60,
+                  qtyPerSqm: parseFloat(telhaForm.qtyPerSqm) || 12,
+                  img: telhaForm.img || "/images/tiles/telha_portuguesa.png",
+                  desc: telhaForm.desc.trim(),
+                  notes: telhaForm.notes.trim()
+                };
+
+                let updatedList: any[] = [];
+                if (editingTelha) {
+                  updatedList = telhasList.map(t => t.id === editingTelha.id ? tileObj : t);
+                  showToast(`✅ Telha "${tileObj.name}" atualizada com sucesso!`);
+                } else {
+                  updatedList = [tileObj, ...telhasList];
+                  showToast(`🏠 Nova telha "${tileObj.name}" cadastrada!`);
+                }
+
+                updateTelhas(updatedList);
+                setIsTelhaModalOpen(false);
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Nome da Telha *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: Telha Cerâmica Portuguesa"
+                    value={telhaForm.name}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, name: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Fabricante / Marca *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex: Tegula, Onduline, Só Madeiras"
+                    value={telhaForm.brand}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, brand: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Tipo de Material</label>
+                  <select
+                    value={telhaForm.tileType}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, tileType: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white cursor-pointer"
+                  >
+                    <option value="ceramic">Cerâmica</option>
+                    <option value="concrete">Concreto</option>
+                    <option value="onduline">Ecológica / Onduline</option>
+                    <option value="glazed">Esmaltada</option>
+                    <option value="fibro">Fibrocimento</option>
+                    <option value="metal">Galvanizada / Metálica</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Preço Unitário (R$)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 4.50"
+                    value={telhaForm.price}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, price: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Peso (Kg/peça)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 2.8"
+                    value={telhaForm.weight}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, weight: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Rendimento (m²/peça)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 12.0 ou 1.5"
+                    value={telhaForm.coverage}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, coverage: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Inclinação Mín (%)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 30"
+                    value={telhaForm.minSlope}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, minSlope: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Inclinação Máx (%)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 60"
+                    value={telhaForm.maxSlope}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, maxSlope: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Imagem da Telha (URL ou Upload)</label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    placeholder="Ex: /images/tiles/telha_portuguesa.png ou URL https://"
+                    value={telhaForm.img}
+                    onChange={(e) => setTelhaForm({ ...telhaForm, img: e.target.value })}
+                    className="flex-1 bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-bold text-slate-800 dark:text-white"
+                  />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setTelhaForm({ ...telhaForm, img: reader.result as string });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-28 text-[9px] cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Descrição Comercial</label>
+                <textarea
+                  rows={2}
+                  placeholder="Ex: Vermelha tradicional de encaixe perfeito. Visual clássico colonial..."
+                  value={telhaForm.desc}
+                  onChange={(e) => setTelhaForm({ ...telhaForm, desc: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-medium text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-stone-600 dark:text-stone-300 uppercase text-[10px] block">Observações Técnicas</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Resistência elevada contra ventos fortes e umidade."
+                  value={telhaForm.notes}
+                  onChange={(e) => setTelhaForm({ ...telhaForm, notes: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-neutral-800 border border-stone-200 dark:border-neutral-700 rounded-xl p-2 font-medium text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="pt-3 flex gap-2 justify-end border-t border-stone-150 dark:border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => setIsTelhaModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border text-stone-600 dark:text-stone-300 font-bold hover:bg-stone-100 dark:hover:bg-neutral-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 text-white font-black hover:bg-emerald-500 shadow transition"
+                >
+                  Salvar Telha
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
+    </>
+    )}
     </div>
   );
 }
+
+
+
+
+
+
