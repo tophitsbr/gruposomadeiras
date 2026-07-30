@@ -398,9 +398,32 @@ export function SeoForm({ pageTitle, whatsappNumber }: SeoFormProps) {
                 className="w-full bg-stone-50 dark:bg-neutral-900 border border-stone-250 dark:border-dark-border rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-brown-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition cursor-pointer"
               >
                 <option value="SE">Sergipe (SE)</option>
-                <option value="AL">Alagoas (AL)</option>
                 <option value="BA">Bahia (BA)</option>
+                <option value="AL">Alagoas (AL)</option>
                 <option value="PE">Pernambuco (PE)</option>
+                <option value="CE">Ceará (CE)</option>
+                <option value="PB">Paraíba (PB)</option>
+                <option value="RN">Rio Grande do Norte (RN)</option>
+                <option value="MA">Maranhão (MA)</option>
+                <option value="PI">Piauí (PI)</option>
+                <option value="SP">São Paulo (SP)</option>
+                <option value="RJ">Rio de Janeiro (RJ)</option>
+                <option value="MG">Minas Gerais (MG)</option>
+                <option value="ES">Espírito Santo (ES)</option>
+                <option value="PR">Paraná (PR)</option>
+                <option value="SC">Santa Catarina (SC)</option>
+                <option value="RS">Rio Grande do Sul (RS)</option>
+                <option value="DF">Distrito Federal (DF)</option>
+                <option value="GO">Goiás (GO)</option>
+                <option value="MT">Mato Grosso (MT)</option>
+                <option value="MS">Mato Grosso do Sul (MS)</option>
+                <option value="PA">Pará (PA)</option>
+                <option value="AM">Amazonas (AM)</option>
+                <option value="AP">Amapá (AP)</option>
+                <option value="AC">Acre (AC)</option>
+                <option value="RO">Rondônia (RO)</option>
+                <option value="RR">Roraima (RR)</option>
+                <option value="TO">Tocantins (TO)</option>
               </select>
             </div>
           </div>

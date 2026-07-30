@@ -278,6 +278,36 @@ const INITIAL_CATEGORIES = [
   { id: "pesada", name: "Construção Pesada", icon: "🚜", color: "from-gray-700 to-gray-800" }
 ];
 
+const BRAZILIAN_STATES = [
+  { code: "SE", name: "Sergipe (SE)" },
+  { code: "BA", name: "Bahia (BA)" },
+  { code: "AL", name: "Alagoas (AL)" },
+  { code: "PE", name: "Pernambuco (PE)" },
+  { code: "CE", name: "Ceará (CE)" },
+  { code: "PB", name: "Paraíba (PB)" },
+  { code: "RN", name: "Rio Grande do Norte (RN)" },
+  { code: "MA", name: "Maranhão (MA)" },
+  { code: "PI", name: "Piauí (PI)" },
+  { code: "SP", name: "São Paulo (SP)" },
+  { code: "RJ", name: "Rio de Janeiro (RJ)" },
+  { code: "MG", name: "Minas Gerais (MG)" },
+  { code: "ES", name: "Espírito Santo (ES)" },
+  { code: "PR", name: "Paraná (PR)" },
+  { code: "SC", name: "Santa Catarina (SC)" },
+  { code: "RS", name: "Rio Grande do Sul (RS)" },
+  { code: "DF", name: "Distrito Federal (DF)" },
+  { code: "GO", name: "Goiás (GO)" },
+  { code: "MT", name: "Mato Grosso (MT)" },
+  { code: "MS", name: "Mato Grosso do Sul (MS)" },
+  { code: "PA", name: "Pará (PA)" },
+  { code: "AM", name: "Amazonas (AM)" },
+  { code: "AP", name: "Amapá (AP)" },
+  { code: "AC", name: "Acre (AC)" },
+  { code: "RO", name: "Rondônia (RO)" },
+  { code: "RR", name: "Roraima (RR)" },
+  { code: "TO", name: "Tocantins (TO)" },
+];
+
 const INITIAL_BRANDS = [
   { name: "Tramontina", origin: "Rio Grande do Sul" },
   { name: "Tigre", origin: "Santa Catarina" },
@@ -1615,6 +1645,15 @@ export default function SoMadeirasFullStack() {
       alert("Por favor, preencha todos os campos.");
       return;
     }
+
+    // Auto-register/update client in Base de Clientes database
+    registerOrUpdateClientInDatabase(
+      leadFormData.name,
+      "",
+      leadFormData.phone,
+      leadFormData.city,
+      leadFormData.state || "SE"
+    );
 
     // Save lead to local database
     const cartText = budgetCart.map(item => `   - ${item.product.name} (Qtd: ${item.quantity}) - R$ ${item.product.price.toFixed(2)}/un`).join("\n");
@@ -4575,12 +4614,13 @@ export default function SoMadeirasFullStack() {
                       <select
                         value={leadFormData.state}
                         onChange={(e) => setLeadFormData({ ...leadFormData, state: e.target.value })}
-                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2.5 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
+                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3.5 py-2.5 text-xs text-brown-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition cursor-pointer"
                       >
-                        <option value="SP">São Paulo (SP)</option>
-                        <option value="RJ">Rio de Janeiro (RJ)</option>
-                        <option value="MG">Minas Gerais (MG)</option>
-                        <option value="PR">Paraná (PR)</option>
+                        {BRAZILIAN_STATES.map((st) => (
+                          <option key={st.code} value={st.code}>
+                            {st.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -9703,15 +9743,13 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               <select
                                 value={clientLoginForm.state}
                                 onChange={(e) => setClientLoginForm({ ...clientLoginForm, state: e.target.value })}
-                                className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[34px]"
+                                className="w-full bg-slate-50 dark:bg-neutral-950 border border-gray-250 dark:border-neutral-800 rounded px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white text-brown-dark dark:text-white h-[34px] cursor-pointer"
                               >
-                                <option value="SE">SE</option>
-                                <option value="BA">BA</option>
-                                <option value="AL">AL</option>
-                                <option value="PE">PE</option>
-                                <option value="SP">SP</option>
-                                <option value="RJ">RJ</option>
-                                <option value="MG">MG</option>
+                                {BRAZILIAN_STATES.map((st) => (
+                                  <option key={st.code} value={st.code}>
+                                    {st.name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>
@@ -9725,30 +9763,62 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         </form>
                       )}
 
-                      {/* TAB 2: JÁ TENHO CADASTRO (LOGIN SIMPLES) */}
+                      {/* TAB 2: JÁ TENHO CADASTRO (LOGIN ESTRITO) */}
                       {clientTabMode === "login" && (
                         <form 
                           onSubmit={(e) => {
                             e.preventDefault();
-                            if (!clientLoginForm.phone.trim() && !clientLoginForm.username.trim()) {
-                              alert("Por favor, digite seu Celular ou Nome de Usuário para acessar.");
+                            const rawInput = (clientLoginForm.phone || clientLoginForm.username || "").trim();
+                            if (!rawInput) {
+                              showToast("Por favor, digite seu Celular ou Nome de Usuário para acessar.", "error");
                               return;
                             }
-                            const identifier = clientLoginForm.phone.trim() || clientLoginForm.username.trim();
-                            if (!registerOrUpdateClientInDatabase(clientLoginForm.name || identifier, clientLoginForm.username || identifier, clientLoginForm.phone || identifier, clientLoginForm.city, clientLoginForm.state)) {
+
+                            const cleanPhone = rawInput.replace(/\D/g, "");
+                            const cleanUser = rawInput.toLowerCase().replace(/\s+/g, '');
+
+                            const existingClient = registeredClients.find(c =>
+                              (cleanUser && c.username && c.username.toLowerCase() === cleanUser) ||
+                              (cleanPhone && c.phone && c.phone.replace(/\D/g, '') === cleanPhone) ||
+                              (c.phone && c.phone.trim() === rawInput)
+                            );
+
+                            if (!existingClient) {
+                              showToast("❌ Nenhum cadastro encontrado com este Celular ou Usuário. Por favor, crie seu cadastro primeiro.", "error");
                               return;
                             }
+
+                            if (existingClient.isBanned) {
+                              showToast("🚫 Sua conta foi suspensa pela administração. Entre em contato pelo WhatsApp.", "error");
+                              return;
+                            }
+
+                            // Update visit tracking for existing client
+                            const now = new Date();
+                            const formattedVisitTime = now.toLocaleDateString("pt-BR") + " às " + now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+                            const updatedList = registeredClients.map(c =>
+                              c.id === existingClient.id
+                                ? { ...c, lastVisitAt: formattedVisitTime, visitCount: (c.visitCount || 1) + 1 }
+                                : c
+                            );
+
+                            setRegisteredClients(updatedList);
+                            saveData("somadeiras_registered_clients", updatedList);
+
                             const user = {
-                              name: clientLoginForm.name || identifier,
-                              username: clientLoginForm.username || identifier.toLowerCase().replace(/\s+/g, ''),
-                              phone: clientLoginForm.phone || "(79) 99999-9999",
-                              city: clientLoginForm.city || "Estância",
-                              state: clientLoginForm.state || "SE",
+                              name: existingClient.name,
+                              username: existingClient.username,
+                              phone: existingClient.phone,
+                              city: existingClient.city,
+                              state: existingClient.state,
                               provider: "direto"
                             };
+
                             setActiveClient(user);
                             localStorage.setItem("somadeiras_logged_in_client", JSON.stringify(user));
-                            addSystemNotification(`👋 Login realizado com sucesso! Olá, ${user.name}!`);
+                            setLeadFormData({ name: user.name, phone: user.phone, city: user.city, state: user.state });
+                            showToast(`👋 Login realizado com sucesso! Olá, ${user.name}!`);
                           }}
                           className="space-y-4 pt-2 animate-fade-in text-left"
                         >

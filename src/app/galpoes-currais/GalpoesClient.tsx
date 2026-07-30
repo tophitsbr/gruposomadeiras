@@ -1584,14 +1584,33 @@ export default function CalculadoraAgro() {
                     className="w-full bg-slate-50 dark:bg-neutral-850 border border-slate-200 dark:border-neutral-800 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#F4B400] text-xs font-bold cursor-pointer"
                   >
                     <option value="">UF</option>
+                    <option value="SE">SE</option>
+                    <option value="BA">BA</option>
+                    <option value="AL">AL</option>
+                    <option value="PE">PE</option>
+                    <option value="CE">CE</option>
+                    <option value="PB">PB</option>
+                    <option value="RN">RN</option>
+                    <option value="MA">MA</option>
+                    <option value="PI">PI</option>
                     <option value="SP">SP</option>
-                    <option value="MG">MG</option>
-                    <option value="PR">PR</option>
-                    <option value="GO">GO</option>
-                    <option value="MS">MS</option>
-                    <option value="MT">MT</option>
                     <option value="RJ">RJ</option>
+                    <option value="MG">MG</option>
                     <option value="ES">ES</option>
+                    <option value="PR">PR</option>
+                    <option value="SC">SC</option>
+                    <option value="RS">RS</option>
+                    <option value="DF">DF</option>
+                    <option value="GO">GO</option>
+                    <option value="MT">MT</option>
+                    <option value="MS">MS</option>
+                    <option value="PA">PA</option>
+                    <option value="AM">AM</option>
+                    <option value="AP">AP</option>
+                    <option value="AC">AC</option>
+                    <option value="RO">RO</option>
+                    <option value="RR">RR</option>
+                    <option value="TO">TO</option>
                   </select>
                 </div>
               </div>
