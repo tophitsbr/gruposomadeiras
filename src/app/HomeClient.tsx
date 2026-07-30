@@ -1529,6 +1529,13 @@ export default function SoMadeirasFullStack() {
   const trackClick = (elementId: string) => {
     const updated = { ...clicksHeatmap, [elementId]: (clicksHeatmap[elementId] || 0) + 1 };
     updateHeatmap(updated);
+
+    // Meta Pixel Contact Event for WhatsApp clicks
+    if (typeof window !== "undefined" && (window as any).fbq && elementId.toLowerCase().includes("whatsapp")) {
+      try {
+        (window as any).fbq("track", "Contact", { content_name: elementId });
+      } catch (e) {}
+    }
   };
 
   // ==========================================
@@ -1544,6 +1551,18 @@ export default function SoMadeirasFullStack() {
       ));
     } else {
       setBudgetCart([...budgetCart, { product, quantity: qtyToAdd }]);
+    }
+    // Meta Pixel AddToCart Event
+    if (typeof window !== "undefined" && (window as any).fbq) {
+      try {
+        (window as any).fbq("track", "AddToCart", {
+          content_ids: [product.id ? product.id.toString() : "prod"],
+          content_name: product.name,
+          content_type: "product",
+          value: (product.price || 0) * qtyToAdd,
+          currency: "BRL"
+        });
+      } catch (e) {}
     }
     // Notification popup
     addSystemNotification(`Produto "${product.name}" adicionado ao carrinho de orçamento!`);
