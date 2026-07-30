@@ -318,13 +318,7 @@ const INITIAL_BLOG_POSTS = [
   { id: 2, title: "Ferramentas indispensáveis para obras residenciais", date: "15 Mai 2026", excerpt: "Um guia prático com os itens elétricos e manuais básicos para não parar sua reforma.", views: 212, readTime: "4 min" }
 ];
 
-const INITIAL_LEADS = [
-  { id: "lead-1", name: "Carlos Souza", phone: "19987654321", city: "Campinas", state: "SP", date: "2026-05-30", time: "14:35", source: "Google Ads", utm: "utm_source=google&utm_medium=cpc&utm_campaign=madeiras", products: ["Viga de Cambará Aparelhada 5x15cm 3m x 10"], total: 1450.00, status: "Venda Fechada", sellerId: "maria", device: "Android / Chrome", location: "Campinas - SP", notes: "Cliente precisava para entrega imediata. Fechou frete grátis." },
-  { id: "lead-2", name: "Juliana Mendes", phone: "11988223344", city: "São Paulo", state: "SP", date: "2026-05-31", time: "09:12", source: "Instagram", utm: "utm_source=instagram&utm_medium=social&utm_campaign=moveis", products: ["Banco de Jardim em Madeira Maciça x 1"], total: 599.00, status: "Novo Lead", sellerId: "joao", device: "iOS / Safari", location: "São Paulo - Capital", notes: "" },
-  { id: "lead-3", name: "Roberto Dias", phone: "21977665544", city: "Niterói", state: "RJ", date: "2026-05-31", time: "10:05", source: "Busca Direta", utm: "Tráfego Direto", products: ["Furadeira de Impacto Tramontina 500W x 1", "Tinta Acrílica Suvinil Fosca 18L x 2"], total: 1067.90, status: "Orçamento Enviado", sellerId: "pedro", device: "Windows / Edge", location: "Niterói - RJ", notes: "Interessado em desconto no Pix. PDF enviado." },
-  { id: "lead-4", name: "Fernando Costa", phone: "19999881122", city: "Indaiatuba", state: "SP", date: "2026-05-29", time: "16:45", source: "Google Ads", utm: "utm_source=google&utm_medium=cpc&utm_campaign=pesada", products: ["Cimento CP-II Votoran 50kg x 40"], total: 1396.00, status: "Em Atendimento", sellerId: "maria", device: "Windows / Chrome", location: "Indaiatuba - SP", notes: "Cotação para fundação. Aguardando retorno da engenharia sobre frete." },
-  { id: "lead-5", name: "Ana Clara Silva", phone: "15981112233", city: "Sorocaba", state: "SP", date: "2026-05-28", time: "11:20", source: "Facebook", utm: "utm_source=facebook&utm_medium=cpc&utm_campaign=reforma", products: ["Tubo de Esgoto Tigre 100mm 6m x 6"], total: 719.40, status: "Venda Perdida", sellerId: "joao", device: "iOS / FacebookApp", location: "Sorocaba - SP", notes: "Achou o prazo de entrega muito longo para o interior." }
-];
+const INITIAL_LEADS: any[] = [];
 
 const INITIAL_SELLERS = [
   { id: "joao", name: "João (Móveis & Acabamento)", commissionRate: 0.03, salesCount: 14, salesValue: 12450.00, activeLeads: 4, goal: 30000.00, avatar: "👨‍💼", phone: "19999990001" },
