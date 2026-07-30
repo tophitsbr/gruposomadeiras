@@ -57,6 +57,42 @@ import {
   Layout
 } from "lucide-react";
 import { Instagram, Facebook, YouTube, WhatsAppIcon, VideoIcon } from "./components/Icons";
+
+function compressImageFile(file: File, maxDim = 250, quality = 0.75): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.createElement("img");
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width;
+        let h = img.height;
+        if (w > h) {
+          if (w > maxDim) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          }
+        } else {
+          if (h > maxDim) {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        } else {
+          resolve((e.target?.result as string) || "");
+        }
+      };
+      img.src = (e.target?.result as string) || "";
+    };
+    reader.readAsDataURL(file);
+  });
+}
 import { 
   ResponsiveContainer, 
   AreaChart, 
@@ -8342,11 +8378,9 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                  setNewSellerPhotoUrl(reader.result as string);
-                                };
-                                reader.readAsDataURL(file);
+                                compressImageFile(file).then((compressed) => {
+                                  setNewSellerPhotoUrl(compressed);
+                                });
                               }
                             }}
                             className="w-full bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg px-3 py-1.5 text-xs cursor-pointer text-gray-500"
@@ -8433,13 +8467,11 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                                       onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
-                                          const reader = new FileReader();
-                                          reader.onloadend = () => {
-                                            const updated = sellers.map(s => s.id === seller.id ? { ...s, photoUrl: reader.result as string } : s);
+                                          compressImageFile(file).then((compressed) => {
+                                            const updated = sellers.map(s => s.id === seller.id ? { ...s, photoUrl: compressed } : s);
                                             updateSellers(updated);
-                                            showToast(`📷 Foto de ${seller.name} atualizada!`);
-                                          };
-                                          reader.readAsDataURL(file);
+                                            showToast(`📷 Foto de ${seller.name} atualizada e otimizada!`);
+                                          });
                                         }
                                       }}
                                     />
