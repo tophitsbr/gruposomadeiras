@@ -19,14 +19,18 @@ export default function StaffLoginClient() {
       return;
     }
 
-    // Set staff login session flag in localStorage
-    localStorage.setItem('somadeiras_staff_authenticated', 'true');
-    localStorage.setItem('somadeiras_staff_pin', pin);
-    localStorage.setItem('somadeiras_staff_user', JSON.stringify({
+    // Set staff login session flag in sessionStorage
+    sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
+    sessionStorage.setItem('somadeiras_staff_pin', pin);
+    sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
       username: username.trim(),
       name: username.trim(),
       phone: "(79) 99629-8990"
     }));
+    // Clean up persistent localStorage to ensure exit/logout requires re-login
+    localStorage.removeItem('somadeiras_staff_authenticated');
+    localStorage.removeItem('somadeiras_staff_pin');
+    localStorage.removeItem('somadeiras_staff_user');
     
     setSuccessMsg(`Acesso concedido para @${username.trim()}! Redirecionando para o painel...`);
     setTimeout(() => {

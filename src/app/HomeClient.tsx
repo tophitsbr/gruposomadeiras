@@ -55,7 +55,8 @@ import {
   Zap,
   Bookmark,
   Tractor,
-  Layout
+  Layout,
+  LogOut
 } from "lucide-react";
 import { Instagram, Facebook, YouTube, WhatsAppIcon, VideoIcon } from "./components/Icons";
 
@@ -591,6 +592,25 @@ export default function SoMadeirasFullStack() {
   const [adminPinInput, setAdminPinInput] = useState<string>("");
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   const [adminRole, setAdminRole] = useState<string>("Administrador"); // Permissões
+
+  const handleLogoutAdmin = useCallback(() => {
+    setIsAdminAuthenticated(false);
+    setViewMode("client");
+    setActiveClient(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("somadeiras_staff_authenticated");
+      localStorage.removeItem("somadeiras_staff_pin");
+      localStorage.removeItem("somadeiras_staff_user");
+      sessionStorage.removeItem("somadeiras_staff_authenticated");
+      sessionStorage.removeItem("somadeiras_staff_pin");
+      sessionStorage.removeItem("somadeiras_staff_user");
+      try { sessionStorage.clear(); } catch(e) {}
+
+      if (window.location.search.includes("mode=") || window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+    }
+  }, []);
 
 
   const [settings, setSettings] = useState<any>(DEFAULT_SETTINGS);
@@ -1484,13 +1504,26 @@ export default function SoMadeirasFullStack() {
       const currentViews = parseInt(localStorage.getItem("somadeiras_real_views") || "0", 10);
       localStorage.setItem("somadeiras_real_views", (currentViews + 1).toString());
 
+      // Remove persistent localStorage flag to ensure closing/exiting requires login again
+      localStorage.removeItem("somadeiras_staff_authenticated");
+      localStorage.removeItem("somadeiras_staff_pin");
+      localStorage.removeItem("somadeiras_staff_user");
+
       const urlParams = new URLSearchParams(window.location.search);
-      const isStaffMode = urlParams.get("mode") === "staff";
-      const isStaffAuth = localStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const isStaffMode = urlParams.get("mode") === "staff" || urlParams.get("mode") === "admin";
+      const isStaffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
 
       if (isStaffMode || isStaffAuth) {
         setIsAdminAuthenticated(true);
         setViewMode("admin");
+        sessionStorage.setItem("somadeiras_staff_authenticated", "true");
+
+        if (isStaffMode) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else {
+        setIsAdminAuthenticated(false);
+        setViewMode("client");
       }
     }
   }, []);
@@ -2265,12 +2298,8 @@ export default function SoMadeirasFullStack() {
                   : `👤 ${activeClient?.name || "Cliente"}`}
               </span>
               <button
-                onClick={() => {
-                  setViewMode("client");
-                  setIsAdminAuthenticated(false);
-                  setActiveClient(null);
-                }}
-                className="ml-1 text-xs text-red-300 hover:text-red-100 underline font-semibold"
+                onClick={handleLogoutAdmin}
+                className="ml-1 text-xs text-red-300 hover:text-red-100 underline font-semibold cursor-pointer"
                 title="Encerrar sessão"
               >
                 Sair
@@ -4915,6 +4944,14 @@ export default function SoMadeirasFullStack() {
                 <span className="font-bold text-emerald-400">{statsSummary.conversao.toFixed(1)}%</span>
               </div>
             </div>
+
+            {/* Admin Logout Button */}
+            <button
+              onClick={handleLogoutAdmin}
+              className="w-full text-left px-3 py-2 rounded-lg font-bold transition flex items-center justify-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-300 hover:text-red-100 border border-red-500/30 text-xs cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" /> Encerrar Sessão (Sair)
+            </button>
           </aside>
 
           {/* Admin Main Body */}

@@ -91,7 +91,7 @@ export default function CalculadoraForroPVC() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      const isStaff = localStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const isStaff = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
       const mode = new URLSearchParams(window.location.search).get("mode");
       if (isStaff || mode === "admin" || mode === "staff") {
         setIsAdmin(true);
