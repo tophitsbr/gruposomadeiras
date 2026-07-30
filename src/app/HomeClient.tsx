@@ -1006,48 +1006,76 @@ export default function SoMadeirasFullStack() {
       .slice(0, 3);
   }, [budgetCart, products]);
 
-  const ON_DUTY_SELLERS = useMemo(() => [
-    {
-      id: "joao",
-      name: "João Silva",
-      role: "Especialista em Eucalipto, Mourões e Postes",
-      phone: settings?.whatsappNumber || "5579996298990",
-      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop",
-      online: true,
-      badge: "Eucalipto & Campo",
-      whatsappMessage: "Olá! Gostaria de falar com o vendedor João.",
-    },
-    {
-      id: "maria",
-      name: "Maria Santos",
-      role: "Especialista em Portas Nobres e Forro PVC",
-      phone: settings?.whatsappNumber || "5579996298990",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop",
-      online: true,
-      badge: "Acabamentos & Portas",
-      whatsappMessage: "Olá! Gostaria de falar com a vendedora Maria.",
-    },
-    {
-      id: "carlos",
-      name: "Carlos Oliveira",
-      role: "Engenharia de Telhados, Pergolados e Currais",
-      phone: settings?.whatsappNumber || "5579996298990",
-      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
-      online: true,
-      badge: "Calculadoras & Projetos",
-      whatsappMessage: "Olá! Gostaria de falar com o especialista Carlos.",
-    },
-    {
-      id: "atendimento",
-      name: "Atendimento Geral",
-      role: "Balcão de Vendas - Estância/SE",
-      phone: settings?.whatsappNumber || "5579996298990",
-      avatar: "/images/logo.webp",
-      online: true,
-      badge: "Balcão de Vendas",
-      whatsappMessage: "Olá! Gostaria de fazer um orçamento com o atendimento da Só Madeiras.",
-    },
-  ], [settings]);
+  const ON_DUTY_SELLERS = useMemo(() => {
+    if (sellers && sellers.length > 0) {
+      return sellers.map((s) => {
+        const rawPhone = (s.phone || settings?.whatsappNumber || "5579996298990").replace(/\D/g, "");
+        const formattedPhone = rawPhone.startsWith("55") ? rawPhone : `55${rawPhone}`;
+        return {
+          id: s.id,
+          name: s.name,
+          role: s.username ? `@${s.username}` : "Consultor de Vendas",
+          phone: formattedPhone,
+          photoUrl: s.photoUrl,
+          avatarEmoji: s.avatar || "👨‍💼",
+          avatar: s.photoUrl || s.avatar || "👨‍💼",
+          online: true,
+          badge: "Vendedor de Plantão",
+          whatsappMessage: `Olá ${s.name}! Gostaria de fazer um orçamento com a Só Madeiras.`,
+        };
+      });
+    }
+    return [
+      {
+        id: "joao",
+        name: "João Silva",
+        role: "Especialista em Eucalipto, Mourões e Postes",
+        phone: settings?.whatsappNumber || "5579996298990",
+        photoUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop",
+        avatarEmoji: "👨‍💼",
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop",
+        online: true,
+        badge: "Eucalipto & Campo",
+        whatsappMessage: "Olá! Gostaria de falar com o vendedor João.",
+      },
+      {
+        id: "maria",
+        name: "Maria Santos",
+        role: "Especialista em Portas Nobres e Forro PVC",
+        phone: settings?.whatsappNumber || "5579996298990",
+        photoUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop",
+        avatarEmoji: "👩‍💼",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop",
+        online: true,
+        badge: "Acabamentos & Portas",
+        whatsappMessage: "Olá! Gostaria de falar com a vendedora Maria.",
+      },
+      {
+        id: "carlos",
+        name: "Carlos Oliveira",
+        role: "Engenharia de Telhados, Pergolados e Currais",
+        phone: settings?.whatsappNumber || "5579996298990",
+        photoUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
+        avatarEmoji: "👨‍💻",
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
+        online: true,
+        badge: "Calculadoras & Projetos",
+        whatsappMessage: "Olá! Gostaria de falar com o especialista Carlos.",
+      },
+      {
+        id: "atendimento",
+        name: "Atendimento Geral",
+        role: "Balcão de Vendas - Estância/SE",
+        phone: settings?.whatsappNumber || "5579996298990",
+        photoUrl: "/images/logo.webp",
+        avatarEmoji: "🪵",
+        avatar: "/images/logo.webp",
+        online: true,
+        badge: "Balcão de Vendas",
+        whatsappMessage: "Olá! Gostaria de fazer um orçamento com o atendimento da Só Madeiras.",
+      },
+    ];
+  }, [sellers, settings]);
 
   // Load data from Redis (server) with localStorage fallback
   useEffect(() => {
@@ -4537,11 +4565,17 @@ export default function SoMadeirasFullStack() {
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="relative shrink-0">
-                          <img
-                            src={seller.avatar}
-                            alt={seller.name}
-                            className="w-11 h-11 rounded-full object-cover border-2 border-emerald-500/40 group-hover:scale-105 transition"
-                          />
+                          {seller.photoUrl || (typeof seller.avatar === "string" && (seller.avatar.startsWith("http") || seller.avatar.startsWith("data:") || seller.avatar.startsWith("/"))) ? (
+                            <img
+                              src={seller.photoUrl || seller.avatar}
+                              alt={seller.name}
+                              className="w-11 h-11 rounded-full object-cover border-2 border-emerald-500/40 group-hover:scale-105 transition"
+                            />
+                          ) : (
+                            <div className="w-11 h-11 rounded-full bg-amber-100 dark:bg-neutral-800 border-2 border-emerald-500/40 flex items-center justify-center text-xl group-hover:scale-105 transition select-none">
+                              {seller.avatarEmoji || seller.avatar || "👨‍💼"}
+                            </div>
+                          )}
                           <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-neutral-900" />
                         </div>
                         <div className="min-w-0 text-left">
