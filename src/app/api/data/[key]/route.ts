@@ -20,6 +20,7 @@ const ALLOWED_KEYS = [
   "somadeiras_clicks_heatmap",
   "somadeiras_forro_products",
   "somadeiras_next_seller_index",
+  "somadeiras_registered_clients",
 ];
 
 // GET /api/data/[key] - Read data from Redis

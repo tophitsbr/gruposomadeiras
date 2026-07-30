@@ -26,6 +26,7 @@ const SYNCED_KEYS = [
   "somadeiras_clicks_heatmap",
   "somadeiras_forro_products",
   "somadeiras_next_seller_index",
+  "somadeiras_registered_clients",
 ];
 
 /**

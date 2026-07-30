@@ -16,6 +16,7 @@ import {
   FileText, 
   TrendingUp, 
   Users, 
+  UserCheck,
   Award, 
   Settings, 
   ChevronRight, 
@@ -861,7 +862,69 @@ export default function SoMadeirasFullStack() {
     }
   };
 
-  const [adminTab, setAdminTab] = useState<"dashboard" | "crm" | "heatmap" | "recovery" | "crud-products" | "crud-categories" | "blog" | "popup-builder" | "flash-deals" | "settings" | "banner-builder" | "menu-builder" | "vendedores" | "cupons" | "section-banners">("dashboard");
+  const [adminTab, setAdminTab] = useState<"dashboard" | "crm" | "heatmap" | "recovery" | "crud-products" | "crud-categories" | "blog" | "popup-builder" | "flash-deals" | "settings" | "banner-builder" | "menu-builder" | "vendedores" | "cupons" | "section-banners" | "clientes">("dashboard");
+  const [registeredClients, setRegisteredClients] = useState<any[]>([]);
+  const [clientSearch, setClientSearch] = useState("");
+  const [clientStateFilter, setClientStateFilter] = useState("all");
+  const [clientStatusFilter, setClientStatusFilter] = useState<"all" | "active" | "banned">("all");
+
+  const registerOrUpdateClientInDatabase = (name: string, username: string, phone: string, city: string, state: string): boolean => {
+    const cleanPhone = (phone || "").trim();
+    const cleanUsername = (username || "").trim().toLowerCase().replace(/\s+/g, '');
+
+    const isBanned = registeredClients.some(c =>
+      c.isBanned && (
+        (cleanUsername && c.username && c.username.toLowerCase() === cleanUsername) ||
+        (cleanPhone && c.phone && c.phone.replace(/\D/g, '') === cleanPhone.replace(/\D/g, ''))
+      )
+    );
+
+    if (isBanned) {
+      showToast("🚫 Sua conta foi suspensa pela administração. Entre em contato pelo WhatsApp.", "error");
+      return false;
+    }
+
+    const now = new Date();
+    const formattedVisitTime = now.toLocaleDateString("pt-BR") + " às " + now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+    const existingIndex = registeredClients.findIndex(c =>
+      (cleanUsername && c.username && c.username.toLowerCase() === cleanUsername) ||
+      (cleanPhone && c.phone && c.phone.replace(/\D/g, '') === cleanPhone.replace(/\D/g, ''))
+    );
+
+    let updatedList: any[];
+
+    if (existingIndex !== -1) {
+      updatedList = [...registeredClients];
+      updatedList[existingIndex] = {
+        ...updatedList[existingIndex],
+        name: name.trim() || updatedList[existingIndex].name,
+        phone: cleanPhone || updatedList[existingIndex].phone,
+        city: city || updatedList[existingIndex].city,
+        state: state || updatedList[existingIndex].state,
+        lastVisitAt: formattedVisitTime,
+        visitCount: (updatedList[existingIndex].visitCount || 1) + 1
+      };
+    } else {
+      const newCli = {
+        id: "cli-" + Date.now(),
+        name: name.trim() || cleanUsername || "Cliente",
+        username: cleanUsername || cleanPhone,
+        phone: cleanPhone || "(79) 99999-9999",
+        city: city || "Estância",
+        state: state || "SE",
+        createdAt: now.toLocaleDateString("pt-BR"),
+        lastVisitAt: formattedVisitTime,
+        visitCount: 1,
+        isBanned: false
+      };
+      updatedList = [newCli, ...registeredClients];
+    }
+
+    setRegisteredClients(updatedList);
+    saveData("somadeiras_registered_clients", updatedList);
+    return true;
+  };
   const [nextSellerIndex, setNextSellerIndex] = useState<number>(0);
   const [onlyMyLeadsFilter, setOnlyMyLeadsFilter] = useState<boolean>(false);
   const [newSellerName, setNewSellerName] = useState("");
@@ -1142,6 +1205,8 @@ export default function SoMadeirasFullStack() {
     if (localNextSellerIndex) setNextSellerIndex(parseInt(localNextSellerIndex, 10));
     const localCoupons = localStorage.getItem("somadeiras_coupons");
     if (localCoupons) setCoupons(JSON.parse(localCoupons)); else setCoupons(INITIAL_COUPONS);
+    const localRegClients = localStorage.getItem("somadeiras_registered_clients");
+    if (localRegClients) { try { setRegisteredClients(JSON.parse(localRegClients)); } catch (e) {} }
 
     if (localCart) {
       try { setBudgetCart(JSON.parse(localCart)); } catch (err) { console.error("Erro ao carregar o carrinho:", err); }
@@ -1189,6 +1254,11 @@ export default function SoMadeirasFullStack() {
       if (serverData.somadeiras_next_seller_index) setNextSellerIndex(Number(serverData.somadeiras_next_seller_index));
       if (serverData.somadeiras_banner_zones) setBannerZones(serverData.somadeiras_banner_zones as any);
       if (serverData.somadeiras_active_popup) setPopupCampaign(serverData.somadeiras_active_popup as any);
+      if (serverData.somadeiras_registered_clients) {
+        setRegisteredClients(serverData.somadeiras_registered_clients as any[]);
+      } else if (localRegClients) {
+        saveData("somadeiras_registered_clients", JSON.parse(localRegClients));
+      }
     }).catch(() => {
       console.warn("[HomeClient] Failed to load from Redis, using localStorage data");
     });
@@ -4695,6 +4765,13 @@ export default function SoMadeirasFullStack() {
                 >
                   <Users className="h-4 w-4" /> CRM de Leads
                   <span className="bg-red-600 text-white rounded-full px-1.5 py-0.2 text-[9px] font-black ml-auto">{leads.filter(l => l.status === "Novo Lead").length}</span>
+                </button>
+                <button
+                  onClick={() => { setAdminTab("clientes"); trackClick("admin-tab-clientes"); }}
+                  className={`w-full text-left px-3 py-2.5 rounded-lg font-bold transition flex items-center gap-2 ${adminTab === "clientes" ? "bg-primary text-brown-dark" : "hover:bg-white/5 text-gray-300"}`}
+                >
+                  <UserCheck className="h-4 w-4 text-emerald-400" /> Base de Clientes
+                  <span className="bg-emerald-600 text-white rounded-full px-1.5 py-0.2 text-[9px] font-black ml-auto">{registeredClients.length}</span>
                 </button>
                 <button
                   onClick={() => { setAdminTab("vendedores"); trackClick("admin-tab-vendedores"); }}
@@ -8523,6 +8600,245 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
               </div>
             )}
 
+            {/* Base de Clientes Registrados Tab */}
+            {adminTab === "clientes" && (
+              <div className="space-y-6 animate-fade-in">
+                {/* Header */}
+                <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-6 rounded-xl shadow-sm transition-colors flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <h4 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase tracking-tight flex items-center gap-2">
+                      <span className="text-primary text-2xl">👥</span> BASE DE CLIENTES REGISTRADOS
+                    </h4>
+                    <p className="text-xs text-gray-900 dark:text-gray-100 font-medium mt-1">
+                      Gerencie todos os clientes cadastrados no site, consulte histórico de acessos por região, chame no WhatsApp ou suspenda/bana contas.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      saveData("somadeiras_registered_clients", registeredClients);
+                      showToast("☁️ Base de clientes sincronizada com o Banco Global!");
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-stone-900 font-black text-xs px-4 py-2.5 rounded-lg shadow transition flex items-center gap-2 shrink-0 cursor-pointer active:scale-95"
+                  >
+                    ☁️ Sincronizar c/ Servidor
+                  </button>
+                </div>
+
+                {/* Metrics Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-4 rounded-xl shadow-2xs">
+                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest block">Total de Clientes</span>
+                    <span className="text-2xl font-black text-brown-dark dark:text-white">{registeredClients.length}</span>
+                  </div>
+                  <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-4 rounded-xl shadow-2xs">
+                    <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block">Clientes Ativos</span>
+                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{registeredClients.filter(c => !c.isBanned).length}</span>
+                  </div>
+                  <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-4 rounded-xl shadow-2xs">
+                    <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest block">Clientes Banidos</span>
+                    <span className="text-2xl font-black text-rose-500">{registeredClients.filter(c => c.isBanned).length}</span>
+                  </div>
+                  <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-4 rounded-xl shadow-2xs">
+                    <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest block">Regiões Atendidas</span>
+                    <span className="text-2xl font-black text-amber-500">{new Set(registeredClients.map(c => `${c.city}-${c.state}`)).size}</span>
+                  </div>
+                </div>
+
+                {/* Filters Bar */}
+                <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-4 rounded-xl shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={clientSearch}
+                      onChange={(e) => setClientSearch(e.target.value)}
+                      placeholder="Buscar por nome, @username ou telefone..."
+                      className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg text-xs font-bold focus:outline-none focus:ring-1 focus:ring-primary text-brown-dark dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <select
+                      value={clientStateFilter}
+                      onChange={(e) => setClientStateFilter(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg text-xs font-bold text-brown-dark dark:text-white focus:outline-none cursor-pointer"
+                    >
+                      <option value="all">Todas as Regiões (UF)</option>
+                      {Array.from(new Set(registeredClients.map(c => c.state || "SE"))).map(st => (
+                        <option key={st} value={st}>Estado: {st}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <select
+                      value={clientStatusFilter}
+                      onChange={(e) => setClientStatusFilter(e.target.value as any)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-lg text-xs font-bold text-brown-dark dark:text-white focus:outline-none cursor-pointer"
+                    >
+                      <option value="all">Todos os Status</option>
+                      <option value="active">🟢 Apenas Ativos</option>
+                      <option value="banned">🚫 Apenas Banidos</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Clients Table */}
+                <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl shadow-sm p-6 space-y-4">
+                  {registeredClients.filter(client => {
+                    const q = clientSearch.trim().toLowerCase();
+                    const matchesSearch = !q || 
+                      (client.name && client.name.toLowerCase().includes(q)) ||
+                      (client.username && client.username.toLowerCase().includes(q)) ||
+                      (client.phone && client.phone.includes(q));
+                    
+                    const matchesState = clientStateFilter === "all" || client.state === clientStateFilter;
+                    const matchesStatus = clientStatusFilter === "all" || 
+                      (clientStatusFilter === "banned" ? client.isBanned : !client.isBanned);
+                    
+                    return matchesSearch && matchesState && matchesStatus;
+                  }).length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-gray-200 dark:border-dark-border rounded-xl text-gray-500">
+                      Nenhum cliente cadastrado com estes filtros.
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-200 dark:border-dark-border text-gray-400 font-bold uppercase tracking-wider text-[10px]">
+                            <th className="pb-3 px-2">Cliente</th>
+                            <th className="pb-3 px-2">WhatsApp / Contato</th>
+                            <th className="pb-3 px-2">Região</th>
+                            <th className="pb-3 px-2">Frequência de Acesso</th>
+                            <th className="pb-3 px-2">Data Cadastro</th>
+                            <th className="pb-3 px-2">Status</th>
+                            <th className="pb-3 px-2 text-right">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-neutral-800">
+                          {registeredClients.filter(client => {
+                            const q = clientSearch.trim().toLowerCase();
+                            const matchesSearch = !q || 
+                              (client.name && client.name.toLowerCase().includes(q)) ||
+                              (client.username && client.username.toLowerCase().includes(q)) ||
+                              (client.phone && client.phone.includes(q));
+                            
+                            const matchesState = clientStateFilter === "all" || client.state === clientStateFilter;
+                            const matchesStatus = clientStatusFilter === "all" || 
+                              (clientStatusFilter === "banned" ? client.isBanned : !client.isBanned);
+                            
+                            return matchesSearch && matchesState && matchesStatus;
+                          }).map((client) => {
+                            const cleanPhone = (client.phone || "").replace(/\D/g, "");
+                            const waUrl = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(`Olá ${client.name}! Sou da equipe da Só Madeiras.`)}`;
+                            
+                            return (
+                              <tr key={client.id} className={`hover:bg-slate-50 dark:hover:bg-neutral-900/60 transition ${client.isBanned ? "bg-rose-50/50 dark:bg-rose-950/20" : ""}`}>
+                                <td className="py-3 px-2 font-bold text-brown-dark dark:text-white">
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-full bg-amber-100 dark:bg-neutral-800 text-amber-800 dark:text-amber-300 font-black flex items-center justify-center text-xs shrink-0">
+                                      {client.name ? client.name.charAt(0).toUpperCase() : "👤"}
+                                    </span>
+                                    <div>
+                                      <div className="font-extrabold">{client.name}</div>
+                                      {client.username && <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">@{client.username}</span>}
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-2">
+                                  <div className="font-bold text-stone-700 dark:text-stone-300">{client.phone}</div>
+                                  <a
+                                    href={waUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-1 text-[10px] bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-black px-2 py-0.5 rounded mt-1 transition"
+                                  >
+                                    💬 WhatsApp
+                                  </a>
+                                </td>
+
+                                <td className="py-3 px-2 font-bold">
+                                  <span className="bg-slate-100 dark:bg-neutral-800 text-stone-700 dark:text-stone-300 px-2 py-1 rounded text-[11px] inline-block">
+                                    📍 {client.city} - {client.state}
+                                  </span>
+                                </td>
+
+                                <td className="py-3 px-2">
+                                  <div className="font-black text-amber-600 dark:text-amber-400">🔥 {client.visitCount || 1} acessos</div>
+                                  <div className="text-[9px] text-gray-400">Último: {client.lastVisitAt || "Hoje"}</div>
+                                </td>
+
+                                <td className="py-3 px-2 font-medium text-gray-500">
+                                  {client.createdAt || "Hoje"}
+                                </td>
+
+                                <td className="py-3 px-2">
+                                  {client.isBanned ? (
+                                    <span className="bg-rose-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full uppercase">🚫 Banido</span>
+                                  ) : (
+                                    <span className="bg-emerald-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full uppercase">🟢 Ativo</span>
+                                  )}
+                                </td>
+
+                                <td className="py-3 px-2 text-right space-x-1">
+                                  {client.isBanned ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = registeredClients.map(c => c.id === client.id ? { ...c, isBanned: false } : c);
+                                        setRegisteredClients(updated);
+                                        saveData("somadeiras_registered_clients", updated);
+                                        showToast("✅ Cliente desbanido com sucesso.");
+                                      }}
+                                      className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1 rounded transition cursor-pointer"
+                                    >
+                                      ✅ Desbanir
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (window.confirm(`Deseja realmente BANIR o cliente ${client.name}? Ele não poderá mais fazer login nem solicitar orçamentos.`)) {
+                                          const updated = registeredClients.map(c => c.id === client.id ? { ...c, isBanned: true } : c);
+                                          setRegisteredClients(updated);
+                                          saveData("somadeiras_registered_clients", updated);
+                                          showToast("🚫 Cliente banido com sucesso.");
+                                        }
+                                      }}
+                                      className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-[10px] px-2.5 py-1 rounded transition cursor-pointer"
+                                    >
+                                      🚫 Banir
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (window.confirm("Deseja realmente excluir este cliente da base?")) {
+                                        const updated = registeredClients.filter(c => c.id !== client.id);
+                                        setRegisteredClients(updated);
+                                        saveData("somadeiras_registered_clients", updated);
+                                        showToast("🗑️ Cliente removido da base.");
+                                      }
+                                    }}
+                                    className="bg-gray-200 hover:bg-red-500 hover:text-white dark:bg-neutral-800 text-gray-600 font-bold text-[10px] p-1.5 rounded transition cursor-pointer"
+                                    title="Excluir da base"
+                                  >
+                                    🗑️
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Gerenciamento de Cupons Tab */}
             {adminTab === "cupons" && (
               <div className="space-y-6 animate-fade-in">
@@ -9315,6 +9631,9 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               alert("Por favor, preencha o Nome, WhatsApp e Nome de Usuário.");
                               return;
                             }
+                            if (!registerOrUpdateClientInDatabase(clientLoginForm.name, clientLoginForm.username, clientLoginForm.phone, clientLoginForm.city, clientLoginForm.state)) {
+                              return;
+                            }
                             const user = {
                               name: clientLoginForm.name.trim(),
                               username: clientLoginForm.username.trim(),
@@ -9416,6 +9735,9 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                               return;
                             }
                             const identifier = clientLoginForm.phone.trim() || clientLoginForm.username.trim();
+                            if (!registerOrUpdateClientInDatabase(clientLoginForm.name || identifier, clientLoginForm.username || identifier, clientLoginForm.phone || identifier, clientLoginForm.city, clientLoginForm.state)) {
+                              return;
+                            }
                             const user = {
                               name: clientLoginForm.name || identifier,
                               username: clientLoginForm.username || identifier.toLowerCase().replace(/\s+/g, ''),
