@@ -14,28 +14,75 @@ export default function StaffLoginClient() {
     e.preventDefault();
     setErrorMsg('');
 
-    if (!username.trim() || !pin.trim()) {
+    const cleanUser = username.trim().toLowerCase();
+    const cleanPin = pin.trim();
+
+    if (!cleanUser || !cleanPin) {
       setErrorMsg('Por favor, preencha o Usuário e a Senha/PIN.');
       return;
     }
 
-    // Set staff login session flag in sessionStorage
-    sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
-    sessionStorage.setItem('somadeiras_staff_pin', pin);
-    sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
-      username: username.trim(),
-      name: username.trim(),
-      phone: "(79) 99629-8990"
-    }));
+    // Load registered sellers from localStorage to check user role
+    let registeredSellers: any[] = [];
+    try {
+      const stored = localStorage.getItem("somadeiras_sellers");
+      if (stored) registeredSellers = JSON.parse(stored);
+    } catch(e) {}
+
+    // Default sellers list if empty
+    if (registeredSellers.length === 0) {
+      registeredSellers = [
+        { id: "cleones", name: "Cleones (Consultor Comercial)", username: "cleones", pin: "1234" },
+        { id: "joao", name: "João (Móveis & Acabamento)", username: "joao", pin: "1234" },
+        { id: "maria", name: "Maria (Madeiras & Estruturas)", username: "maria", pin: "1234" },
+        { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", username: "pedro", pin: "1234" }
+      ];
+    }
+
+    const matchedSeller = registeredSellers.find((s: any) =>
+      s.id?.toLowerCase() === cleanUser ||
+      s.username?.toLowerCase() === cleanUser ||
+      (s.name && s.name.toLowerCase().includes(cleanUser))
+    );
+
+    const isSeller = Boolean(matchedSeller) && cleanUser !== "admin" && cleanUser !== "administrador";
+
+    if (isSeller && matchedSeller) {
+      // Seller Login Session
+      sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
+      sessionStorage.setItem('somadeiras_staff_role', 'seller');
+      sessionStorage.setItem('somadeiras_staff_seller_id', matchedSeller.id);
+      sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
+        username: matchedSeller.username || matchedSeller.id,
+        name: matchedSeller.name,
+        role: "seller",
+        sellerId: matchedSeller.id
+      }));
+
+      setSuccessMsg(`Acesso de Vendedor concedido para ${matchedSeller.name}! Redirecionando para o Painel de Vendas...`);
+      setTimeout(() => {
+        window.location.href = `/?mode=seller&sellerId=${matchedSeller.id}`;
+      }, 800);
+    } else {
+      // Admin Login Session
+      sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
+      sessionStorage.setItem('somadeiras_staff_role', 'admin');
+      sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
+        username: cleanUser,
+        name: "Administrador",
+        role: "admin"
+      }));
+
+      setSuccessMsg(`Acesso de Administrador concedido para @${cleanUser}! Redirecionando para o Painel Executivo...`);
+      setTimeout(() => {
+        window.location.href = '/?mode=admin';
+      }, 800);
+    }
+
     // Clean up persistent localStorage to ensure exit/logout requires re-login
     localStorage.removeItem('somadeiras_staff_authenticated');
     localStorage.removeItem('somadeiras_staff_pin');
     localStorage.removeItem('somadeiras_staff_user');
-    
-    setSuccessMsg(`Acesso concedido para @${username.trim()}! Redirecionando para o painel...`);
-    setTimeout(() => {
-      window.location.href = '/?mode=staff';
-    }, 800);
   };
 
   return (

@@ -357,9 +357,10 @@ const INITIAL_BLOG_POSTS = [
 const INITIAL_LEADS: any[] = [];
 
 const INITIAL_SELLERS = [
-  { id: "joao", name: "João (Móveis & Acabamento)", commissionRate: 0.03, salesCount: 14, salesValue: 12450.00, activeLeads: 4, goal: 30000.00, avatar: "👨‍💼", phone: "19999990001" },
-  { id: "maria", name: "Maria (Madeiras & Estruturas)", commissionRate: 0.035, salesCount: 22, salesValue: 28400.00, activeLeads: 6, goal: 40000.00, avatar: "👩‍💼", phone: "19999990002" },
-  { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", commissionRate: 0.025, salesCount: 18, salesValue: 15600.00, activeLeads: 5, goal: 25000.00, avatar: "👨‍💻", phone: "19999990003" }
+  { id: "cleones", name: "Cleones (Consultor Comercial)", username: "cleones", pin: "1234", commissionRate: 0.035, salesCount: 19, salesValue: 24500.00, activeLeads: 5, goal: 35000.00, avatar: "👨‍💼", phone: "79996298990" },
+  { id: "joao", name: "João (Móveis & Acabamento)", username: "joao", pin: "1234", commissionRate: 0.03, salesCount: 14, salesValue: 12450.00, activeLeads: 4, goal: 30000.00, avatar: "👨‍💼", phone: "19999990001" },
+  { id: "maria", name: "Maria (Madeiras & Estruturas)", username: "maria", pin: "1234", commissionRate: 0.035, salesCount: 22, salesValue: 28400.00, activeLeads: 6, goal: 40000.00, avatar: "👩‍💼", phone: "19999990002" },
+  { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", username: "pedro", pin: "1234", commissionRate: 0.025, salesCount: 18, salesValue: 15600.00, activeLeads: 5, goal: 25000.00, avatar: "👨‍💻", phone: "19999990003" }
 ];
 
 const INITIAL_TELHAS = [
@@ -1515,16 +1516,37 @@ export default function SoMadeirasFullStack() {
       localStorage.removeItem("somadeiras_staff_user");
 
       const urlParams = new URLSearchParams(window.location.search);
-      const isStaffMode = urlParams.get("mode") === "staff" || urlParams.get("mode") === "admin";
+      const requestedMode = urlParams.get("mode");
+      const requestedSellerId = urlParams.get("sellerId");
+
+      let staffUser: any = null;
+      try {
+        const storedUser = sessionStorage.getItem("somadeiras_staff_user");
+        if (storedUser) staffUser = JSON.parse(storedUser);
+      } catch(e) {}
+
       const isStaffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const staffRole = sessionStorage.getItem("somadeiras_staff_role") || staffUser?.role;
 
-      if (isStaffMode || isStaffAuth) {
-        setIsAdminAuthenticated(true);
-        setViewMode("admin");
-        sessionStorage.setItem("somadeiras_staff_authenticated", "true");
+      if (isStaffAuth || requestedMode === "staff" || requestedMode === "admin" || requestedMode === "seller") {
+        if (staffRole === "seller" || (requestedMode === "seller" && !isAdminAuthenticated && staffRole !== "admin")) {
+          // SELLER SESSION: EXCLUSIVELY SELLER PANEL (NO ADMIN ACCESS)
+          setIsAdminAuthenticated(false);
+          setViewMode("seller");
+          
+          const selId = requestedSellerId || staffUser?.sellerId || sessionStorage.getItem("somadeiras_staff_seller_id") || "cleones";
+          setActiveSellerId(selId);
 
-        if (isStaffMode) {
-          window.history.replaceState({}, document.title, window.location.pathname);
+          if (requestedMode) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } else {
+          // ADMIN SESSION
+          setIsAdminAuthenticated(true);
+          setViewMode(requestedMode === "seller" ? "seller" : "admin");
+          if (requestedMode) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
         }
       } else {
         setIsAdminAuthenticated(false);
@@ -1532,6 +1554,13 @@ export default function SoMadeirasFullStack() {
       }
     }
   }, []);
+
+  // Protect Admin View Mode: non-admin sellers cannot view admin panel
+  useEffect(() => {
+    if (viewMode === "admin" && !isAdminAuthenticated) {
+      setViewMode("seller");
+    }
+  }, [viewMode, isAdminAuthenticated]);
 
   // Sync state changes with localStorage
   function updateProducts(newProds: any[]) { setProducts(newProds); saveToLocal("somadeiras_products", newProds); }
