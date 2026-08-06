@@ -2,87 +2,107 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Lock, ArrowLeft, ShieldCheck, CheckCircle } from 'lucide-react';
+import { Lock, ArrowLeft, ShieldCheck, CheckCircle, UserCheck, ShieldAlert } from 'lucide-react';
+
+const DEFAULT_SELLERS = [
+  { id: "cleones", name: "Cleones (Consultor Comercial)", username: "cleones", pin: "1234", avatar: "👨‍💼" },
+  { id: "joao", name: "João (Móveis & Acabamento)", username: "joao", pin: "1234", avatar: "👨‍💼" },
+  { id: "maria", name: "Maria (Madeiras & Estruturas)", username: "maria", pin: "1234", avatar: "👩‍💼" },
+  { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", username: "pedro", pin: "1234", avatar: "👨‍💻" }
+];
 
 export default function StaffLoginClient() {
-  const [username, setUsername] = useState('');
-  const [pin, setPin] = useState('');
+  const [loginTab, setLoginTab] = useState<"seller" | "admin">("seller");
+  
+  // Seller form states
+  const [selectedSellerId, setSelectedSellerId] = useState<string>("cleones");
+  const [sellerPin, setSellerPin] = useState<string>("");
+
+  // Admin form states
+  const [adminUsername, setAdminUsername] = useState<string>("");
+  const [adminPin, setAdminPin] = useState<string>("");
+
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleStaffLogin = (e: React.FormEvent) => {
+  const handleSellerLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    const cleanUser = username.trim().toLowerCase();
-    const cleanPin = pin.trim();
-
-    if (!cleanUser || !cleanPin) {
-      setErrorMsg('Por favor, preencha o Usuário e a Senha/PIN.');
+    const pin = sellerPin.trim();
+    if (!pin) {
+      setErrorMsg('Por favor, informe a Senha / PIN do Vendedor.');
       return;
     }
 
-    // Load registered sellers from localStorage to check user role
-    let registeredSellers: any[] = [];
+    const sellerObj = DEFAULT_SELLERS.find(s => s.id === selectedSellerId) || {
+      id: selectedSellerId,
+      name: selectedSellerId === "cleones" ? "Cleones" : selectedSellerId
+    };
+
+    // Clean any prior sessions
     try {
-      const stored = localStorage.getItem("somadeiras_sellers");
-      if (stored) registeredSellers = JSON.parse(stored);
+      sessionStorage.clear();
+      localStorage.removeItem('somadeiras_staff_authenticated');
+      localStorage.removeItem('somadeiras_staff_pin');
+      localStorage.removeItem('somadeiras_staff_user');
     } catch(e) {}
 
-    // Default sellers list if empty
-    if (registeredSellers.length === 0) {
-      registeredSellers = [
-        { id: "cleones", name: "Cleones (Consultor Comercial)", username: "cleones", pin: "1234" },
-        { id: "joao", name: "João (Móveis & Acabamento)", username: "joao", pin: "1234" },
-        { id: "maria", name: "Maria (Madeiras & Estruturas)", username: "maria", pin: "1234" },
-        { id: "pedro", name: "Pedro (Ferragens & Hidráulico)", username: "pedro", pin: "1234" }
-      ];
+    // Set Seller Session EXCLUSIVELY
+    sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
+    sessionStorage.setItem('somadeiras_staff_role', 'seller');
+    sessionStorage.setItem('somadeiras_staff_seller_id', sellerObj.id);
+    sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
+      username: sellerObj.id,
+      name: sellerObj.name,
+      role: "seller",
+      sellerId: sellerObj.id
+    }));
+
+    setSuccessMsg(`Acesso de Vendedor concedido para ${sellerObj.name}! Redirecionando para o Painel Comercial...`);
+    setTimeout(() => {
+      window.location.href = `/?mode=seller&sellerId=${sellerObj.id}`;
+    }, 800);
+  };
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    const cleanUser = adminUsername.trim().toLowerCase();
+    const cleanPin = adminPin.trim();
+
+    if (!cleanUser || !cleanPin) {
+      setErrorMsg('Por favor, preencha o Usuário e a Senha de Administrador.');
+      return;
     }
 
-    const matchedSeller = registeredSellers.find((s: any) =>
-      s.id?.toLowerCase() === cleanUser ||
-      s.username?.toLowerCase() === cleanUser ||
-      (s.name && s.name.toLowerCase().includes(cleanUser))
-    );
-
-    const isSeller = Boolean(matchedSeller) && cleanUser !== "admin" && cleanUser !== "administrador";
-
-    if (isSeller && matchedSeller) {
-      // Seller Login Session
-      sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
-      sessionStorage.setItem('somadeiras_staff_role', 'seller');
-      sessionStorage.setItem('somadeiras_staff_seller_id', matchedSeller.id);
-      sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
-        username: matchedSeller.username || matchedSeller.id,
-        name: matchedSeller.name,
-        role: "seller",
-        sellerId: matchedSeller.id
-      }));
-
-      setSuccessMsg(`Acesso de Vendedor concedido para ${matchedSeller.name}! Redirecionando para o Painel de Vendas...`);
-      setTimeout(() => {
-        window.location.href = `/?mode=seller&sellerId=${matchedSeller.id}`;
-      }, 800);
-    } else {
-      // Admin Login Session
-      sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
-      sessionStorage.setItem('somadeiras_staff_role', 'admin');
-      sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
-        username: cleanUser,
-        name: "Administrador",
-        role: "admin"
-      }));
-
-      setSuccessMsg(`Acesso de Administrador concedido para @${cleanUser}! Redirecionando para o Painel Executivo...`);
-      setTimeout(() => {
-        window.location.href = '/?mode=admin';
-      }, 800);
+    if (cleanUser !== "admin" && cleanUser !== "administrador") {
+      setErrorMsg('Acesso restrito. Apenas administradores cadastrados podem utilizar este login.');
+      return;
     }
 
-    // Clean up persistent localStorage to ensure exit/logout requires re-login
-    localStorage.removeItem('somadeiras_staff_authenticated');
-    localStorage.removeItem('somadeiras_staff_pin');
-    localStorage.removeItem('somadeiras_staff_user');
+    // Clean any prior sessions
+    try {
+      sessionStorage.clear();
+      localStorage.removeItem('somadeiras_staff_authenticated');
+      localStorage.removeItem('somadeiras_staff_pin');
+      localStorage.removeItem('somadeiras_staff_user');
+    } catch(e) {}
+
+    // Set Admin Session EXCLUSIVELY
+    sessionStorage.setItem('somadeiras_staff_authenticated', 'true');
+    sessionStorage.setItem('somadeiras_staff_role', 'admin');
+    sessionStorage.setItem('somadeiras_staff_user', JSON.stringify({
+      username: cleanUser,
+      name: "Administrador Executivo",
+      role: "admin"
+    }));
+
+    setSuccessMsg(`Acesso de Administrador concedido! Redirecionando para o Cockpit Executivo...`);
+    setTimeout(() => {
+      window.location.href = '/?mode=admin';
+    }, 800);
   };
 
   return (
@@ -100,24 +120,55 @@ export default function StaffLoginClient() {
           Voltar ao site
         </Link>
         <span className="text-xs font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-          Acesso Restrito
+          Portal da Equipe
         </span>
       </div>
 
       {/* Main Card */}
-      <div className="max-w-md mx-auto w-full my-auto py-8 relative z-10">
-        <div className="bg-neutral-950/80 backdrop-blur-xl border border-neutral-800 rounded-3xl p-8 shadow-2xl space-y-6">
+      <div className="max-w-md mx-auto w-full my-auto py-6 relative z-10">
+        <div className="bg-neutral-950/90 backdrop-blur-xl border border-neutral-800 rounded-3xl p-8 shadow-2xl space-y-6">
           
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 bg-amber-500 text-neutral-950 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20 font-black text-xl mb-3">
-              🔐
+            <div className="w-14 h-14 bg-amber-500 text-neutral-950 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20 font-black text-2xl mb-3">
+              {loginTab === "seller" ? "💼" : "🛡️"}
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
-              PAINEL DA <span className="text-amber-500">EQUIPE & ADMIN</span>
+            <h1 className="text-xl font-black tracking-tight text-white uppercase">
+              {loginTab === "seller" ? "PAINEL DOS VENDEDORES" : "COCKPIT ADMINISTRATIVO"}
             </h1>
             <p className="text-xs text-neutral-400">
-              Digite seu nome de usuário e senha de acesso.
+              {loginTab === "seller"
+                ? "Selecione seu perfil comercial para acessar seus clientes e orçamentos."
+                : "Acesso exclusivo para administradores com senha master."
+              }
             </p>
+          </div>
+
+          {/* Role Tab Switcher */}
+          <div className="grid grid-cols-2 gap-2 bg-neutral-900 p-1.5 rounded-2xl border border-neutral-800">
+            <button
+              type="button"
+              onClick={() => { setLoginTab("seller"); setErrorMsg(''); setSuccessMsg(''); }}
+              className={`py-2.5 px-3 rounded-xl font-black text-xs transition flex items-center justify-center gap-1.5 border-none cursor-pointer ${
+                loginTab === "seller"
+                  ? "bg-amber-500 text-neutral-950 shadow-md"
+                  : "text-neutral-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              Sou Vendedor
+            </button>
+            <button
+              type="button"
+              onClick={() => { setLoginTab("admin"); setErrorMsg(''); setSuccessMsg(''); }}
+              className={`py-2.5 px-3 rounded-xl font-black text-xs transition flex items-center justify-center gap-1.5 border-none cursor-pointer ${
+                loginTab === "admin"
+                  ? "bg-amber-500 text-neutral-950 shadow-md"
+                  : "text-neutral-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <ShieldAlert className="w-4 h-4" />
+              Sou Admin
+            </button>
           </div>
 
           {errorMsg && (
@@ -128,52 +179,99 @@ export default function StaffLoginClient() {
 
           {successMsg && (
             <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-3.5 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-2 animate-fade-in">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              {successMsg}
+              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>{successMsg}</span>
             </div>
           )}
 
-          {/* Staff Login Form (Usuário + Senha) */}
-          <form onSubmit={handleStaffLogin} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
-                Nome de Usuário (Username):
-              </label>
-              <input 
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
-                placeholder="Ex: vendedor.marcelo ou admin"
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold"
-                required
-              />
-            </div>
+          {/* SELLER LOGIN FORM */}
+          {loginTab === "seller" ? (
+            <form onSubmit={handleSellerLogin} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-amber-400 mb-1.5">
+                  Selecione o Vendedor:
+                </label>
+                <select
+                  value={selectedSellerId}
+                  onChange={(e) => setSelectedSellerId(e.target.value)}
+                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white font-bold focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer"
+                >
+                  {DEFAULT_SELLERS.map(s => (
+                    <option key={s.id} value={s.id}>
+                      {s.avatar} {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
-                Senha / PIN de Acesso:
-              </label>
-              <div className="relative">
+              <div>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                  Senha / PIN de Acesso:
+                </label>
+                <div className="relative">
+                  <input 
+                    type="password"
+                    value={sellerPin}
+                    onChange={(e) => setSellerPin(e.target.value)}
+                    placeholder="Digite sua senha ou PIN (ex: 1234)"
+                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition font-bold pr-10"
+                    required
+                  />
+                  <Lock className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition active:scale-98 uppercase tracking-wider cursor-pointer border-none flex items-center justify-center gap-2 mt-6"
+              >
+                <UserCheck className="w-4 h-4" />
+                Entrar no Painel do Vendedor →
+              </button>
+            </form>
+          ) : (
+            /* ADMIN LOGIN FORM */
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-amber-400 mb-1">
+                  Usuário Administrador:
+                </label>
                 <input 
-                  type="password"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  placeholder="Digite sua senha ou PIN (ex: 1234)"
-                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition font-bold pr-10"
+                  type="text"
+                  value={adminUsername}
+                  onChange={(e) => setAdminUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
+                  placeholder="Digite o usuário (ex: admin)"
+                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition font-bold"
                   required
                 />
-                <Lock className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition active:scale-98 uppercase tracking-wider cursor-pointer border-none flex items-center justify-center gap-2 mt-6"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              Entrar no Painel da Equipe
-            </button>
-          </form>
+              <div>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 mb-1">
+                  Senha Master Admin:
+                </label>
+                <div className="relative">
+                  <input 
+                    type="password"
+                    value={adminPin}
+                    onChange={(e) => setAdminPin(e.target.value)}
+                    placeholder="Digite a Senha Master"
+                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition font-bold pr-10"
+                    required
+                  />
+                  <Lock className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition active:scale-98 uppercase tracking-wider cursor-pointer border-none flex items-center justify-center gap-2 mt-6"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                Entrar no Cockpit Admin →
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
