@@ -1521,20 +1521,31 @@ export default function SoMadeirasFullStack() {
 
       let staffUser: any = null;
       try {
-        const storedUser = sessionStorage.getItem("somadeiras_staff_user");
+        const storedUser = sessionStorage.getItem("somadeiras_staff_user") || localStorage.getItem("somadeiras_staff_user");
         if (storedUser) staffUser = JSON.parse(storedUser);
       } catch(e) {}
 
-      const isStaffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const isStaffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true" || localStorage.getItem("somadeiras_staff_authenticated") === "true";
       const staffRole = sessionStorage.getItem("somadeiras_staff_role") || staffUser?.role;
+      const cleanUsername = (staffUser?.username || "").toLowerCase();
+
+      // Explicit check if logged in user is Admin
+      const isExplicitAdmin = (
+        staffRole === "admin" ||
+        cleanUsername === "admin" ||
+        cleanUsername === "administrador"
+      );
 
       if (isStaffAuth || requestedMode === "staff" || requestedMode === "admin" || requestedMode === "seller") {
-        if (staffRole === "seller" || (requestedMode === "seller" && !isAdminAuthenticated && staffRole !== "admin")) {
+        if (!isExplicitAdmin) {
           // SELLER SESSION: EXCLUSIVELY SELLER PANEL (NO ADMIN ACCESS)
           setIsAdminAuthenticated(false);
           setViewMode("seller");
           
-          const selId = requestedSellerId || staffUser?.sellerId || sessionStorage.getItem("somadeiras_staff_seller_id") || "cleones";
+          let selId = requestedSellerId || staffUser?.sellerId || sessionStorage.getItem("somadeiras_staff_seller_id") || "cleones";
+          if (cleanUsername && cleanUsername !== "admin") {
+            selId = cleanUsername;
+          }
           setActiveSellerId(selId);
 
           if (requestedMode) {
