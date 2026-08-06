@@ -917,6 +917,7 @@ export default function SoMadeirasFullStack() {
   };
 
   const [adminTab, setAdminTab] = useState<"dashboard" | "crm" | "heatmap" | "recovery" | "crud-products" | "crud-categories" | "blog" | "popup-builder" | "flash-deals" | "settings" | "banner-builder" | "menu-builder" | "vendedores" | "cupons" | "section-banners" | "clientes">("dashboard");
+  const [sellerTab, setSellerTab] = useState<"leads" | "calculators" | "manual">("leads");
   const [registeredClients, setRegisteredClients] = useState<any[]>([]);
   const [clientSearch, setClientSearch] = useState("");
   const [clientStateFilter, setClientStateFilter] = useState("all");
@@ -2290,20 +2291,57 @@ export default function SoMadeirasFullStack() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Active Session Status (Admin / Seller / Client) */}
+          {/* Active Session Status & View Switcher (Admin / Seller / Client) */}
           {viewMode !== "client" || activeClient || isAdminAuthenticated ? (
             <div className="flex items-center gap-2 bg-white/10 px-2.5 py-1 rounded-md border border-white/15">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-bold text-white text-[11px]">
+              <span className="font-bold text-white text-[11px] hidden sm:inline">
                 {viewMode === "admin"
-                  ? "🛡️ Admin (Cockpit CRM)"
+                  ? "🛡️ Admin"
                   : viewMode === "seller"
                   ? "💼 Vendedor"
                   : `👤 ${activeClient?.name || "Cliente"}`}
               </span>
+
+              {/* Mode Switcher Buttons for Staff / Admin */}
+              {isAdminAuthenticated && (
+                <div className="flex items-center gap-1 ml-1 border-l border-white/20 pl-2">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("admin")}
+                    className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition border-none cursor-pointer ${
+                      viewMode === "admin" ? "bg-amber-400 text-brown-dark shadow-xs" : "bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                    title="Abrir Painel Executivo Admin"
+                  >
+                    🛡️ Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("seller")}
+                    className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition border-none cursor-pointer ${
+                      viewMode === "seller" ? "bg-amber-400 text-brown-dark shadow-xs" : "bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                    title="Abrir Painel Exclusivo dos Vendedores"
+                  >
+                    💼 Painel Vendedor
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("client")}
+                    className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition border-none cursor-pointer ${
+                      viewMode === "client" ? "bg-amber-400 text-brown-dark shadow-xs" : "bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                    title="Ver Loja (Visão do Cliente)"
+                  >
+                    🌐 Loja
+                  </button>
+                </div>
+              )}
+
               <button
                 onClick={handleLogoutAdmin}
-                className="ml-1 text-xs text-red-300 hover:text-red-100 underline font-semibold cursor-pointer"
+                className="ml-1 text-xs text-red-300 hover:text-red-100 underline font-semibold cursor-pointer border-none bg-transparent"
                 title="Encerrar sessão"
               >
                 Sair
@@ -8515,6 +8553,25 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                   </button>
                 </div>
 
+                {/* Banner de Acesso ao Painel Exclusivo de Vendedores */}
+                <div className="bg-gradient-to-r from-amber-500 via-amber-600 to-[#3E2723] text-stone-900 dark:text-white p-5 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <h5 className="font-display font-black text-sm uppercase text-stone-950 dark:text-white flex items-center gap-2">
+                      💼 PAINEL EXCLUSIVO DOS VENDEDORES (MODO COMERCIAL)
+                    </h5>
+                    <p className="text-xs text-stone-900/90 dark:text-stone-300 font-semibold mt-0.5">
+                      Acesse a área de vendas dedicada aos vendedores com CRM de orçamentos e a calculadora comercial exclusiva.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("seller")}
+                    className="bg-[#3E2723] hover:bg-black text-white font-black text-xs px-6 py-3 rounded-full shadow-lg transition active:scale-95 cursor-pointer border-none whitespace-nowrap"
+                  >
+                    Abrir Painel do Vendedor →
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Form Card */}
                   <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl shadow-sm p-6 space-y-4 h-fit transition-colors">
@@ -9379,6 +9436,39 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                 </div>
               </div>
 
+              {/* Exclusive Seller Navigation Tabs */}
+              <div className="space-y-1 pt-3 border-t border-white/15">
+                <label className="text-[9px] font-black tracking-widest text-primary uppercase block">Menu do Vendedor</label>
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("leads")}
+                  className={`w-full text-left px-3 py-2 rounded-lg font-bold text-xs transition flex items-center justify-between border-none cursor-pointer ${
+                    sellerTab === "leads" ? "bg-primary text-brown-dark" : "hover:bg-white/10 text-gray-300"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">📥 Orçamentos & Leads</span>
+                  <span className="bg-black/30 px-1.5 py-0.2 rounded text-[10px] font-black">{sellerLeads.length}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("calculators")}
+                  className={`w-full text-left px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-2 border-none cursor-pointer ${
+                    sellerTab === "calculators" ? "bg-primary text-brown-dark" : "hover:bg-white/10 text-gray-300"
+                  }`}
+                >
+                  <Calculator className="h-4 w-4 text-amber-300" /> Calculadoras Comerciais
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("manual")}
+                  className={`w-full text-left px-3 py-2 rounded-lg font-bold text-xs transition flex items-center gap-2 border-none cursor-pointer ${
+                    sellerTab === "manual" ? "bg-primary text-brown-dark" : "hover:bg-white/10 text-gray-300"
+                  }`}
+                >
+                  <Plus className="h-4 w-4 text-emerald-400" /> Criar Orçamento Avulso
+                </button>
+              </div>
+
               {/* Monthly Goal gauge progress */}
               <div className="bg-black/25 p-3 rounded-lg border border-white/5 space-y-2">
                 <div className="flex justify-between text-[10px] font-black text-primary">
@@ -9416,152 +9506,271 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
 
           {/* Seller Main Cockpit */}
           <main className="flex-1 p-6 space-y-6 overflow-y-auto">
-            
-            {/* Seller lead inbox list */}
-            <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl shadow-sm p-5 space-y-5 transition-colors">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-dark-border pb-4">
-                <div>
-                  <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase">FUNDO COMERCIAL - ORÇAMENTOS E LEADS</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Todos os vendedores possuem acesso aos orçamentos. Filtre se desejar focar apenas nos seus.</p>
-                </div>
-                <label className="inline-flex items-center gap-2 cursor-pointer bg-slate-50 dark:bg-neutral-850 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-dark-border select-none shadow-2xs">
-                  <input 
-                    type="checkbox"
-                    checked={onlyMyLeadsFilter}
-                    onChange={(e) => setOnlyMyLeadsFilter(e.target.checked)}
-                    className="rounded border-gray-300 dark:border-dark-border text-primary focus:ring-primary h-4 w-4 cursor-pointer"
-                  />
-                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300">Apenas meus leads atribuídos</span>
-                </label>
+            {/* Header banner inside seller cockpit */}
+            <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <span className="text-[10px] font-black uppercase text-primary tracking-wider">Perfil Ativo</span>
+                <h3 className="font-display font-black text-lg text-brown-dark dark:text-white uppercase flex items-center gap-2">
+                  {activeSeller.avatar} {activeSeller.name} — Painel Comercial Exclusivo
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Telefone: {activeSeller.phone || "(79) 99629-8990"} | Comissão: {(activeSeller.commissionRate * 100).toFixed(1)}% | Meta: R$ {(activeSeller.goal || 30000).toLocaleString("pt-BR")}
+                </p>
               </div>
 
-              {sellerLeads.length === 0 ? (
-                <div className="text-center p-8 border border-dashed border-gray-200 rounded-xl text-gray-500">
-                  {onlyMyLeadsFilter 
-                    ? "Nenhum lead atribuído para o seu perfil no momento. Tente desativar o filtro acima para ver todos os orçamentos!" 
-                    : "Nenhum lead registrado no sistema. Envie orçamentos através do site do cliente para iniciar a fila!"
-                  }
+              {/* Tab switcher inside seller cockpit */}
+              <div className="flex bg-slate-100 dark:bg-neutral-850 p-1 rounded-xl border border-gray-200 dark:border-dark-border text-xs font-bold shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("leads")}
+                  className={`px-4 py-2 rounded-lg transition border-none cursor-pointer ${
+                    sellerTab === "leads" ? "bg-primary text-brown-dark shadow-xs font-black" : "text-gray-600 dark:text-gray-300 hover:text-brown-dark"
+                  }`}
+                >
+                  📥 Orçamentos & Leads ({sellerLeads.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("calculators")}
+                  className={`px-4 py-2 rounded-lg transition border-none cursor-pointer ${
+                    sellerTab === "calculators" ? "bg-primary text-brown-dark shadow-xs font-black" : "text-gray-600 dark:text-gray-300 hover:text-brown-dark"
+                  }`}
+                >
+                  📐 Calculadoras Comerciais
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSellerTab("manual")}
+                  className={`px-4 py-2 rounded-lg transition border-none cursor-pointer ${
+                    sellerTab === "manual" ? "bg-primary text-brown-dark shadow-xs font-black" : "text-gray-600 dark:text-gray-300 hover:text-brown-dark"
+                  }`}
+                >
+                  ➕ Orçamento Avulso
+                </button>
+              </div>
+            </div>
+
+            {/* TAB 1: LEADS & CRM */}
+            {sellerTab === "leads" && (
+              <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl shadow-sm p-5 space-y-5 transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-dark-border pb-4">
+                  <div>
+                    <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase">FUNDO COMERCIAL - ORÇAMENTOS E LEADS</h4>
+                    <p className="text-xs text-gray-500 mt-0.5">Todos os vendedores possuem acesso aos orçamentos. Filtre se desejar focar apenas nos seus.</p>
+                  </div>
+                  <label className="inline-flex items-center gap-2 cursor-pointer bg-slate-50 dark:bg-neutral-850 px-3.5 py-2 rounded-lg border border-gray-200 dark:border-dark-border select-none shadow-2xs">
+                    <input 
+                      type="checkbox"
+                      checked={onlyMyLeadsFilter}
+                      onChange={(e) => setOnlyMyLeadsFilter(e.target.checked)}
+                      className="rounded border-gray-300 dark:border-dark-border text-primary focus:ring-primary h-4 w-4 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300">Apenas meus leads atribuídos</span>
+                  </label>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {sellerLeads.map((lead, i) => (
-                    <div 
-                      key={i} 
-                      className={`border rounded-xl p-4 flex flex-col justify-between gap-4 transition shadow-xs hover:shadow-lg ${selectedSellerLead?.id === lead.id ? "bg-amber-50/40 dark:bg-amber-950/10 border-primary" : "bg-slate-50 dark:bg-neutral-900 border-gray-200 dark:border-dark-border"}`}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h5 className="font-bold text-sm text-brown-dark dark:text-white">{lead.name}</h5>
-                            <span className="text-[10px] text-gray-400">{lead.location}</span>
+
+                {sellerLeads.length === 0 ? (
+                  <div className="text-center p-8 border border-dashed border-gray-200 rounded-xl text-gray-500">
+                    {onlyMyLeadsFilter 
+                      ? "Nenhum lead atribuído para o seu perfil no momento. Tente desativar o filtro acima para ver todos os orçamentos!" 
+                      : "Nenhum lead registrado no sistema. Envie orçamentos através do site do cliente para iniciar a fila!"
+                    }
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {sellerLeads.map((lead, i) => (
+                      <div 
+                        key={i} 
+                        className={`border rounded-xl p-4 flex flex-col justify-between gap-4 transition shadow-xs hover:shadow-lg ${selectedSellerLead?.id === lead.id ? "bg-amber-50/40 dark:bg-amber-950/10 border-primary" : "bg-slate-50 dark:bg-neutral-900 border-gray-200 dark:border-dark-border"}`}
+                      >
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h5 className="font-bold text-sm text-brown-dark dark:text-white">{lead.name}</h5>
+                              <span className="text-[10px] text-gray-400">{lead.location}</span>
+                            </div>
+                            <div className="flex flex-col items-end gap-1.5">
+                              <span className={`font-black text-[9px] px-2 py-0.5 rounded uppercase ${
+                                lead.status === "Venda Fechada" ? "bg-emerald-100 text-emerald-800" :
+                                lead.status === "Venda Perdida" ? "bg-red-100 text-red-800" :
+                                "bg-blue-100 text-blue-800"
+                              }`}>
+                                {lead.status}
+                              </span>
+                              {(() => {
+                                const s = sellers.find(sel => sel.id === lead.sellerId);
+                                const isMine = lead.sellerId === activeSellerId;
+                                return (
+                                  <span className={`inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded text-[9px] border ${
+                                    isMine 
+                                      ? "bg-primary/20 text-brown-dark dark:text-primary border-primary/30" 
+                                      : "bg-gray-100 dark:bg-neutral-850 text-gray-500 dark:text-gray-450 border-gray-200 dark:border-dark-border"
+                                  }`}>
+                                    <span>{s?.avatar || "👤"}</span>
+                                    <span>{s?.name.split(" ")[0] || lead.sellerId}</span>
+                                  </span>
+                                );
+                              })()}
+                            </div>
                           </div>
-                          <div className="flex flex-col items-end gap-1.5">
-                            <span className={`font-black text-[9px] px-2 py-0.5 rounded uppercase ${
-                              lead.status === "Venda Fechada" ? "bg-emerald-100 text-emerald-800" :
-                              lead.status === "Venda Perdida" ? "bg-red-100 text-red-800" :
-                              "bg-blue-100 text-blue-800"
-                            }`}>
-                              {lead.status}
-                            </span>
-                            {/* Seller Tag */}
-                            {(() => {
-                              const s = sellers.find(sel => sel.id === lead.sellerId);
-                              const isMine = lead.sellerId === activeSellerId;
-                              return (
-                                <span className={`inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded text-[9px] border ${
-                                  isMine 
-                                    ? "bg-primary/20 text-brown-dark dark:text-primary border-primary/30" 
-                                    : "bg-gray-100 dark:bg-neutral-850 text-gray-500 dark:text-gray-450 border-gray-200 dark:border-dark-border"
-                                }`}>
-                                  <span>{s?.avatar || "👤"}</span>
-                                  <span>{s?.name.split(" ")[0] || lead.sellerId}</span>
-                                </span>
-                              );
-                            })()}
+
+                          <p className="text-xs text-gray-550 dark:text-gray-400">
+                            Produtos: <strong className="text-brown-medium dark:text-primary">{lead.products.join(", ")}</strong>
+                          </p>
+                          <div className="text-[10px] text-gray-450 dark:text-gray-500">
+                            📞 Telefone: {lead.phone} | UTM: {lead.source}
                           </div>
                         </div>
 
-                        <p className="text-xs text-gray-550 dark:text-gray-400">
-                          Produtos: <strong className="text-brown-medium dark:text-primary">{lead.products.join(", ")}</strong>
-                        </p>
-                        <div className="text-[10px] text-gray-450 dark:text-gray-500">
-                          📞 Telefone: {lead.phone} | UTM: {lead.source}
+                        <div className="flex justify-between items-center pt-3 border-t border-gray-200/50 dark:border-dark-border">
+                          <span className="font-black text-brown-medium dark:text-primary text-sm">R$ {lead.total.toFixed(2)}</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                trackClick(`seller-contact-${lead.id}`);
+                                window.open(`https://api.whatsapp.com/send?phone=55${lead.phone}&text=Olá+${lead.name}%21+Aqui+é+o+vendedor+${activeSeller.name.split(" ")[0]}+da+Só+Madeiras.+Estou+com+seu+carrinho+de+orçamento+pronto+aqui%21`, "_blank");
+                              }}
+                              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded shadow flex items-center gap-1 transition active:scale-95 cursor-pointer border-none"
+                            >
+                              <Phone className="h-3.5 w-3.5" /> Chamar
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedSellerLead(lead);
+                                setSellerInvoicePDFOpen(true);
+                                trackClick(`seller-btn-pdf-${lead.id}`);
+                              }}
+                              className="bg-primary hover:bg-primary-hover text-brown-dark text-xs font-black px-3 py-1.5 rounded shadow flex items-center gap-1 transition active:scale-95 border-none cursor-pointer"
+                            >
+                              <FileText className="h-3.5 w-3.5" /> Gerar PDF
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
-                      <div className="flex justify-between items-center pt-3 border-t border-gray-200/50 dark:border-dark-border">
-                        <span className="font-black text-brown-medium dark:text-primary text-sm">R$ {lead.total.toFixed(2)}</span>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              trackClick(`seller-contact-${lead.id}`);
-                              window.open(`https://api.whatsapp.com/send?phone=55${lead.phone}&text=Olá+${lead.name}%21+Aqui+é+o+vendedor+${activeSeller.name.split(" ")[0]}+da+Só+Madeiras.+Estou+com+seu+carrinho+de+orçamento+pronto+aqui%21`, "_blank");
-                            }}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded shadow flex items-center gap-1 transition active:scale-95 cursor-pointer"
-                          >
-                            <Phone className="h-3.5 w-3.5" /> Chamar
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedSellerLead(lead);
-                              setSellerInvoicePDFOpen(true);
-                              trackClick(`seller-btn-pdf-${lead.id}`);
-                            }}
-                            className="bg-primary hover:bg-primary-hover text-brown-dark text-xs font-black px-3 py-1.5 rounded shadow flex items-center gap-1 transition active:scale-95"
-                          >
-                            <FileText className="h-3.5 w-3.5" /> Gerar PDF
-                          </button>
-                        </div>
-                      </div>
+            {/* TAB 2: EXCLUSIVE SELLER CALCULATORS HUB */}
+            {sellerTab === "calculators" && (
+              <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl p-6 space-y-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-150 dark:border-dark-border pb-4 gap-2">
+                  <div>
+                    <h4 className="font-display font-black text-base text-brown-dark dark:text-white uppercase flex items-center gap-2">
+                      <Calculator className="h-5 w-5 text-amber-500" />
+                      CALCULADORAS COMERCIAIS EXCLUSIVAS DO VENDEDOR
+                    </h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Ferramentas internas para vendedores realizarem orçamentos técnicos de telhados e forros PVC para clientes com regras de cálculo da Só Madeiras.
+                    </p>
+                  </div>
+                  <span className="bg-amber-500/20 text-amber-800 dark:text-amber-300 font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
+                    Uso Comercial
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Roof Calculator Card */}
+                  <div className="bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-2xl p-6 space-y-4 hover:shadow-md transition">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-black">
+                      🏠
                     </div>
-                  ))}
+                    <div>
+                      <h5 className="font-display font-black text-sm text-brown-dark dark:text-white uppercase">
+                        Calculadora Estrutural de Telhados
+                      </h5>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                        Calcule bitolas comerciais de caibros, terças, ripas, frechais, pontaletes e tesouras de eucalipto conforme normas ABNT NBR 7190.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-gray-200/60 dark:border-neutral-800 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded">
+                        ✓ Liberado para Vendedores
+                      </span>
+                      <Link
+                        href="/calculadora-telhado?mode=seller"
+                        className="bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs px-4 py-2 rounded-full shadow transition inline-flex items-center gap-1 no-underline"
+                      >
+                        <span>Abrir Calculadora →</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* PVC Ceiling Calculator Card */}
+                  <div className="bg-slate-50 dark:bg-neutral-900 border border-gray-200 dark:border-dark-border rounded-2xl p-6 space-y-4 hover:shadow-md transition">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-black">
+                      📐
+                    </div>
+                    <div>
+                      <h5 className="font-display font-black text-sm text-brown-dark dark:text-white uppercase">
+                        Calculadora de Forro PVC & Subestrutura
+                      </h5>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                        Dimensione placas de PVC de 20cm, ripões de 5x3cm, ripas de 5x1cm, sancas e buchas para projetos multi-cômodos.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-gray-200/60 dark:border-neutral-800 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded">
+                        ✓ Liberado para Vendedores
+                      </span>
+                      <Link
+                        href="/forro-pvc?mode=seller"
+                        className="bg-primary hover:bg-primary-hover text-brown-dark font-black text-xs px-4 py-2 rounded-full shadow transition inline-flex items-center gap-1 no-underline"
+                      >
+                        <span>Abrir Calculadora →</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Quick manual budget builder for salesperson */}
-            <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl p-5 space-y-4 shadow-sm transition-colors">
-              <h4 className="font-display font-black text-sm uppercase tracking-tight text-brown-medium dark:text-primary flex items-center gap-1.5">
-                <Plus className="h-5 w-5" /> CRIAR NOVO ORÇAMENTO AVULSO MANUAL
-              </h4>
-              <p className="text-xs text-gray-500 mt-0.5">Monte um faturamento rápido direto do estoque para clientes de balcão e imprima em PDF.</p>
-              
-              <button
-                onClick={() => {
-                  const clientName = prompt("Nome do Cliente:");
-                  const clientPhone = prompt("Celular WhatsApp:");
-                  const clientCity = prompt("Cidade/Estado:");
-                  if (!clientName || !clientPhone || !clientCity) return;
-                  
-                  const pSel = products[0];
-                  const newL = {
-                    id: `lead-avulso-${Date.now()}`,
-                    name: clientName,
-                    phone: clientPhone,
-                    city: clientCity.split("/")[0],
-                    state: clientCity.split("/")[1] || "SP",
-                    date: new Date().toISOString().split("T")[0],
-                    time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
-                    source: "Orçamento de Balcão",
-                    utm: "Faturamento Físico / Telefone",
-                    products: [`${pSel.name} x 1`],
-                    total: pSel.price,
-                    status: "Em Atendimento",
-                    sellerId: activeSeller.id,
-                    device: "Balcão Presencial",
-                    location: clientCity,
-                    notes: "Orçamento emitido manualmente na loja física."
-                  };
-                  updateLeads([newL, ...leads]);
-                  setSelectedSellerLead(newL);
-                  setSellerInvoicePDFOpen(true);
-                }}
-                className="bg-brown-medium hover:bg-brown-dark text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow-md transition active:scale-95"
-              >
-                + Iniciar Cotação Balcão
-              </button>
-            </div>
-
+            {/* TAB 3: QUICK MANUAL BUDGET BUILDER */}
+            {(sellerTab === "manual" || sellerTab === "leads") && (
+              <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl p-5 space-y-4 shadow-sm transition-colors">
+                <h4 className="font-display font-black text-sm uppercase tracking-tight text-brown-medium dark:text-primary flex items-center gap-1.5">
+                  <Plus className="h-5 w-5" /> CRIAR NOVO ORÇAMENTO AVULSO MANUAL
+                </h4>
+                <p className="text-xs text-gray-500 mt-0.5">Monte um faturamento rápido direto do estoque para clientes de balcão e imprima em PDF.</p>
+                
+                <button
+                  onClick={() => {
+                    const clientName = prompt("Nome do Cliente:");
+                    const clientPhone = prompt("Celular WhatsApp:");
+                    const clientCity = prompt("Cidade/Estado:");
+                    if (!clientName || !clientPhone || !clientCity) return;
+                    
+                    const pSel = products[0];
+                    const newL = {
+                      id: `lead-avulso-${Date.now()}`,
+                      name: clientName,
+                      phone: clientPhone,
+                      city: clientCity.split("/")[0],
+                      state: clientCity.split("/")[1] || "SP",
+                      date: new Date().toISOString().split("T")[0],
+                      time: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+                      source: "Orçamento de Balcão",
+                      utm: "Faturamento Físico / Telefone",
+                      products: [`${pSel.name} x 1`],
+                      total: pSel.price,
+                      status: "Em Atendimento",
+                      sellerId: activeSeller.id,
+                      device: "Balcão Presencial",
+                      location: clientCity,
+                      notes: "Orçamento emitido manualmente na loja física."
+                    };
+                    updateLeads([newL, ...leads]);
+                    setSelectedSellerLead(newL);
+                    setSellerInvoicePDFOpen(true);
+                  }}
+                  className="bg-brown-medium hover:bg-brown-dark text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow-md transition active:scale-95 cursor-pointer border-none"
+                >
+                  + Iniciar Cotação Balcão
+                </button>
+              </div>
+            )}
           </main>
         </div>
       )}
