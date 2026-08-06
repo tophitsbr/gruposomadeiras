@@ -56,8 +56,11 @@ import {
   Bookmark,
   Tractor,
   Layout,
-  LogOut
+  LogOut,
+  Calculator,
+  ShieldCheck
 } from "lucide-react";
+import { checkCalculatorAccess, CALCULATOR_ACCESS_OPTIONS, CalculatorAccessLevel } from "@/lib/calculatorAccess";
 import { Instagram, Facebook, YouTube, WhatsAppIcon, VideoIcon } from "./components/Icons";
 
 function compressImageFile(file: File, maxDim = 250, quality = 0.75): Promise<string> {
@@ -135,7 +138,8 @@ const DEFAULT_SETTINGS = {
   whatsappPhone: "79996298990",
   fbPixelId: "",
   gtmId: "",
-  webhookUrl: ""
+  webhookUrl: "",
+  calculatorAccess: "all"
 };
 
 
@@ -3655,7 +3659,36 @@ export default function SoMadeirasFullStack() {
                 </div>
               </div>
 
-            {/* Split Grid Layout */}
+            {/* Access Guard for Calculator */}
+            {!checkCalculatorAccess(settings?.calculatorAccess, activeClient, (viewMode as string) === "admin" || (viewMode as string) === "seller", isAdminAuthenticated).allowed ? (
+              <div className="bg-[#3E2723]/5 dark:bg-amber-950/20 border-2 border-dashed border-amber-500/40 rounded-2xl p-8 text-center space-y-4 my-4">
+                <div className="w-14 h-14 mx-auto rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <Lock className="w-7 h-7" />
+                </div>
+                <div className="max-w-md mx-auto space-y-2">
+                  <span className="bg-amber-500/20 text-amber-800 dark:text-amber-300 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
+                    {checkCalculatorAccess(settings?.calculatorAccess, activeClient, (viewMode as string) === "admin" || (viewMode as string) === "seller", isAdminAuthenticated).requiredRoleLabel || "Acesso Restrito"}
+                  </span>
+                  <h4 className="font-display font-black text-lg text-brown-dark dark:text-white">
+                    Calculadora de Telhados Restrita
+                  </h4>
+                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                    {checkCalculatorAccess(settings?.calculatorAccess, activeClient, (viewMode as string) === "admin" || (viewMode as string) === "seller", isAdminAuthenticated).reason}
+                  </p>
+                </div>
+                {!activeClient && !isAdminAuthenticated && (
+                  <div className="pt-2">
+                    <button
+                      onClick={() => setIsMinhaContaOpen(true)}
+                      className="bg-primary hover:bg-primary-hover text-brown-dark font-black px-6 py-2.5 rounded-full shadow-md transition active:scale-95 text-xs inline-flex items-center gap-2 cursor-pointer border-none"
+                    >
+                      <span>👤 Fazer Login / Cadastrar em Minha Conta</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+            /* Split Grid Layout */
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
               {/* Left Column: Tile Selection (7 of 12 cols) */}
@@ -3946,6 +3979,7 @@ export default function SoMadeirasFullStack() {
                 })()}
               </div>
             </div>
+            )}
 
           </section>
         )}
@@ -6599,6 +6633,62 @@ className="bg-brown-medium hover:bg-brown-dark text-white px-2.5 py-1 rounded sh
                         />
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Controle de Acesso às Calculadoras */}
+                <div className="bg-amber-500/10 border-2 border-amber-500/30 p-5 rounded-2xl space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-amber-500/20 pb-3">
+                    <div>
+                      <h5 className="font-display font-black text-sm text-brown-dark dark:text-white uppercase tracking-wider flex items-center gap-2">
+                        <Calculator className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                        Controle de Acesso às Calculadoras do Site
+                      </h5>
+                      <p className="text-xs text-gray-700 dark:text-gray-300 font-medium mt-0.5">
+                        Escolha quem pode visualizar e utilizar as calculadoras interativas do site (Telhados, Forro PVC, Pergolados).
+                      </p>
+                    </div>
+                    <span className="bg-amber-500 text-brown-dark font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
+                      Permissões
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {CALCULATOR_ACCESS_OPTIONS.map((opt) => {
+                      const isSelected = (settings.calculatorAccess || "all") === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setSettings({ ...settings, calculatorAccess: opt.id })}
+                          className={`p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                            isSelected
+                              ? "bg-amber-500 text-brown-dark border-amber-600 shadow-md ring-2 ring-amber-400/50 scale-[1.01]"
+                              : "bg-white dark:bg-dark-surface border-gray-200 dark:border-dark-border text-gray-800 dark:text-gray-200 hover:border-amber-400/60 hover:bg-amber-50/50 dark:hover:bg-amber-950/20"
+                          }`}
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-extrabold text-xs flex items-center gap-1.5">
+                                {opt.title}
+                              </span>
+                              {isSelected && <Check className="h-4 w-4 stroke-[3] text-brown-dark shrink-0" />}
+                            </div>
+                            <p className={`text-[11px] leading-relaxed ${isSelected ? "text-brown-dark/90 font-semibold" : "text-gray-500 dark:text-gray-400"}`}>
+                              {opt.subtitle}
+                            </p>
+                          </div>
+                          <div className="mt-3 pt-2 border-t border-black/10 dark:border-white/10 flex justify-between items-center text-[10px]">
+                            <span className={`font-bold px-2 py-0.5 rounded ${isSelected ? "bg-brown-dark/20 text-brown-dark" : "bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-300"}`}>
+                              {opt.badge}
+                            </span>
+                            <span className={`font-black uppercase tracking-wider ${isSelected ? "text-brown-dark" : "text-amber-600 dark:text-amber-400"}`}>
+                              {isSelected ? "✓ Ativo" : "Clique para Ativar"}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { AboutSection } from "../components/AboutSection";
 import { saveData, loadData } from "@/lib/dataService";
+import { checkCalculatorAccess } from "@/lib/calculatorAccess";
 import { 
   ArrowLeft, 
   Phone, 
@@ -17,7 +18,8 @@ import {
   Layers,
   Trash2,
   ChevronRight,
-  Maximize2
+  Maximize2,
+  Lock
 } from "lucide-react";
 
 // Types
@@ -76,6 +78,8 @@ export default function CalculadoraForroPVC() {
 
   // Forro Products Management State
   const [isAdmin, setIsAdmin] = useState(false);
+  const [activeClient, setActiveClient] = useState<any>(null);
+  const [isStaff, setIsStaff] = useState<boolean>(false);
   const [forroProducts, setForroProducts] = useState<ForroProduct[]>([]);
   const [isForroModalOpen, setIsForroModalOpen] = useState(false);
   const [editingForro, setEditingForro] = useState<ForroProduct | null>(null);
@@ -91,10 +95,15 @@ export default function CalculadoraForroPVC() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      const isStaff = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const staffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true" || localStorage.getItem("somadeiras_staff_authenticated") === "true";
       const mode = new URLSearchParams(window.location.search).get("mode");
-      if (isStaff || mode === "admin" || mode === "staff") {
+      if (staffAuth) setIsStaff(true);
+      if (staffAuth || mode === "admin" || mode === "staff") {
         setIsAdmin(true);
+      }
+      const client = localStorage.getItem("somadeiras_logged_in_client");
+      if (client) {
+        try { setActiveClient(JSON.parse(client)); } catch {}
       }
     }
 
@@ -601,6 +610,34 @@ export default function CalculadoraForroPVC() {
           </div>
         </section>
 
+        {!checkCalculatorAccess(settings?.calculatorAccess, activeClient, isStaff || isAdmin, isAdmin).allowed ? (
+          <div className="bg-[#3E2723]/5 dark:bg-amber-950/20 border-2 border-dashed border-amber-500/40 rounded-3xl p-8 text-center space-y-4 my-4">
+            <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+              <Lock className="w-8 h-8" />
+            </div>
+            <div className="max-w-md mx-auto space-y-2">
+              <span className="bg-amber-500/20 text-amber-800 dark:text-amber-300 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
+                {checkCalculatorAccess(settings?.calculatorAccess, activeClient, isStaff || isAdmin, isAdmin).requiredRoleLabel || "Acesso Restrito"}
+              </span>
+              <h4 className="font-display font-black text-lg text-[#3E2723] dark:text-white">
+                Calculadora de Forro PVC Restrita
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                {checkCalculatorAccess(settings?.calculatorAccess, activeClient, isStaff || isAdmin, isAdmin).reason}
+              </p>
+            </div>
+            {!activeClient && !isAdmin && (
+              <div className="pt-2">
+                <Link
+                  href="/?login=true"
+                  className="bg-[#F4B400] hover:bg-amber-400 text-[#3E2723] font-black px-6 py-2.5 rounded-full shadow-md transition active:scale-95 text-xs inline-flex items-center gap-2 cursor-pointer no-underline"
+                >
+                  <span>👤 Fazer Login / Cadastrar em Minha Conta</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT COLUMN: CONFIGURATOR INPUT PANEL */}
           <section className="lg:col-span-4 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-3xl p-5 shadow-sm space-y-5 self-start">
@@ -1102,6 +1139,7 @@ export default function CalculadoraForroPVC() {
           </div>
         </section>
       </div>
+      )}
     </main>
 
 

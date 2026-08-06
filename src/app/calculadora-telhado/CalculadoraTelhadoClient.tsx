@@ -2,7 +2,8 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { saveData } from "@/lib/dataService";
+import { saveData, loadData } from "@/lib/dataService";
+import { checkCalculatorAccess } from "@/lib/calculatorAccess";
 import {
   ArrowLeft,
   Phone,
@@ -21,6 +22,7 @@ import {
   ChevronRight,
   Star,
   Zap,
+  Lock
 } from "lucide-react";
 import { AboutSection } from "../components/AboutSection";
 
@@ -155,12 +157,38 @@ export default function CalculadoraTelhadoClient() {
 
   const [woodClass, setWoodClass] = useState<"C30" | "C40">("C30");
 
+  const [activeClient, setActiveClient] = useState<any>(null);
+  const [isStaff, setIsStaff] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   useEffect(() => {
     const local = localStorage.getItem("somadeiras_settings");
     if (local) {
       try { setSettings(JSON.parse(local)); } catch {}
     }
+    loadData("somadeiras_settings").then((data) => {
+      if (data) setSettings(data as any);
+    }).catch(() => {});
+
+    const client = localStorage.getItem("somadeiras_logged_in_client");
+    if (client) {
+      try { setActiveClient(JSON.parse(client)); } catch {}
+    }
+
+    if (typeof window !== "undefined") {
+      const staffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true" || localStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const staffPin = sessionStorage.getItem("somadeiras_staff_pin") || localStorage.getItem("somadeiras_staff_pin");
+      const userRole = sessionStorage.getItem("somadeiras_staff_user") || localStorage.getItem("somadeiras_staff_user");
+      if (staffAuth) {
+        setIsStaff(true);
+        if (staffPin === "1234" || userRole === "admin" || window.location.search.includes("mode=admin")) {
+          setIsAdmin(true);
+        }
+      }
+    }
   }, []);
+
+  const accessResult = checkCalculatorAccess(settings?.calculatorAccess, activeClient, isStaff, isAdmin);
 
   const activeWhatsapp = settings?.whatsappNumber || "5579996298990";
 
@@ -445,6 +473,64 @@ export default function CalculadoraTelhadoClient() {
     : tileType === "concreto" ? "#546E7A"
     : (tileType === "fibrocimento_050" || tileType === "fibrocimento_110") ? "#90A4AE"
     : "#455A64";
+
+  if (!accessResult.allowed) {
+    return (
+      <div className="min-h-screen flex flex-col bg-stone-100 text-xs">
+        <header className="bg-[#3E2723] text-white py-3.5 px-4 shadow-lg z-40">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-2.5 cursor-pointer group">
+              <div className="bg-[#F4B400] text-[#3E2723] w-10 h-10 rounded-full flex items-center justify-center font-black text-lg border-2 border-white shadow-lg shadow-[#F4B400]/30">
+                🪵
+              </div>
+              <div>
+                <h1 className="font-black text-xl tracking-tight text-white flex items-center gap-1">
+                  SÓ <span className="text-[#F4B400]">MADEIRAS</span>
+                </h1>
+                <p className="text-[9px] tracking-widest text-[#F4B400] font-bold -mt-1 uppercase">Calculadora Estrutural de Telhados</p>
+              </div>
+            </Link>
+            <Link href="/" className="bg-[#F4B400] text-[#3E2723] font-black px-4 py-2 rounded-full text-xs shadow flex items-center gap-1.5">
+              <ArrowLeft className="h-3.5 w-3.5" /> Ir à Loja
+            </Link>
+          </div>
+        </header>
+
+        <main className="max-w-xl mx-auto px-4 py-16 flex-1 flex flex-col justify-center items-center text-center">
+          <div className="bg-white border border-stone-200 rounded-3xl p-8 shadow-xl space-y-6 w-full">
+            <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/15 flex items-center justify-center text-amber-700">
+              <Lock className="w-8 h-8" />
+            </div>
+            <div className="space-y-2">
+              <span className="bg-amber-500/20 text-amber-900 font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
+                {accessResult.requiredRoleLabel || "Acesso Restrito"}
+              </span>
+              <h2 className="font-display font-black text-xl text-[#3E2723]">
+                Calculadora de Telhados Restrita
+              </h2>
+              <p className="text-stone-600 text-xs leading-relaxed max-w-md mx-auto font-medium">
+                {accessResult.reason}
+              </p>
+            </div>
+            <div className="pt-4 border-t border-stone-150 flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/"
+                className="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold px-6 py-3 rounded-full transition text-center"
+              >
+                ← Voltar ao Site
+              </Link>
+              <Link
+                href="/?login=true"
+                className="bg-[#F4B400] hover:bg-amber-400 text-[#3E2723] font-black px-6 py-3 rounded-full shadow transition text-center"
+              >
+                👤 Entrar em Minha Conta
+              </Link>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-100 text-xs">
