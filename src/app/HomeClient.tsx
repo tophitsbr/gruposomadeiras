@@ -1510,63 +1510,64 @@ export default function SoMadeirasFullStack() {
       const currentViews = parseInt(localStorage.getItem("somadeiras_real_views") || "0", 10);
       localStorage.setItem("somadeiras_real_views", (currentViews + 1).toString());
 
-      // Remove persistent localStorage flag to ensure closing/exiting requires login again
+      // Always wipe any persistent localStorage auth (session-only auth)
       localStorage.removeItem("somadeiras_staff_authenticated");
       localStorage.removeItem("somadeiras_staff_pin");
       localStorage.removeItem("somadeiras_staff_user");
+      localStorage.removeItem("somadeiras_staff_role");
+      localStorage.removeItem("somadeiras_staff_seller_id");
 
       const urlParams = new URLSearchParams(window.location.search);
-      const requestedMode = urlParams.get("mode");
+      const requestedMode = urlParams.get("mode"); // "seller" | "admin" | null
       const requestedSellerId = urlParams.get("sellerId");
+
+      // Read ONLY from sessionStorage (never localStorage for auth)
+      const isSessionAuthenticated = sessionStorage.getItem("somadeiras_staff_authenticated") === "true";
+      const sessionRole = sessionStorage.getItem("somadeiras_staff_role"); // "admin" | "seller" | null
+      const sessionSellerId = sessionStorage.getItem("somadeiras_staff_seller_id");
 
       let staffUser: any = null;
       try {
-        const storedUser = sessionStorage.getItem("somadeiras_staff_user") || localStorage.getItem("somadeiras_staff_user");
+        const storedUser = sessionStorage.getItem("somadeiras_staff_user");
         if (storedUser) staffUser = JSON.parse(storedUser);
       } catch(e) {}
 
-      const isStaffAuth = sessionStorage.getItem("somadeiras_staff_authenticated") === "true" || localStorage.getItem("somadeiras_staff_authenticated") === "true";
-      const staffRole = sessionStorage.getItem("somadeiras_staff_role") || staffUser?.role;
-      const cleanUsername = (staffUser?.username || "").toLowerCase();
+      // ─── STRICT RULE: ONLY grant admin if sessionRole is EXPLICITLY "admin" ───
+      // No fallback, no username guessing, no "mode=staff" backdoor
+      const isAdminSession = isSessionAuthenticated && sessionRole === "admin";
+      const isSellerSession = isSessionAuthenticated && sessionRole === "seller";
 
-      // Explicit check if logged in user is Admin
-      const isExplicitAdmin = (
-        staffRole === "admin" ||
-        cleanUsername === "admin" ||
-        cleanUsername === "administrador"
-      );
+      if (requestedMode === "admin" && isAdminSession) {
+        // ADMIN MODE: explicit admin session + explicit admin mode request
+        setIsAdminAuthenticated(true);
+        setViewMode("admin");
+        window.history.replaceState({}, document.title, window.location.pathname);
 
-      if (isStaffAuth || requestedMode === "staff" || requestedMode === "admin" || requestedMode === "seller") {
-        if (!isExplicitAdmin) {
-          // SELLER SESSION: EXCLUSIVELY SELLER PANEL (NO ADMIN ACCESS)
-          setIsAdminAuthenticated(false);
-          setViewMode("seller");
-          
-          let selId = requestedSellerId || staffUser?.sellerId || sessionStorage.getItem("somadeiras_staff_seller_id") || "cleones";
-          if (cleanUsername && cleanUsername !== "admin") {
-            selId = cleanUsername;
-          }
-          setActiveSellerId(selId);
+      } else if (requestedMode === "seller" || isSellerSession) {
+        // SELLER MODE: either URL requested seller mode OR session is seller
+        setIsAdminAuthenticated(false);
+        setViewMode("seller");
+        const selId = requestedSellerId || sessionSellerId || staffUser?.sellerId || "cleones";
+        setActiveSellerId(selId);
+        window.history.replaceState({}, document.title, window.location.pathname);
 
-          if (requestedMode) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-        } else {
-          // ADMIN SESSION
-          setIsAdminAuthenticated(true);
-          setViewMode(requestedMode === "seller" ? "seller" : "admin");
-          if (requestedMode) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }
-        }
+      } else if (isAdminSession) {
+        // ADMIN SESSION without explicit mode param: restore admin panel
+        setIsAdminAuthenticated(true);
+        setViewMode("admin");
+
       } else {
+        // No valid session or unrecognized mode — show client storefront
+        // Also clear any stale/corrupt session data
+        try { sessionStorage.removeItem("somadeiras_staff_authenticated"); } catch(e) {}
+        try { sessionStorage.removeItem("somadeiras_staff_role"); } catch(e) {}
         setIsAdminAuthenticated(false);
         setViewMode("client");
       }
     }
   }, []);
 
-  // Protect Admin View Mode: non-admin sellers cannot view admin panel
+  // Guard: if viewMode=admin but not authenticated, force back to client
   useEffect(() => {
     if (viewMode === "admin" && !isAdminAuthenticated) {
       setViewMode("seller");
